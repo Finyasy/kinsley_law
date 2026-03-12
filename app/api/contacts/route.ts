@@ -1,0 +1,71 @@
+import { NextResponse } from "next/server";
+import { formatDatabaseErrorMessage, isDatabaseConfigured } from "@/lib/persistence";
+import { prisma } from "@/lib/prisma";
+
+type ContactPayload = {
+  name?: string;
+  email?: string;
+  phone?: string;
+  service?: string;
+  message?: string;
+};
+
+function validate(payload: ContactPayload) {
+  const errors: string[] = [];
+
+  if (!payload.name?.trim()) errors.push("Name is required.");
+  if (!payload.email?.trim()) errors.push("Email is required.");
+  if (!payload.service?.trim()) errors.push("Service is required.");
+  if (!payload.message?.trim()) errors.push("Message is required.");
+
+  return errors;
+}
+
+export async function POST(request: Request) {
+  if (!isDatabaseConfigured()) {
+    return NextResponse.json(
+      {
+        errors: ["Database is not configured. Add DATABASE_URL before submitting forms."],
+      },
+      { status: 503 },
+    );
+  }
+
+  const payload = (await request.json()) as ContactPayload;
+  const errors = validate(payload);
+
+  if (errors.length > 0) {
+    return NextResponse.json({ errors }, { status: 422 });
+  }
+
+  try {
+    const submission = await prisma.contact.create({
+      data: {
+        name: payload.name!.trim(),
+        email: payload.email!.trim(),
+        phone: payload.phone?.trim() || null,
+        service: payload.service!.trim(),
+        message: payload.message!.trim(),
+      },
+    });
+
+    return NextResponse.json(
+      {
+        message: "Thank you for contacting Kinsley Law Advocates. We will be in touch shortly.",
+        submission,
+        persistence: "postgresql",
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        errors: [
+          "Unable to save your message right now.",
+          formatDatabaseErrorMessage(error),
+        ],
+      },
+      { status: 500 },
+    );
+  }
+}

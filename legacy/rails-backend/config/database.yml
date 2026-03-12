@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: kinsley_law_development
+
+test:
+  <<: *default
+  database: kinsley_law_test
+
+production:
+  <<: *default
+  database: kinsley_law_production
+  username: kinsley_law
+  password: <%= ENV['KINSLEY_LAW_DATABASE_PASSWORD'] %>

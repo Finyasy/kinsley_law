@@ -1,0 +1,43 @@
+{
+  "name": "kinsley-law",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --webpack",
+    "dev:turbo": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:init": "./scripts/db-init.sh",
+    "db:start": "./scripts/db-start.sh",
+    "db:stop": "./scripts/db-stop.sh",
+    "db:apply": "./scripts/db-apply-sql.sh",
+    "db:bootstrap": "./scripts/db-bootstrap.sh",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "next": "^16.1.6",
+    "pg": "^8.20.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.1",
+    "@types/node": "^20.19.37",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.1.6",
+    "prisma": "^7.5.0",
+    "tailwindcss": "^4.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

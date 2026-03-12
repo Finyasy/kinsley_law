@@ -1,0 +1,92 @@
+generator client {
+  provider   = "prisma-client"
+  output     = "../generated/prisma"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Attorney {
+  id             Int            @id @default(autoincrement())
+  name           String
+  email          String         @unique
+  phone          String
+  bio            String
+  position       String?
+  specialization String?
+  photoUrl       String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  practiceAreas  PracticeArea[]
+  appointments   Appointment[]
+}
+
+model PracticeArea {
+  id          Int                     @id @default(autoincrement())
+  name        String                  @unique
+  description String
+  attorneyId  Int?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  attorney    Attorney?               @relation(fields: [attorneyId], references: [id], onDelete: SetNull)
+  highlights  PracticeAreaHighlight[]
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  service   String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Appointment {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String
+  phone        String
+  date         DateTime
+  time         String
+  practiceArea String
+  description  String
+  attorneyId   Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  attorney     Attorney? @relation(fields: [attorneyId], references: [id], onDelete: SetNull)
+}
+
+model PracticeAreaHighlight {
+  id             Int          @id @default(autoincrement())
+  label          String
+  sortOrder      Int          @default(0)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  practiceAreaId Int
+  practiceArea   PracticeArea @relation(fields: [practiceAreaId], references: [id], onDelete: Cascade)
+
+  @@unique([practiceAreaId, label])
+  @@index([practiceAreaId, sortOrder])
+}
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String
+  title     String
+  quote     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
