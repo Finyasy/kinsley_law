@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
+import { BrandSeal } from "@/components/brand/brand-seal";
 import { ValueRotator } from "@/components/home/value-rotator";
 import {
   getAttorneysForPage,
@@ -59,19 +60,23 @@ export default async function HomePage() {
           </div>
 
           <div className="hero-panel">
-            <div className="hero-portrait-frame">
-              <Image
-                src="/images/kinsley.webp"
-                alt="Kinsley Law Advocates team"
-                width={720}
-                height={780}
-                className="hero-portrait"
-                priority
-              />
-              <div className="portrait-caption card-surface">
-                <span className="eyebrow">{homePageContent.portraitEyebrow}</span>
-                <p>{homePageContent.portraitText}</p>
+            <div className="hero-brand-stage">
+              <div className="hero-brand-panel">
+                <BrandSeal size="lg" priority className="hero-brand-seal" />
+                <div className="hero-brand-copy">
+                  <span className="eyebrow light">{homePageContent.portraitEyebrow}</span>
+                  <p>{homePageContent.portraitText}</p>
+                </div>
               </div>
+              <article className="hero-floating-card">
+                <span className="hero-floating-label">Matter coverage</span>
+                <strong>Private clients, founders, and operating businesses</strong>
+                <p>One firm, six practice groups, and senior-led intake from day one.</p>
+              </article>
+              <article className="hero-floating-card secondary">
+                <span className="hero-floating-label">Client experience</span>
+                <strong>Structured updates, disciplined turnaround, discreet handling</strong>
+              </article>
             </div>
           </div>
         </div>
@@ -139,7 +144,7 @@ export default async function HomePage() {
                 <p className="practice-kicker">Practice Group</p>
                 <h3>{area.name}</h3>
                 <p>{area.description}</p>
-                <ul>
+                <ul className="practice-chip-list">
                   {area.highlights.map((highlight) => (
                     <li key={highlight}>{highlight}</li>
                   ))}
@@ -166,12 +171,7 @@ export default async function HomePage() {
             {featuredAttorneys.map((attorney, index) => (
               <article key={attorney.email} className="attorney-card">
                 <div className="attorney-card-image">
-                  <Image
-                    src="/images/kinsley.webp"
-                    alt={attorney.name}
-                    width={480}
-                    height={360}
-                  />
+                  <AttorneyAvatar name={attorney.name} role={attorney.specialization} />
                 </div>
                 <div className="attorney-card-content">
                   <span className="attorney-index">0{index + 1}</span>
@@ -199,6 +199,7 @@ export default async function HomePage() {
           <div className="testimonial-grid">
             {testimonials.map((testimonial) => (
               <article key={testimonial.name} className="testimonial-card">
+                <span className="testimonial-mark">01</span>
                 <p>&ldquo;{testimonial.quote}&rdquo;</p>
                 <div>
                   <strong>{testimonial.name}</strong>

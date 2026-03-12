@@ -34,6 +34,16 @@ export default async function ContactPage() {
           </div>
 
           <div className="contact-hero-card card-surface">
+            <div className="contact-hero-status">
+              <div>
+                <span className="office-label">Response standard</span>
+                <strong>Within one business day</strong>
+              </div>
+              <div>
+                <span className="office-label">Matter routing</span>
+                <strong>Directed to the relevant practice lead</strong>
+              </div>
+            </div>
             <h2>Office details</h2>
             <div className="office-stack">
               <div>

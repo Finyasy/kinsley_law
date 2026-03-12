@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState, useTransition } from "react";
+import { readJsonResponse } from "@/lib/read-json-response";
 
 type ContactFormProps = {
   practiceAreas: string[];
@@ -37,16 +38,16 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
         body: JSON.stringify(formData),
       });
 
-      const result = (await response.json()) as {
+      const result = await readJsonResponse<{
         message?: string;
         errors?: string[];
-      };
+      }>(response);
 
       if (!response.ok) {
-        throw new Error(result.errors?.join(" ") ?? "Unable to send message.");
+        throw new Error(result?.errors?.join(" ") ?? "Unable to send message.");
       }
 
-      setMessage(result.message ?? "Message sent.");
+      setMessage(result?.message ?? "Message sent.");
       setFormData(initialState);
     } catch (submissionError) {
       setError(
@@ -83,6 +84,8 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
             id="contact-name"
             name="name"
             value={formData.name}
+            placeholder="Your full name"
+            autoComplete="name"
             onChange={(event) => updateField(event.target.name, event.target.value)}
             required
           />
@@ -95,6 +98,8 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
             type="email"
             name="email"
             value={formData.email}
+            placeholder="name@email.com"
+            autoComplete="email"
             onChange={(event) => updateField(event.target.name, event.target.value)}
             required
           />
@@ -106,6 +111,8 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
             id="contact-phone"
             name="phone"
             value={formData.phone}
+            placeholder="+254 ..."
+            autoComplete="tel"
             onChange={(event) => updateField(event.target.name, event.target.value)}
           />
         </div>
@@ -135,6 +142,7 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
             name="message"
             rows={6}
             value={formData.message}
+            placeholder="Tell us about the matter, urgency, and any key deadlines."
             onChange={(event) => updateField(event.target.name, event.target.value)}
             required
           />

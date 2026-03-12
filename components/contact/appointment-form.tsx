@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState, useTransition } from "react";
+import { readJsonResponse } from "@/lib/read-json-response";
 
 type AppointmentFormProps = {
   practiceAreas: string[];
@@ -39,16 +40,16 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
         body: JSON.stringify(formData),
       });
 
-      const result = (await response.json()) as {
+      const result = await readJsonResponse<{
         message?: string;
         errors?: string[];
-      };
+      }>(response);
 
       if (!response.ok) {
-        throw new Error(result.errors?.join(" ") ?? "Unable to submit consultation request.");
+        throw new Error(result?.errors?.join(" ") ?? "Unable to submit consultation request.");
       }
 
-      setMessage(result.message ?? "Consultation request sent.");
+      setMessage(result?.message ?? "Consultation request sent.");
       setFormData(initialState);
     } catch (submissionError) {
       setError(
@@ -85,6 +86,8 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
             id="appointment-name"
             name="name"
             value={formData.name}
+            placeholder="Your full name"
+            autoComplete="name"
             onChange={(event) => updateField(event.target.name, event.target.value)}
             required
           />
@@ -97,6 +100,8 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
             type="email"
             name="email"
             value={formData.email}
+            placeholder="name@email.com"
+            autoComplete="email"
             onChange={(event) => updateField(event.target.name, event.target.value)}
             required
           />
@@ -108,6 +113,8 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
             id="appointment-phone"
             name="phone"
             value={formData.phone}
+            placeholder="+254 ..."
+            autoComplete="tel"
             onChange={(event) => updateField(event.target.name, event.target.value)}
             required
           />
@@ -162,6 +169,7 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
             name="description"
             rows={6}
             value={formData.description}
+            placeholder="Share the issue, desired consultation outcome, and any timing constraints."
             onChange={(event) => updateField(event.target.name, event.target.value)}
             required
           />

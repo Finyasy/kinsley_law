@@ -25,6 +25,8 @@ next-app/.next/
 .DS_Store
 *.pem
 /.postgres/
+/artifacts/ui-audit/*
+!/artifacts/ui-audit/README.md
 legacy/**/node_modules/
 legacy/**/.next/
 

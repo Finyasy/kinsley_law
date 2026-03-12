@@ -24,6 +24,49 @@ function formatDate(value: Date) {
   }).format(value);
 }
 
+function formatSettingLabel(value: string) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function formatSettingValue(value: unknown) {
+  if (Array.isArray(value)) {
+    return `${value.length} item${value.length === 1 ? "" : "s"}`;
+  }
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+
+  if (value && typeof value === "object") {
+    return `${Object.keys(value).length} fields`;
+  }
+
+  return "Not set";
+}
+
+function getSettingEntries(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return [
+      {
+        label: "Value",
+        value: formatSettingValue(value),
+      },
+    ];
+  }
+
+  return Object.entries(value).map(([key, entryValue]) => ({
+    label: formatSettingLabel(key),
+    value: formatSettingValue(entryValue),
+  }));
+}
+
 export default async function AdminPage() {
   if (!hasAdminPasswordConfigured()) {
     return (
@@ -58,6 +101,20 @@ export default async function AdminPage() {
   }
 
   const dashboard = await getAdminDashboardData();
+  const systemHealth = [
+    {
+      label: "Database",
+      value: dashboard.databaseConfigured ? "Connected" : "Fallback mode",
+    },
+    {
+      label: "Content source",
+      value: `${dashboard.counts.practiceAreas} practice areas, ${dashboard.counts.testimonials} testimonials`,
+    },
+    {
+      label: "Recent intake",
+      value: `${dashboard.counts.contacts + dashboard.counts.appointments} total submissions`,
+    },
+  ];
 
   return (
     <>
@@ -71,6 +128,14 @@ export default async function AdminPage() {
               would normally provide while the Next.js app becomes the primary
               system.
             </p>
+            <div className="admin-status-row">
+              {systemHealth.map((item) => (
+                <div key={item.label} className="admin-status-pill">
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="admin-hero-actions">
             <AdminSessionButton />
@@ -232,9 +297,17 @@ export default async function AdminPage() {
             <section className="admin-panel">
               <div className="admin-panel-heading">
                 <div>
-                  <p className="eyebrow">Content blocks</p>
-                  <h2>Testimonials and stored settings</h2>
+                  <p className="eyebrow">Control center</p>
+                  <h2>Testimonials, settings, and migration signals</h2>
                 </div>
+              </div>
+              <div className="admin-list-grid compact">
+                {systemHealth.map((item) => (
+                  <article key={item.label} className="admin-list-card">
+                    <strong>{item.label}</strong>
+                    <p>{item.value}</p>
+                  </article>
+                ))}
               </div>
               <div className="admin-list-grid compact">
                 {dashboard.testimonials.map((testimonial) => (
@@ -256,7 +329,14 @@ export default async function AdminPage() {
                           : "Using fallback timestamp"}
                       </span>
                     </div>
-                    <pre>{JSON.stringify(setting.value, null, 2)}</pre>
+                    <div className="admin-setting-grid">
+                      {getSettingEntries(setting.value).map((entry) => (
+                        <div key={`${setting.key}-${entry.label}`} className="admin-setting-item">
+                          <span>{entry.label}</span>
+                          <strong>{entry.value}</strong>
+                        </div>
+                      ))}
+                    </div>
                   </article>
                 ))}
               </div>

@@ -12,6 +12,11 @@ export const dynamic = "force-dynamic";
 
 export default async function ServicesPage() {
   const practiceAreas = await getPracticeAreasForPage();
+  const processSteps = [
+    "Structured intake and conflict review",
+    "A defined lead attorney and workstream",
+    "Clear action plan with practical next steps",
+  ];
 
   return (
     <>
@@ -30,10 +35,9 @@ export default async function ServicesPage() {
           <div className="services-side-panel card-surface">
             <h2>What you can expect</h2>
             <ul>
-              <li>Direct access to a focused legal team</li>
-              <li>Clear next steps and defined priorities</li>
-              <li>Practical advice, not vague theory</li>
-              <li>Professional handling of sensitive information</li>
+              {processSteps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
             </ul>
           </div>
         </div>

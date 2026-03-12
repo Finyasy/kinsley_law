@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
+import { BrandSeal } from "@/components/brand/brand-seal";
 import { getAttorneysForPage } from "@/lib/server-data";
 
 export const metadata: Metadata = {
@@ -42,14 +43,25 @@ export default async function AboutPage() {
               and accountability at every stage of a matter.
             </p>
           </div>
-          <div className="page-hero-card card-surface">
-            <Image
-              src="/images/kinsley.webp"
-              alt="Kinsley Law Advocates office leadership"
-              width={720}
-              height={520}
-              className="page-hero-image"
-            />
+          <div className="page-hero-card page-brand-card">
+            <BrandSeal size="md" className="page-brand-seal" />
+            <div className="page-brand-copy">
+              <span className="eyebrow light">Since 2010</span>
+              <p>
+                The firm was built to feel current in service, disciplined in
+                preparation, and steady under pressure.
+              </p>
+              <div className="page-brand-metrics">
+                <div>
+                  <strong>Senior-led</strong>
+                  <span>intake and strategy</span>
+                </div>
+                <div>
+                  <strong>Six groups</strong>
+                  <span>under one operating model</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -111,13 +123,7 @@ export default async function AboutPage() {
             {attorneys.map((attorney, index) => (
               <article key={attorney.email} className="team-card card-surface">
                 <div className="team-card-media">
-                  <Image
-                    src="/images/kinsley.webp"
-                    alt={attorney.name}
-                    width={540}
-                    height={420}
-                    className="team-card-image"
-                  />
+                  <AttorneyAvatar name={attorney.name} role={attorney.position} />
                   <span className="team-card-tag">Attorney {index + 1}</span>
                 </div>
                 <div className="team-card-body">

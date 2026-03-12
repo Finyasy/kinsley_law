@@ -20,7 +20,17 @@ export async function POST(request: Request) {
     );
   }
 
-  const payload = (await request.json()) as SessionPayload;
+  let payload: SessionPayload;
+
+  try {
+    payload = (await request.json()) as SessionPayload;
+  } catch {
+    return NextResponse.json(
+      { error: "A valid JSON payload is required." },
+      { status: 400 },
+    );
+  }
+
   const password = payload.password?.trim() ?? "";
 
   if (!isAdminPasswordValid(password)) {
