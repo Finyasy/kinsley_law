@@ -1425,6 +1425,11 @@ button {
   align-items: start;
 }
 
+.admin-content-studio {
+  display: grid;
+  gap: 1.5rem;
+}
+
 .admin-panel-heading {
   margin-bottom: 1.25rem;
 }
@@ -1528,6 +1533,112 @@ button {
 .admin-settings-stack {
   display: grid;
   gap: 1rem;
+}
+
+.admin-editor-grid,
+.admin-pair-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-editor-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-editor-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-editor-card {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(21, 52, 91, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 244, 239, 0.88));
+  box-shadow: var(--shadow-md);
+}
+
+.admin-editor-card-wide {
+  align-content: start;
+}
+
+.admin-editor-heading,
+.admin-editor-subheading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-editor-heading h3,
+.admin-editor-subheading h4 {
+  margin: 0;
+  font-family: var(--font-display), serif;
+}
+
+.admin-editor-heading h3 {
+  font-size: 1.6rem;
+}
+
+.admin-editor-subheading h4 {
+  font-size: 1.2rem;
+}
+
+.admin-editor-note {
+  margin: -0.25rem 0 0;
+  color: rgba(11, 23, 39, 0.66);
+  line-height: 1.7;
+}
+
+.admin-editor-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-editor-subsection {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(21, 52, 91, 0.08);
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.admin-editor-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-pair-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-inline-card {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(21, 52, 91, 0.08);
+  background: rgba(21, 52, 91, 0.04);
+}
+
+.admin-inline-card strong {
+  font-size: 0.95rem;
+}
+
+.admin-editor-delete-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding-top: 0.2rem;
+  border-top: 1px solid rgba(21, 52, 91, 0.08);
 }
 
 .admin-setting-header {
@@ -1635,7 +1746,9 @@ button {
   .footer-grid,
   .admin-stat-grid,
   .admin-grid,
-  .admin-list-grid {
+  .admin-list-grid,
+  .admin-editor-grid,
+  .admin-pair-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1715,6 +1828,10 @@ button {
   }
 
   .field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-editor-fields {
     grid-template-columns: 1fr;
   }
 

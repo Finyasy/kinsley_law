@@ -27,6 +27,7 @@ next-app/.next/
 /.postgres/
 /artifacts/ui-audit/*
 !/artifacts/ui-audit/README.md
+/artifacts/admin-content-editing/*
 legacy/**/node_modules/
 legacy/**/.next/
 

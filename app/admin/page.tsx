@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import { ContentStudio } from "@/components/admin/content-studio";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { AdminSessionButton } from "@/components/admin/admin-session-button";
 import {
@@ -174,6 +175,16 @@ export default async function AdminPage() {
               <strong>{dashboard.counts.testimonials}</strong>
             </article>
           </div>
+
+          {dashboard.databaseConfigured ? (
+            <ContentStudio
+              homePageContent={dashboard.homePageContent}
+              officeDetails={dashboard.officeDetails}
+              practiceAreas={dashboard.practiceAreas}
+              testimonials={dashboard.testimonials}
+              attorneys={dashboard.attorneys}
+            />
+          ) : null}
 
           <div className="admin-grid">
             <section className="admin-panel">

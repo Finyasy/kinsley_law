@@ -16,6 +16,7 @@ type PracticeSummary = {
 };
 
 export type PageAttorney = (typeof fallbackAttorneys)[number] & {
+  id?: number;
   practiceAreas: PracticeSummary[];
 };
 
@@ -36,6 +37,8 @@ export type PageTestimonial = (typeof fallbackTestimonials)[number] & {
 
 export type AdminDashboardData = {
   databaseConfigured: boolean;
+  homePageContent: HomePageContent;
+  officeDetails: OfficeDetails;
   counts: {
     attorneys: number;
     practiceAreas: number;
@@ -143,6 +146,7 @@ export async function getAttorneysForPage(): Promise<PageAttorney[]> {
     });
 
     return attorneys.map((attorney) => ({
+      id: attorney.id,
       name: attorney.name,
       email: attorney.email,
       phone: attorney.phone,
@@ -202,15 +206,17 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
   const attorneys = await getAttorneysForPage();
   const practiceAreas = await getPracticeAreasForPage();
   const testimonials = await getTestimonialsForPage();
+  const homePageContent = await getHomePageContent();
+  const officeDetails = await getOfficeDetails();
   const settings = [
     {
       key: "homePageContent",
-      value: await getHomePageContent(),
+      value: homePageContent,
       updatedAt: new Date(0),
     },
     {
       key: "officeDetails",
-      value: await getOfficeDetails(),
+      value: officeDetails,
       updatedAt: new Date(0),
     },
   ];
@@ -218,6 +224,8 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
   if (!isDatabaseConfigured()) {
     return {
       databaseConfigured: false,
+      homePageContent,
+      officeDetails,
       counts: {
         attorneys: attorneys.length,
         practiceAreas: practiceAreas.length,
@@ -264,6 +272,8 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
 
     return {
       databaseConfigured: true,
+      homePageContent,
+      officeDetails,
       counts: {
         attorneys: attorneys.length,
         practiceAreas: practiceAreas.length,
@@ -304,6 +314,8 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
   } catch {
     return {
       databaseConfigured: false,
+      homePageContent,
+      officeDetails,
       counts: {
         attorneys: attorneys.length,
         practiceAreas: practiceAreas.length,
