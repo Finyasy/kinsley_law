@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 
-export function AdminSessionButton() {
+export function AdminSessionButton({ userName }: { userName?: string }) {
   const [isPending, startTransition] = useTransition();
 
   function handleLogout() {
@@ -21,6 +21,7 @@ export function AdminSessionButton() {
       className="button-secondary"
       disabled={isPending}
       onClick={handleLogout}
+      aria-label={userName ? `Sign out ${userName}` : "Sign out"}
     >
       {isPending ? "Signing out..." : "Sign out"}
     </button>

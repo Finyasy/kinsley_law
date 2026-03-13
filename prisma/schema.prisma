@@ -8,6 +8,35 @@ datasource db {
   provider = "postgresql"
 }
 
+model AdminUser {
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  name         String
+  role         String         @default("admin")
+  passwordHash String
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  sessions     AdminSession[]
+
+  @@index([role, isActive])
+}
+
+model AdminSession {
+  id               Int       @id @default(autoincrement())
+  sessionTokenHash String    @unique
+  expiresAt        DateTime
+  lastSeenAt       DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  userAgent        String?
+  ipAddress        String?
+  adminUserId      Int
+  adminUser        AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId, expiresAt])
+}
+
 model Attorney {
   id             Int            @id @default(autoincrement())
   name           String

@@ -4,6 +4,7 @@ import { type FormEvent, useState, useTransition } from "react";
 import { readJsonResponse } from "@/lib/read-json-response";
 
 export function AdminLoginForm() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -19,7 +20,7 @@ export function AdminLoginForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ password }),
+          body: JSON.stringify({ email, password }),
         });
 
         const result = await readJsonResponse<{
@@ -45,24 +46,23 @@ export function AdminLoginForm() {
     <form className="admin-auth-card" onSubmit={handleSubmit}>
       <div className="admin-auth-copy">
         <p className="eyebrow">Admin access</p>
-        <h1 className="page-title admin-title">Open the internal dashboard.</h1>
+        <h1 className="page-title admin-title">Sign in to the internal dashboard.</h1>
         <p className="page-intro">
-          Use the admin password from your environment to review submissions,
-          confirm the content migration, and monitor intake activity from one
-          place.
+          Use your admin email and password to manage intake, update site
+          content, and review operational activity from one place.
         </p>
         <div className="admin-auth-bullets">
           <div>
-            <strong>Live intake visibility</strong>
-            <span>Contacts and consultation requests from PostgreSQL.</span>
+            <strong>Named user accounts</strong>
+            <span>Each admin uses a real account instead of a shared environment password.</span>
           </div>
           <div>
-            <strong>Content source checks</strong>
-            <span>Practice areas, testimonials, and site settings.</span>
+            <strong>Database-backed sessions</strong>
+            <span>Session state is stored in PostgreSQL and expires automatically.</span>
           </div>
           <div>
-            <strong>Protected local access</strong>
-            <span>Password-gated access for internal review only.</span>
+            <strong>Operational workflow</strong>
+            <span>Inbox, content controls, and settings stay behind authenticated access.</span>
           </div>
         </div>
       </div>
@@ -71,7 +71,19 @@ export function AdminLoginForm() {
         {error ? <div className="form-error">{error}</div> : null}
 
         <div className="field">
-          <label htmlFor="admin-password">Admin password</label>
+          <label htmlFor="admin-email">Admin email</label>
+          <input
+            id="admin-email"
+            type="email"
+            value={email}
+            autoComplete="username"
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label htmlFor="admin-password">Password</label>
           <input
             id="admin-password"
             type="password"
@@ -84,13 +96,13 @@ export function AdminLoginForm() {
 
         <div className="button-row">
           <button type="submit" className="button-primary" disabled={isPending}>
-            {isPending ? "Opening..." : "Open Dashboard"}
+            {isPending ? "Signing in..." : "Open Dashboard"}
           </button>
         </div>
 
         <p className="admin-auth-note">
-          Internal access only. Use this dashboard on trusted devices during
-          firm review and content operations.
+          Access is limited to configured admin users. If you do not yet have an
+          account, bootstrap one locally and then sign in here.
         </p>
       </div>
     </form>

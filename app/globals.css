@@ -1341,6 +1341,13 @@ button {
   line-height: 1.6;
 }
 
+.admin-auth-bullets code {
+  font-size: 0.84rem;
+  line-height: 1.7;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .admin-auth-form {
   display: grid;
   align-content: center;
@@ -1371,6 +1378,41 @@ button {
   display: flex;
   align-items: center;
   gap: 0.8rem;
+}
+
+.admin-hero-user {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(21, 52, 91, 0.08);
+}
+
+.admin-hero-user span,
+.admin-hero-user strong,
+.admin-hero-user small {
+  display: block;
+}
+
+.admin-hero-user span {
+  color: rgba(21, 52, 91, 0.56);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-hero-user strong {
+  color: var(--ink-950);
+  font-size: 1rem;
+}
+
+.admin-hero-user small {
+  color: rgba(11, 23, 39, 0.62);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .admin-status-row {

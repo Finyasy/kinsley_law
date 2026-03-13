@@ -4,10 +4,8 @@ import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import {
-  ADMIN_SESSION_COOKIE,
-  isAdminSessionValid,
+  requireAdminSessionUser,
 } from "@/lib/admin-auth";
 import { type AdminActionState } from "@/lib/admin-editor-state";
 import {
@@ -148,12 +146,9 @@ async function validateAdminWriteAccess() {
     return "Database access is unavailable. Content editing is disabled.";
   }
 
-  const cookieStore = await cookies();
-  const isAuthenticated = isAdminSessionValid(
-    cookieStore.get(ADMIN_SESSION_COOKIE)?.value,
-  );
+  const adminUser = await requireAdminSessionUser();
 
-  if (!isAuthenticated) {
+  if (!adminUser) {
     return "Your admin session is no longer valid. Refresh and sign in again.";
   }
 

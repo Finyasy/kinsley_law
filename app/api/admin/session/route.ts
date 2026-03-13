@@ -1,22 +1,40 @@
 import { NextResponse } from "next/server";
 import {
   ADMIN_SESSION_COOKIE,
-  createAdminSessionToken,
+  authenticateAdminUser,
+  createAdminSession,
+  deleteAdminSession,
   getAdminSessionMaxAge,
-  getAdminPassword,
-  isAdminPasswordValid,
+  hasAdminUsersConfigured,
 } from "@/lib/admin-auth";
+import { isDatabaseConfigured } from "@/lib/persistence";
 
 type SessionPayload = {
+  email?: string;
   password?: string;
 };
 
-export async function POST(request: Request) {
-  const configuredPassword = getAdminPassword();
+function getRequestIp(request: Request) {
+  const forwardedFor = request.headers.get("x-forwarded-for");
 
-  if (!configuredPassword) {
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0]?.trim() ?? null;
+  }
+
+  return request.headers.get("x-real-ip");
+}
+
+export async function POST(request: Request) {
+  if (!isDatabaseConfigured()) {
     return NextResponse.json(
-      { error: "ADMIN_DASHBOARD_PASSWORD is not configured." },
+      { error: "DATABASE_URL is not configured for admin authentication." },
+      { status: 503 },
+    );
+  }
+
+  if (!(await hasAdminUsersConfigured())) {
+    return NextResponse.json(
+      { error: "No admin users are configured yet. Create the first admin user before signing in." },
       { status: 503 },
     );
   }
@@ -32,31 +50,57 @@ export async function POST(request: Request) {
     );
   }
 
+  const email = payload.email?.trim() ?? "";
   const password = payload.password?.trim() ?? "";
+  const user = await authenticateAdminUser(email, password);
 
-  if (!isAdminPasswordValid(password)) {
+  if (!user) {
     return NextResponse.json(
-      { error: "The admin password is incorrect." },
+      { error: "Invalid email or password." },
       { status: 401 },
     );
   }
 
-  const response = NextResponse.json({ ok: true });
+  const session = await createAdminSession({
+    userId: user.id,
+    userAgent: request.headers.get("user-agent"),
+    ipAddress: getRequestIp(request),
+  });
+
+  const response = NextResponse.json({
+    ok: true,
+    user: {
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+
   response.cookies.set({
     name: ADMIN_SESSION_COOKIE,
-    value: createAdminSessionToken(configuredPassword),
+    value: session.sessionToken,
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     path: "/",
+    expires: session.expiresAt,
     maxAge: getAdminSessionMaxAge(),
   });
 
   return response;
 }
 
-export function DELETE() {
+export async function DELETE(request: Request) {
   const response = NextResponse.json({ ok: true });
+  const sessionToken = request.headers
+    .get("cookie")
+    ?.split(";")
+    .map((item) => item.trim())
+    .find((item) => item.startsWith(`${ADMIN_SESSION_COOKIE}=`))
+    ?.slice(ADMIN_SESSION_COOKIE.length + 1);
+
+  await deleteAdminSession(sessionToken);
+
   response.cookies.set({
     name: ADMIN_SESSION_COOKIE,
     value: "",

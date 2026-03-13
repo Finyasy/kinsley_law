@@ -18,6 +18,11 @@ type AdminWorkspaceProps = {
     label: string;
     value: string;
   }>;
+  currentAdmin: {
+    name: string;
+    email: string;
+    role: string;
+  };
 };
 
 type AdminTab =
@@ -118,6 +123,7 @@ function getSettingEntries(value: unknown) {
 export function AdminWorkspace({
   dashboard,
   systemHealth,
+  currentAdmin,
 }: AdminWorkspaceProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
@@ -152,6 +158,13 @@ export function AdminWorkspace({
             </div>
           </div>
           <div className="admin-hero-actions">
+            <div className="admin-hero-user">
+              <span>Signed in as</span>
+              <strong>{currentAdmin.name}</strong>
+              <small>
+                {currentAdmin.email} · {currentAdmin.role}
+              </small>
+            </div>
             <button
               type="button"
               className="button-secondary"
@@ -159,7 +172,7 @@ export function AdminWorkspace({
             >
               Open Inbox
             </button>
-            <AdminSessionButton />
+            <AdminSessionButton userName={currentAdmin.name} />
           </div>
         </div>
       </section>

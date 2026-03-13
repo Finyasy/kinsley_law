@@ -1,18 +1,36 @@
 import {
   createHash,
-  createHmac,
   randomBytes,
+  scrypt as scryptCallback,
   timingSafeEqual,
 } from "node:crypto";
+import { cookies } from "next/headers";
+import { prisma } from "@/lib/prisma";
+import { isDatabaseConfigured } from "@/lib/persistence";
 
 export const ADMIN_SESSION_COOKIE = "kinsley_admin_session";
 const ADMIN_SESSION_TTL_SECONDS = 60 * 60 * 8;
+const PASSWORD_KEY_LENGTH = 64;
+const SCRYPT_COST = 16384;
+const SCRYPT_BLOCK_SIZE = 8;
+const SCRYPT_PARALLELIZATION = 1;
 
-function normalizeSecret(value: string | undefined) {
+type AdminSessionUser = {
+  id: number;
+  email: string;
+  name: string;
+  role: string;
+};
+
+function normalizeText(value: string | undefined) {
   return value?.trim() || "";
 }
 
-function bufferEquals(left: string, right: string) {
+function hashSessionToken(token: string) {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+function safeStringEquals(left: string, right: string) {
   const leftBuffer = Buffer.from(left);
   const rightBuffer = Buffer.from(right);
 
@@ -23,87 +41,298 @@ function bufferEquals(left: string, right: string) {
   return timingSafeEqual(leftBuffer, rightBuffer);
 }
 
-function getSessionSigningSecret(password: string) {
-  const configuredSecret = normalizeSecret(process.env.ADMIN_SESSION_SECRET);
-  return configuredSecret || password;
+export function normalizeAdminEmail(email: string) {
+  return normalizeText(email).toLowerCase();
 }
 
-function signSessionPayload(payload: string, password: string) {
-  const signingSecret = getSessionSigningSecret(password);
+async function deriveScryptKey(password: string, salt: string) {
+  return new Promise<Buffer>((resolve, reject) => {
+    scryptCallback(
+      password,
+      salt,
+      PASSWORD_KEY_LENGTH,
+      {
+        N: SCRYPT_COST,
+        r: SCRYPT_BLOCK_SIZE,
+        p: SCRYPT_PARALLELIZATION,
+      },
+      (error, derivedKey) => {
+        if (error) {
+          reject(error);
+          return;
+        }
 
-  return createHmac("sha256", signingSecret).update(payload).digest("base64url");
+        resolve(derivedKey as Buffer);
+      },
+    );
+  });
 }
 
-export function getAdminPassword() {
-  return normalizeSecret(process.env.ADMIN_DASHBOARD_PASSWORD);
-}
+async function deriveStoredScryptKey(
+  password: string,
+  salt: string,
+  options: { cost: number; blockSize: number; parallelization: number },
+) {
+  return new Promise<Buffer>((resolve, reject) => {
+    scryptCallback(
+      password,
+      salt,
+      PASSWORD_KEY_LENGTH,
+      {
+        N: options.cost,
+        r: options.blockSize,
+        p: options.parallelization,
+      },
+      (error, derivedKey) => {
+        if (error) {
+          reject(error);
+          return;
+        }
 
-export function hasAdminPasswordConfigured() {
-  return getAdminPassword().length > 0;
-}
-
-export function createAdminSessionToken(password: string) {
-  const issuedAt = Math.floor(Date.now() / 1000);
-  const expiresAt = issuedAt + ADMIN_SESSION_TTL_SECONDS;
-  const nonce = randomBytes(12).toString("base64url");
-  const payload = `${issuedAt}.${expiresAt}.${nonce}`;
-  const signature = signSessionPayload(payload, password);
-
-  return `v1.${payload}.${signature}`;
+        resolve(derivedKey as Buffer);
+      },
+    );
+  });
 }
 
 export function getAdminSessionMaxAge() {
   return ADMIN_SESSION_TTL_SECONDS;
 }
 
-export function isAdminPasswordValid(password: string) {
-  const configuredPassword = getAdminPassword();
+export async function hashAdminPassword(password: string) {
+  const normalizedPassword = normalizeText(password);
 
-  if (!configuredPassword) {
-    return false;
+  if (normalizedPassword.length < 12) {
+    throw new Error("Admin passwords must be at least 12 characters long.");
   }
 
-  return bufferEquals(password, configuredPassword);
+  const salt = randomBytes(16).toString("hex");
+  const derivedKey = await deriveScryptKey(normalizedPassword, salt);
+
+  return [
+    "scrypt",
+    SCRYPT_COST,
+    SCRYPT_BLOCK_SIZE,
+    SCRYPT_PARALLELIZATION,
+    salt,
+    derivedKey.toString("hex"),
+  ].join("$");
 }
 
-export function isAdminSessionValid(cookieValue: string | undefined) {
-  const configuredPassword = getAdminPassword();
-
-  if (!configuredPassword || !cookieValue) {
-    return false;
-  }
-
-  const [version, issuedAtValue, expiresAtValue, nonce, signature] =
-    cookieValue.split(".");
+export async function verifyAdminPassword(
+  password: string,
+  passwordHash: string,
+) {
+  const [algorithm, costValue, blockSizeValue, parallelizationValue, salt, hash] =
+    passwordHash.split("$");
 
   if (
-    version !== "v1" ||
-    !issuedAtValue ||
-    !expiresAtValue ||
-    !nonce ||
-    !signature
+    algorithm !== "scrypt" ||
+    !costValue ||
+    !blockSizeValue ||
+    !parallelizationValue ||
+    !salt ||
+    !hash
   ) {
     return false;
   }
 
-  const expiresAt = Number.parseInt(expiresAtValue, 10);
+  const cost = Number.parseInt(costValue, 10);
+  const blockSize = Number.parseInt(blockSizeValue, 10);
+  const parallelization = Number.parseInt(parallelizationValue, 10);
 
-  if (!Number.isFinite(expiresAt) || expiresAt <= Math.floor(Date.now() / 1000)) {
+  if (
+    !Number.isFinite(cost) ||
+    !Number.isFinite(blockSize) ||
+    !Number.isFinite(parallelization)
+  ) {
     return false;
   }
 
-  const payload = `${issuedAtValue}.${expiresAtValue}.${nonce}`;
-  const expectedSignature = signSessionPayload(payload, configuredPassword);
+  const derivedKey = await deriveStoredScryptKey(password, salt, {
+    cost,
+    blockSize,
+    parallelization,
+  });
 
-  return bufferEquals(signature, expectedSignature);
+  return safeStringEquals(derivedKey.toString("hex"), hash);
 }
 
-export function hashAdminPasswordForDisplay() {
-  const configuredPassword = getAdminPassword();
-
-  if (!configuredPassword) {
-    return "";
+export async function hasAdminUsersConfigured() {
+  if (!isDatabaseConfigured()) {
+    return false;
   }
 
-  return createHash("sha256").update(configuredPassword).digest("hex");
+  try {
+    const count = await prisma.adminUser.count({
+      where: { isActive: true },
+    });
+    return count > 0;
+  } catch {
+    return false;
+  }
+}
+
+export async function authenticateAdminUser(
+  email: string,
+  password: string,
+): Promise<AdminSessionUser | null> {
+  if (!isDatabaseConfigured()) {
+    return null;
+  }
+
+  const normalizedEmail = normalizeAdminEmail(email);
+
+  if (!normalizedEmail || !password) {
+    return null;
+  }
+
+  const adminUser = await prisma.adminUser.findUnique({
+    where: { email: normalizedEmail },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      isActive: true,
+      passwordHash: true,
+    },
+  });
+
+  if (!adminUser?.isActive) {
+    return null;
+  }
+
+  const isPasswordValid = await verifyAdminPassword(
+    password,
+    adminUser.passwordHash,
+  );
+
+  if (!isPasswordValid) {
+    return null;
+  }
+
+  return {
+    id: adminUser.id,
+    email: adminUser.email,
+    name: adminUser.name,
+    role: adminUser.role,
+  };
+}
+
+export async function createAdminSession(options: {
+  userId: number;
+  userAgent?: string | null;
+  ipAddress?: string | null;
+}) {
+  const sessionToken = randomBytes(32).toString("base64url");
+  const expiresAt = new Date(Date.now() + ADMIN_SESSION_TTL_SECONDS * 1000);
+
+  await prisma.adminSession.create({
+    data: {
+      adminUserId: options.userId,
+      sessionTokenHash: hashSessionToken(sessionToken),
+      expiresAt,
+      userAgent: normalizeText(options.userAgent ?? undefined) || null,
+      ipAddress: normalizeText(options.ipAddress ?? undefined) || null,
+    },
+  });
+
+  return {
+    sessionToken,
+    expiresAt,
+  };
+}
+
+export async function deleteAdminSession(sessionToken: string | undefined) {
+  if (!isDatabaseConfigured() || !sessionToken) {
+    return;
+  }
+
+  await prisma.adminSession.deleteMany({
+    where: {
+      sessionTokenHash: hashSessionToken(sessionToken),
+    },
+  });
+}
+
+export async function getAdminSession(
+  sessionToken: string | undefined,
+): Promise<
+  | {
+      user: AdminSessionUser;
+      expiresAt: Date;
+    }
+  | null
+> {
+  if (!isDatabaseConfigured() || !sessionToken) {
+    return null;
+  }
+
+  const session = await prisma.adminSession.findUnique({
+    where: {
+      sessionTokenHash: hashSessionToken(sessionToken),
+    },
+    include: {
+      adminUser: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isActive: true,
+        },
+      },
+    },
+  });
+
+  if (!session) {
+    return null;
+  }
+
+  if (!session.adminUser.isActive || session.expiresAt <= new Date()) {
+    await prisma.adminSession.deleteMany({
+      where: { id: session.id },
+    });
+    return null;
+  }
+
+  return {
+    user: {
+      id: session.adminUser.id,
+      email: session.adminUser.email,
+      name: session.adminUser.name,
+      role: session.adminUser.role,
+    },
+    expiresAt: session.expiresAt,
+  };
+}
+
+export async function getAdminSessionFromCookies() {
+  const cookieStore = await cookies();
+
+  return getAdminSession(cookieStore.get(ADMIN_SESSION_COOKIE)?.value);
+}
+
+export async function requireAdminSessionUser() {
+  const session = await getAdminSessionFromCookies();
+  return session?.user ?? null;
+}
+
+export async function touchAdminSession(sessionToken: string | undefined) {
+  if (!isDatabaseConfigured() || !sessionToken) {
+    return;
+  }
+
+  await prisma.adminSession.updateMany({
+    where: {
+      sessionTokenHash: hashSessionToken(sessionToken),
+      expiresAt: {
+        gt: new Date(),
+      },
+    },
+    data: {
+      lastSeenAt: new Date(),
+    },
+  });
 }
