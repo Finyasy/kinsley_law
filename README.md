@@ -57,11 +57,16 @@ npm run prisma:generate
 npm run prisma:seed
 ```
 
-Set a local admin password in `.env` to unlock `/admin`:
+Set local admin auth secrets in `.env` to unlock `/admin`:
 
 ```bash
 ADMIN_DASHBOARD_PASSWORD="replace-with-a-strong-local-password"
+ADMIN_SESSION_SECRET="replace-with-a-second-long-random-secret"
 ```
+
+`ADMIN_SESSION_SECRET` is recommended. The admin cookie is now signed and
+time-limited, and using a second secret prevents the session signature from
+being derived from the dashboard password alone.
 
 ## Email notifications
 
@@ -90,6 +95,24 @@ EMAIL_PREVIEW_DIR=".email-previews"
 
 When preview mode is enabled, each notification is written as a JSON payload
 under `.email-previews/` instead of being sent over SMTP.
+
+## Admin workflow
+
+The admin portal is organized into focused work areas:
+
+- `Overview` for migration health, counts, and settings
+- `Inbox` for message and consultation workflow
+- `Content`, `Attorneys`, `Practice Areas`, and `Testimonials` for publishing
+
+Contacts and consultation requests now support internal workflow fields:
+
+- `status`
+- `assignedTo`
+- `internalNotes`
+
+Attorney profiles now accept either a direct `Photo URL` or a local image
+upload. Local uploads are written to `public/uploads/attorneys/` and are
+ignored by Git so they can be managed as runtime content.
 
 ## Run locally
 
@@ -135,6 +158,6 @@ migration history in sync.
 
 ## Next steps
 
-1. Add direct content reordering drag/drop UX inside `/admin` instead of numeric ordering fields.
-2. Replace temporary attorney photo URLs with approved final firm images.
-3. Remove the temporary `next-app/` stub after any stale dev process using it is fully gone.
+1. Replace the password-only admin login with a proper user identity provider when the site is deployed publicly.
+2. Add direct content reordering drag/drop UX inside `/admin` instead of numeric ordering fields.
+3. Move local attorney uploads to durable object storage if you do not plan to self-host the app on a persistent filesystem.

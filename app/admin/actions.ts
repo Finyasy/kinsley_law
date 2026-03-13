@@ -1,5 +1,8 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import {
@@ -7,6 +10,10 @@ import {
   isAdminSessionValid,
 } from "@/lib/admin-auth";
 import { type AdminActionState } from "@/lib/admin-editor-state";
+import {
+  appointmentStatusOptions,
+  contactStatusOptions,
+} from "@/lib/intake-workflow";
 import { prisma } from "@/lib/prisma";
 import { isDatabaseConfigured } from "@/lib/persistence";
 import {
@@ -37,6 +44,56 @@ function parseLineList(value: string) {
     .split(/\r?\n/)
     .map((entry) => entry.trim())
     .filter(Boolean);
+}
+
+function slugifyFileName(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+}
+
+function readStatusValue(
+  formData: FormData,
+  key: string,
+  allowedValues: readonly { value: string }[],
+) {
+  const value = readRequiredText(formData, key);
+
+  if (!allowedValues.some((option) => option.value === value)) {
+    return null;
+  }
+
+  return value;
+}
+
+async function saveAttorneyPhotoUpload(file: File, attorneyName: string) {
+  const allowedTypes = new Map([
+    ["image/jpeg", ".jpg"],
+    ["image/png", ".png"],
+    ["image/webp", ".webp"],
+    ["image/avif", ".avif"],
+  ]);
+
+  if (!allowedTypes.has(file.type)) {
+    throw new Error("Attorney photos must be JPEG, PNG, WebP, or AVIF files.");
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error("Attorney photos must be 5MB or smaller.");
+  }
+
+  const extension = allowedTypes.get(file.type) ?? ".jpg";
+  const fileNameBase = slugifyFileName(attorneyName) || "attorney-photo";
+  const fileName = `${fileNameBase}-${randomUUID().slice(0, 8)}${extension}`;
+  const directory = path.join(process.cwd(), "public", "uploads", "attorneys");
+  const filePath = path.join(directory, fileName);
+
+  await mkdir(directory, { recursive: true });
+  await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+
+  return `/uploads/attorneys/${fileName}`;
 }
 
 async function resolveSortOrder(options: {
@@ -359,6 +416,7 @@ export async function saveAttorneyAction(
   const position = readRequiredText(formData, "position");
   const specialization = readRequiredText(formData, "specialization");
   const photoUrl = readOptionalText(formData, "photoUrl");
+  const photoFile = formData.get("photoFile");
   const bio = readRequiredText(formData, "bio");
 
   if (!name || !email || !phone || !position || !specialization || !bio) {
@@ -381,6 +439,12 @@ export async function saveAttorneyAction(
   });
 
   try {
+    let resolvedPhotoUrl = photoUrl || null;
+
+    if (photoFile instanceof File && photoFile.size > 0) {
+      resolvedPhotoUrl = await saveAttorneyPhotoUpload(photoFile, name);
+    }
+
     if (id) {
       await prisma.attorney.update({
         where: { id },
@@ -390,7 +454,7 @@ export async function saveAttorneyAction(
           phone,
           position,
           specialization,
-          photoUrl: photoUrl || null,
+          photoUrl: resolvedPhotoUrl,
           bio,
           sortOrder: resolvedSortOrder,
         },
@@ -403,7 +467,7 @@ export async function saveAttorneyAction(
           phone,
           position,
           specialization,
-          photoUrl: photoUrl || null,
+          photoUrl: resolvedPhotoUrl,
           bio,
           sortOrder: resolvedSortOrder,
         },
@@ -529,4 +593,76 @@ export async function deleteTestimonialAction(
 
   revalidateAdminContent(["/"]);
   return successState("Testimonial deleted.");
+}
+
+export async function updateContactWorkflowAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const accessError = await validateAdminWriteAccess();
+
+  if (accessError) {
+    return errorState(accessError);
+  }
+
+  const id = readInteger(readRequiredText(formData, "id"));
+  const status = readStatusValue(formData, "status", contactStatusOptions);
+  const assignedTo = readOptionalText(formData, "assignedTo");
+  const internalNotes = readOptionalText(formData, "internalNotes");
+
+  if (id === null) {
+    return errorState("Contact submission ID is invalid.");
+  }
+
+  if (!status) {
+    return errorState("Select a valid contact workflow status.");
+  }
+
+  await prisma.contact.update({
+    where: { id },
+    data: {
+      status,
+      assignedTo: assignedTo || null,
+      internalNotes: internalNotes || null,
+    },
+  });
+
+  revalidateAdminContent([]);
+  return successState("Message workflow saved.");
+}
+
+export async function updateAppointmentWorkflowAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const accessError = await validateAdminWriteAccess();
+
+  if (accessError) {
+    return errorState(accessError);
+  }
+
+  const id = readInteger(readRequiredText(formData, "id"));
+  const status = readStatusValue(formData, "status", appointmentStatusOptions);
+  const assignedTo = readOptionalText(formData, "assignedTo");
+  const internalNotes = readOptionalText(formData, "internalNotes");
+
+  if (id === null) {
+    return errorState("Appointment ID is invalid.");
+  }
+
+  if (!status) {
+    return errorState("Select a valid consultation workflow status.");
+  }
+
+  await prisma.appointment.update({
+    where: { id },
+    data: {
+      status,
+      assignedTo: assignedTo || null,
+      internalNotes: internalNotes || null,
+    },
+  });
+
+  revalidateAdminContent([]);
+  return successState("Consultation workflow saved.");
 }

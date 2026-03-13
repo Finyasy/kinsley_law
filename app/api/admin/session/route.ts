@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   ADMIN_SESSION_COOKIE,
   createAdminSessionToken,
+  getAdminSessionMaxAge,
   getAdminPassword,
   isAdminPasswordValid,
 } from "@/lib/admin-auth";
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 8,
+    maxAge: getAdminSessionMaxAge(),
   });
 
   return response;

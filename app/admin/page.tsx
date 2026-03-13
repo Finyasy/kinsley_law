@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { ContentStudio } from "@/components/admin/content-studio";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
-import { AdminSessionButton } from "@/components/admin/admin-session-button";
+import { AdminWorkspace } from "@/components/admin/admin-workspace";
 import {
   ADMIN_SESSION_COOKIE,
   hasAdminPasswordConfigured,
@@ -19,56 +18,6 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-function formatDate(value: Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(value);
-}
-
-function formatSettingLabel(value: string) {
-  return value
-    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-    .replace(/[_-]+/g, " ")
-    .replace(/\b\w/g, (character) => character.toUpperCase());
-}
-
-function formatSettingValue(value: unknown) {
-  if (Array.isArray(value)) {
-    return `${value.length} item${value.length === 1 ? "" : "s"}`;
-  }
-
-  if (typeof value === "string") {
-    return value;
-  }
-
-  if (typeof value === "number" || typeof value === "boolean") {
-    return String(value);
-  }
-
-  if (value && typeof value === "object") {
-    return `${Object.keys(value).length} fields`;
-  }
-
-  return "Not set";
-}
-
-function getSettingEntries(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return [
-      {
-        label: "Value",
-        value: formatSettingValue(value),
-      },
-    ];
-  }
-
-  return Object.entries(value).map(([key, entryValue]) => ({
-    label: formatSettingLabel(key),
-    value: formatSettingValue(entryValue),
-  }));
-}
-
 export default async function AdminPage() {
   if (!hasAdminPasswordConfigured()) {
     return (
@@ -76,10 +25,12 @@ export default async function AdminPage() {
         <div className="site-container admin-shell">
           <div className="admin-auth-card">
             <p className="eyebrow">Admin setup</p>
-            <h1 className="page-title admin-title">Set `ADMIN_DASHBOARD_PASSWORD` to enable the internal dashboard.</h1>
+            <h1 className="page-title admin-title">
+              Set `ADMIN_DASHBOARD_PASSWORD` to enable the internal dashboard.
+            </h1>
             <p className="page-intro">
-              Add the variable to your local `.env`, restart the Next.js server,
-              and reload this page.
+              Add the variable to your local `.env`, restart the Next.js
+              server, and reload this page.
             </p>
           </div>
         </div>
@@ -122,244 +73,5 @@ export default async function AdminPage() {
     },
   ];
 
-  return (
-    <>
-      <section className="page-hero">
-        <div className="site-container admin-hero">
-          <div>
-            <p className="eyebrow">Internal dashboard</p>
-            <h1 className="page-title admin-title">Monitor intake, content, and migration readiness from one place.</h1>
-            <p className="page-intro">
-              This view replaces the operational visibility the old backend
-              would normally provide while the Next.js app becomes the primary
-              system.
-            </p>
-            <div className="admin-status-row">
-              {systemHealth.map((item) => (
-                <div key={item.label} className="admin-status-pill">
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="admin-hero-actions">
-            <AdminSessionButton />
-          </div>
-        </div>
-      </section>
-
-      <section className="site-section">
-        <div className="site-container admin-shell">
-          {!dashboard.databaseConfigured ? (
-            <div className="form-error">
-              Database access is currently unavailable. The dashboard is showing
-              fallback content only.
-            </div>
-          ) : null}
-
-          <div className="admin-stat-grid">
-            <article className="admin-stat-card">
-              <span>Attorneys</span>
-              <strong>{dashboard.counts.attorneys}</strong>
-            </article>
-            <article className="admin-stat-card">
-              <span>Practice areas</span>
-              <strong>{dashboard.counts.practiceAreas}</strong>
-            </article>
-            <article className="admin-stat-card">
-              <span>Contacts</span>
-              <strong>{dashboard.counts.contacts}</strong>
-            </article>
-            <article className="admin-stat-card">
-              <span>Appointments</span>
-              <strong>{dashboard.counts.appointments}</strong>
-            </article>
-            <article className="admin-stat-card">
-              <span>Testimonials</span>
-              <strong>{dashboard.counts.testimonials}</strong>
-            </article>
-          </div>
-
-          {dashboard.databaseConfigured ? (
-            <ContentStudio
-              homePageContent={dashboard.homePageContent}
-              officeDetails={dashboard.officeDetails}
-              practiceAreas={dashboard.practiceAreas}
-              testimonials={dashboard.testimonials}
-              attorneys={dashboard.attorneys}
-            />
-          ) : null}
-
-          <div className="admin-grid">
-            <section className="admin-panel">
-              <div className="admin-panel-heading">
-                <div>
-                  <p className="eyebrow">Latest contacts</p>
-                  <h2>Recent message submissions</h2>
-                </div>
-              </div>
-              {dashboard.contacts.length === 0 ? (
-                <p className="admin-empty">No contact submissions yet.</p>
-              ) : (
-                <div className="admin-table-wrap">
-                  <table className="admin-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Service</th>
-                        <th>Submitted</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dashboard.contacts.map((contact) => (
-                        <tr key={contact.id}>
-                          <td>
-                            <strong>{contact.name}</strong>
-                            <span>{contact.email}</span>
-                            {contact.phone ? <span>{contact.phone}</span> : null}
-                            <p>{contact.message}</p>
-                          </td>
-                          <td>{contact.service}</td>
-                          <td>{formatDate(contact.createdAt)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </section>
-
-            <section className="admin-panel">
-              <div className="admin-panel-heading">
-                <div>
-                  <p className="eyebrow">Latest appointments</p>
-                  <h2>Recent consultation requests</h2>
-                </div>
-              </div>
-              {dashboard.appointments.length === 0 ? (
-                <p className="admin-empty">No appointment requests yet.</p>
-              ) : (
-                <div className="admin-table-wrap">
-                  <table className="admin-table">
-                    <thead>
-                      <tr>
-                        <th>Client</th>
-                        <th>Practice area</th>
-                        <th>Requested</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dashboard.appointments.map((appointment) => (
-                        <tr key={appointment.id}>
-                          <td>
-                            <strong>{appointment.name}</strong>
-                            <span>{appointment.email}</span>
-                            <span>{appointment.phone}</span>
-                            <p>{appointment.description}</p>
-                          </td>
-                          <td>
-                            <strong>{appointment.practiceArea}</strong>
-                            <span>{appointment.attorneyName ?? "Unassigned"}</span>
-                            <span>
-                              {appointment.date.toLocaleDateString("en-US")} at {appointment.time}
-                            </span>
-                          </td>
-                          <td>{formatDate(appointment.createdAt)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </section>
-          </div>
-
-          <div className="admin-grid admin-grid-secondary">
-            <section className="admin-panel">
-              <div className="admin-panel-heading">
-                <div>
-                  <p className="eyebrow">Firm profile</p>
-                  <h2>Attorneys and practice areas</h2>
-                </div>
-              </div>
-              <div className="admin-list-grid">
-                {dashboard.attorneys.map((attorney) => (
-                  <article key={attorney.email} className="admin-list-card">
-                    <strong>{attorney.name}</strong>
-                    <span>
-                      {attorney.position} · {attorney.specialization}
-                    </span>
-                    <span>{attorney.email}</span>
-                    <p>{attorney.bio}</p>
-                  </article>
-                ))}
-              </div>
-              <div className="admin-tag-grid">
-                {dashboard.practiceAreas.map((practiceArea) => (
-                  <article key={practiceArea.name} className="admin-tag-card">
-                    <strong>{practiceArea.name}</strong>
-                    <p>{practiceArea.description}</p>
-                    <div className="admin-chip-row">
-                      {practiceArea.highlights.map((highlight) => (
-                        <span key={highlight}>{highlight}</span>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section className="admin-panel">
-              <div className="admin-panel-heading">
-                <div>
-                  <p className="eyebrow">Control center</p>
-                  <h2>Testimonials, settings, and migration signals</h2>
-                </div>
-              </div>
-              <div className="admin-list-grid compact">
-                {systemHealth.map((item) => (
-                  <article key={item.label} className="admin-list-card">
-                    <strong>{item.label}</strong>
-                    <p>{item.value}</p>
-                  </article>
-                ))}
-              </div>
-              <div className="admin-list-grid compact">
-                {dashboard.testimonials.map((testimonial) => (
-                  <article key={`${testimonial.name}-${testimonial.title}`} className="admin-list-card">
-                    <strong>{testimonial.name}</strong>
-                    <span>{testimonial.title}</span>
-                    <p>{testimonial.quote}</p>
-                  </article>
-                ))}
-              </div>
-              <div className="admin-settings-stack">
-                {dashboard.settings.map((setting) => (
-                  <article key={setting.key} className="admin-setting-card">
-                    <div className="admin-setting-header">
-                      <strong>{setting.key}</strong>
-                      <span>
-                        {setting.updatedAt.getTime() > 0
-                          ? `Updated ${formatDate(setting.updatedAt)}`
-                          : "Using fallback timestamp"}
-                      </span>
-                    </div>
-                    <div className="admin-setting-grid">
-                      {getSettingEntries(setting.value).map((entry) => (
-                        <div key={`${setting.key}-${entry.label}`} className="admin-setting-item">
-                          <span>{entry.label}</span>
-                          <strong>{entry.value}</strong>
-                        </div>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          </div>
-        </div>
-      </section>
-    </>
-  );
+  return <AdminWorkspace dashboard={dashboard} systemHealth={systemHealth} />;
 }

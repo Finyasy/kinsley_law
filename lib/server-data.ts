@@ -39,6 +39,37 @@ export type PageTestimonial = (typeof fallbackTestimonials)[number] & {
   sortOrder?: number;
 };
 
+export type ContactSubmission = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  service: string;
+  message: string;
+  status: string;
+  assignedTo: string | null;
+  internalNotes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type AppointmentSubmission = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  date: Date;
+  time: string;
+  practiceArea: string;
+  description: string;
+  status: string;
+  assignedTo: string | null;
+  internalNotes: string | null;
+  attorneyName: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type AdminDashboardData = {
   databaseConfigured: boolean;
   homePageContent: HomePageContent;
@@ -53,27 +84,8 @@ export type AdminDashboardData = {
   attorneys: PageAttorney[];
   practiceAreas: PagePracticeArea[];
   testimonials: PageTestimonial[];
-  contacts: Array<{
-    id: number;
-    name: string;
-    email: string;
-    phone: string | null;
-    service: string;
-    message: string;
-    createdAt: Date;
-  }>;
-  appointments: Array<{
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-    date: Date;
-    time: string;
-    practiceArea: string;
-    description: string;
-    attorneyName: string | null;
-    createdAt: Date;
-  }>;
+  contacts: ContactSubmission[];
+  appointments: AppointmentSubmission[];
   settings: Array<{
     key: string;
     value: unknown;
@@ -267,11 +279,9 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       }),
       prisma.contact.findMany({
         orderBy: { createdAt: "desc" },
-        take: 8,
       }),
       prisma.appointment.findMany({
         orderBy: { createdAt: "desc" },
-        take: 8,
         include: {
           attorney: {
             select: { name: true },
@@ -301,7 +311,11 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         phone: contact.phone,
         service: contact.service,
         message: contact.message,
+        status: contact.status,
+        assignedTo: contact.assignedTo,
+        internalNotes: contact.internalNotes,
         createdAt: contact.createdAt,
+        updatedAt: contact.updatedAt,
       })),
       appointments: appointments.map((appointment) => ({
         id: appointment.id,
@@ -312,8 +326,12 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         time: appointment.time,
         practiceArea: appointment.practiceArea,
         description: appointment.description,
+        status: appointment.status,
+        assignedTo: appointment.assignedTo,
+        internalNotes: appointment.internalNotes,
         attorneyName: appointment.attorney?.name ?? null,
         createdAt: appointment.createdAt,
+        updatedAt: appointment.updatedAt,
       })),
       settings: storedSettings.map((setting) => ({
         key: setting.key,
