@@ -277,6 +277,94 @@ export async function savePracticeAreaAction(
   return successState(id ? "Practice area updated." : "Practice area created.");
 }
 
+export async function saveAttorneyAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const accessError = await validateAdminWriteAccess();
+
+  if (accessError) {
+    return errorState(accessError);
+  }
+
+  const idValue = readOptionalText(formData, "id");
+  const id = readInteger(idValue);
+  const name = readRequiredText(formData, "name");
+  const email = readRequiredText(formData, "email").toLowerCase();
+  const phone = readRequiredText(formData, "phone");
+  const position = readRequiredText(formData, "position");
+  const specialization = readRequiredText(formData, "specialization");
+  const bio = readRequiredText(formData, "bio");
+
+  if (!name || !email || !phone || !position || !specialization || !bio) {
+    return errorState("Complete every attorney field before saving.");
+  }
+
+  if (idValue && id === null) {
+    return errorState("Attorney ID is invalid.");
+  }
+
+  try {
+    if (id) {
+      await prisma.attorney.update({
+        where: { id },
+        data: {
+          name,
+          email,
+          phone,
+          position,
+          specialization,
+          bio,
+        },
+      });
+    } else {
+      await prisma.attorney.create({
+        data: {
+          name,
+          email,
+          phone,
+          position,
+          specialization,
+          bio,
+        },
+      });
+    }
+  } catch (error) {
+    return errorState(
+      error instanceof Error
+        ? error.message
+        : "Unable to save the attorney.",
+    );
+  }
+
+  revalidateAdminContent(["/", "/about", "/services"]);
+  return successState(id ? "Attorney updated." : "Attorney created.");
+}
+
+export async function deleteAttorneyAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const accessError = await validateAdminWriteAccess();
+
+  if (accessError) {
+    return errorState(accessError);
+  }
+
+  const id = readInteger(readRequiredText(formData, "id"));
+
+  if (id === null) {
+    return errorState("Attorney ID is invalid.");
+  }
+
+  await prisma.attorney.delete({
+    where: { id },
+  });
+
+  revalidateAdminContent(["/", "/about", "/services", "/contact"]);
+  return successState("Attorney deleted and related assignments were cleared.");
+}
+
 export async function saveTestimonialAction(
   _previousState: AdminActionState,
   formData: FormData,

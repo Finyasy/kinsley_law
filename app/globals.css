@@ -1631,6 +1631,23 @@ button {
   font-size: 0.95rem;
 }
 
+.admin-editor-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.admin-editor-chip-row span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.42rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(21, 52, 91, 0.08);
+  color: var(--ink-900);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
 .admin-editor-delete-row {
   display: flex;
   flex-wrap: wrap;
