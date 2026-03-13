@@ -28,10 +28,12 @@ export type AggregateAttorney = {
 
 export type AttorneyAvgAggregateOutputType = {
   id: number | null
+  sortOrder: number | null
 }
 
 export type AttorneySumAggregateOutputType = {
   id: number | null
+  sortOrder: number | null
 }
 
 export type AttorneyMinAggregateOutputType = {
@@ -43,6 +45,7 @@ export type AttorneyMinAggregateOutputType = {
   position: string | null
   specialization: string | null
   photoUrl: string | null
+  sortOrder: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +59,7 @@ export type AttorneyMaxAggregateOutputType = {
   position: string | null
   specialization: string | null
   photoUrl: string | null
+  sortOrder: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -69,6 +73,7 @@ export type AttorneyCountAggregateOutputType = {
   position: number
   specialization: number
   photoUrl: number
+  sortOrder: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -77,10 +82,12 @@ export type AttorneyCountAggregateOutputType = {
 
 export type AttorneyAvgAggregateInputType = {
   id?: true
+  sortOrder?: true
 }
 
 export type AttorneySumAggregateInputType = {
   id?: true
+  sortOrder?: true
 }
 
 export type AttorneyMinAggregateInputType = {
@@ -92,6 +99,7 @@ export type AttorneyMinAggregateInputType = {
   position?: true
   specialization?: true
   photoUrl?: true
+  sortOrder?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -105,6 +113,7 @@ export type AttorneyMaxAggregateInputType = {
   position?: true
   specialization?: true
   photoUrl?: true
+  sortOrder?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,6 +127,7 @@ export type AttorneyCountAggregateInputType = {
   position?: true
   specialization?: true
   photoUrl?: true
+  sortOrder?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -218,6 +228,7 @@ export type AttorneyGroupByOutputType = {
   position: string | null
   specialization: string | null
   photoUrl: string | null
+  sortOrder: number
   createdAt: Date
   updatedAt: Date
   _count: AttorneyCountAggregateOutputType | null
@@ -254,6 +265,7 @@ export type AttorneyWhereInput = {
   position?: Prisma.StringNullableFilter<"Attorney"> | string | null
   specialization?: Prisma.StringNullableFilter<"Attorney"> | string | null
   photoUrl?: Prisma.StringNullableFilter<"Attorney"> | string | null
+  sortOrder?: Prisma.IntFilter<"Attorney"> | number
   createdAt?: Prisma.DateTimeFilter<"Attorney"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Attorney"> | Date | string
   practiceAreas?: Prisma.PracticeAreaListRelationFilter
@@ -269,6 +281,7 @@ export type AttorneyOrderByWithRelationInput = {
   position?: Prisma.SortOrderInput | Prisma.SortOrder
   specialization?: Prisma.SortOrderInput | Prisma.SortOrder
   photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   practiceAreas?: Prisma.PracticeAreaOrderByRelationAggregateInput
@@ -287,6 +300,7 @@ export type AttorneyWhereUniqueInput = Prisma.AtLeast<{
   position?: Prisma.StringNullableFilter<"Attorney"> | string | null
   specialization?: Prisma.StringNullableFilter<"Attorney"> | string | null
   photoUrl?: Prisma.StringNullableFilter<"Attorney"> | string | null
+  sortOrder?: Prisma.IntFilter<"Attorney"> | number
   createdAt?: Prisma.DateTimeFilter<"Attorney"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Attorney"> | Date | string
   practiceAreas?: Prisma.PracticeAreaListRelationFilter
@@ -302,6 +316,7 @@ export type AttorneyOrderByWithAggregationInput = {
   position?: Prisma.SortOrderInput | Prisma.SortOrder
   specialization?: Prisma.SortOrderInput | Prisma.SortOrder
   photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AttorneyCountOrderByAggregateInput
@@ -323,6 +338,7 @@ export type AttorneyScalarWhereWithAggregatesInput = {
   position?: Prisma.StringNullableWithAggregatesFilter<"Attorney"> | string | null
   specialization?: Prisma.StringNullableWithAggregatesFilter<"Attorney"> | string | null
   photoUrl?: Prisma.StringNullableWithAggregatesFilter<"Attorney"> | string | null
+  sortOrder?: Prisma.IntWithAggregatesFilter<"Attorney"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Attorney"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Attorney"> | Date | string
 }
@@ -335,6 +351,7 @@ export type AttorneyCreateInput = {
   position?: string | null
   specialization?: string | null
   photoUrl?: string | null
+  sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   practiceAreas?: Prisma.PracticeAreaCreateNestedManyWithoutAttorneyInput
@@ -350,6 +367,7 @@ export type AttorneyUncheckedCreateInput = {
   position?: string | null
   specialization?: string | null
   photoUrl?: string | null
+  sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   practiceAreas?: Prisma.PracticeAreaUncheckedCreateNestedManyWithoutAttorneyInput
@@ -364,6 +382,7 @@ export type AttorneyUpdateInput = {
   position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   practiceAreas?: Prisma.PracticeAreaUpdateManyWithoutAttorneyNestedInput
@@ -379,6 +398,7 @@ export type AttorneyUncheckedUpdateInput = {
   position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   practiceAreas?: Prisma.PracticeAreaUncheckedUpdateManyWithoutAttorneyNestedInput
@@ -394,6 +414,7 @@ export type AttorneyCreateManyInput = {
   position?: string | null
   specialization?: string | null
   photoUrl?: string | null
+  sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -406,6 +427,7 @@ export type AttorneyUpdateManyMutationInput = {
   position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -419,6 +441,7 @@ export type AttorneyUncheckedUpdateManyInput = {
   position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -432,12 +455,14 @@ export type AttorneyCountOrderByAggregateInput = {
   position?: Prisma.SortOrder
   specialization?: Prisma.SortOrder
   photoUrl?: Prisma.SortOrder
+  sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type AttorneyAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  sortOrder?: Prisma.SortOrder
 }
 
 export type AttorneyMaxOrderByAggregateInput = {
@@ -449,6 +474,7 @@ export type AttorneyMaxOrderByAggregateInput = {
   position?: Prisma.SortOrder
   specialization?: Prisma.SortOrder
   photoUrl?: Prisma.SortOrder
+  sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -462,12 +488,14 @@ export type AttorneyMinOrderByAggregateInput = {
   position?: Prisma.SortOrder
   specialization?: Prisma.SortOrder
   photoUrl?: Prisma.SortOrder
+  sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type AttorneySumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  sortOrder?: Prisma.SortOrder
 }
 
 export type AttorneyNullableScalarRelationFilter = {
@@ -483,16 +511,16 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
 }
 
 export type AttorneyCreateNestedOneWithoutPracticeAreasInput = {
@@ -535,6 +563,7 @@ export type AttorneyCreateWithoutPracticeAreasInput = {
   position?: string | null
   specialization?: string | null
   photoUrl?: string | null
+  sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   appointments?: Prisma.AppointmentCreateNestedManyWithoutAttorneyInput
@@ -549,6 +578,7 @@ export type AttorneyUncheckedCreateWithoutPracticeAreasInput = {
   position?: string | null
   specialization?: string | null
   photoUrl?: string | null
+  sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutAttorneyInput
@@ -578,6 +608,7 @@ export type AttorneyUpdateWithoutPracticeAreasInput = {
   position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUpdateManyWithoutAttorneyNestedInput
@@ -592,6 +623,7 @@ export type AttorneyUncheckedUpdateWithoutPracticeAreasInput = {
   position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutAttorneyNestedInput
@@ -605,6 +637,7 @@ export type AttorneyCreateWithoutAppointmentsInput = {
   position?: string | null
   specialization?: string | null
   photoUrl?: string | null
+  sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   practiceAreas?: Prisma.PracticeAreaCreateNestedManyWithoutAttorneyInput
@@ -619,6 +652,7 @@ export type AttorneyUncheckedCreateWithoutAppointmentsInput = {
   position?: string | null
   specialization?: string | null
   photoUrl?: string | null
+  sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   practiceAreas?: Prisma.PracticeAreaUncheckedCreateNestedManyWithoutAttorneyInput
@@ -648,6 +682,7 @@ export type AttorneyUpdateWithoutAppointmentsInput = {
   position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   practiceAreas?: Prisma.PracticeAreaUpdateManyWithoutAttorneyNestedInput
@@ -662,6 +697,7 @@ export type AttorneyUncheckedUpdateWithoutAppointmentsInput = {
   position?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   practiceAreas?: Prisma.PracticeAreaUncheckedUpdateManyWithoutAttorneyNestedInput
@@ -716,6 +752,7 @@ export type AttorneySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   position?: boolean
   specialization?: boolean
   photoUrl?: boolean
+  sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   practiceAreas?: boolean | Prisma.Attorney$practiceAreasArgs<ExtArgs>
@@ -732,6 +769,7 @@ export type AttorneySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   position?: boolean
   specialization?: boolean
   photoUrl?: boolean
+  sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["attorney"]>
@@ -745,6 +783,7 @@ export type AttorneySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   position?: boolean
   specialization?: boolean
   photoUrl?: boolean
+  sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["attorney"]>
@@ -758,11 +797,12 @@ export type AttorneySelectScalar = {
   position?: boolean
   specialization?: boolean
   photoUrl?: boolean
+  sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AttorneyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "bio" | "position" | "specialization" | "photoUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["attorney"]>
+export type AttorneyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "bio" | "position" | "specialization" | "photoUrl" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["attorney"]>
 export type AttorneyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   practiceAreas?: boolean | Prisma.Attorney$practiceAreasArgs<ExtArgs>
   appointments?: boolean | Prisma.Attorney$appointmentsArgs<ExtArgs>
@@ -786,6 +826,7 @@ export type $AttorneyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     position: string | null
     specialization: string | null
     photoUrl: string | null
+    sortOrder: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["attorney"]>
@@ -1221,6 +1262,7 @@ export interface AttorneyFieldRefs {
   readonly position: Prisma.FieldRef<"Attorney", 'String'>
   readonly specialization: Prisma.FieldRef<"Attorney", 'String'>
   readonly photoUrl: Prisma.FieldRef<"Attorney", 'String'>
+  readonly sortOrder: Prisma.FieldRef<"Attorney", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Attorney", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Attorney", 'DateTime'>
 }

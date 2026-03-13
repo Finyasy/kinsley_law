@@ -17,11 +17,13 @@ type PracticeSummary = {
 
 export type PageAttorney = (typeof fallbackAttorneys)[number] & {
   id?: number;
+  sortOrder?: number;
   practiceAreas: PracticeSummary[];
 };
 
 export type PagePracticeArea = {
   id?: number;
+  sortOrder?: number;
   name: string;
   description: string;
   highlights: string[];
@@ -33,6 +35,7 @@ export type PagePracticeArea = {
 
 export type PageTestimonial = (typeof fallbackTestimonials)[number] & {
   id?: number;
+  sortOrder?: number;
 };
 
 export type AdminDashboardData = {
@@ -118,6 +121,7 @@ export async function getTestimonialsForPage(): Promise<PageTestimonial[]> {
 
     return testimonials.map((testimonial) => ({
       id: testimonial.id,
+      sortOrder: testimonial.sortOrder,
       name: testimonial.name,
       title: testimonial.title,
       quote: testimonial.quote,
@@ -137,16 +141,17 @@ export async function getAttorneysForPage(): Promise<PageAttorney[]> {
 
   try {
     const attorneys = await prisma.attorney.findMany({
-      orderBy: { name: "asc" },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       include: {
         practiceAreas: {
-          orderBy: { name: "asc" },
+          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
         },
       },
     });
 
     return attorneys.map((attorney) => ({
       id: attorney.id,
+      sortOrder: attorney.sortOrder,
       name: attorney.name,
       email: attorney.email,
       phone: attorney.phone,
@@ -173,7 +178,7 @@ export async function getPracticeAreasForPage(): Promise<PagePracticeArea[]> {
 
   try {
     const practiceAreas = await prisma.practiceArea.findMany({
-      orderBy: { name: "asc" },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       include: {
         attorney: {
           select: {
@@ -189,6 +194,7 @@ export async function getPracticeAreasForPage(): Promise<PagePracticeArea[]> {
 
     return practiceAreas.map((practiceArea) => ({
       id: practiceArea.id,
+      sortOrder: practiceArea.sortOrder,
       name: practiceArea.name,
       description: practiceArea.description,
       highlights:

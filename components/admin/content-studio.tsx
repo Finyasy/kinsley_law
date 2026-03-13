@@ -330,8 +330,20 @@ function PracticeAreaEditorCard({
           <h3>{heading}</h3>
         </div>
       </div>
+      <p className="admin-editor-note">Lower display-order values appear first on the site.</p>
       <FormMessage state={state} />
       <div className="admin-editor-fields">
+        <div className="field">
+          <label htmlFor={`practice-order-${area?.id ?? "new"}`}>Display order</label>
+          <input
+            id={`practice-order-${area?.id ?? "new"}`}
+            type="number"
+            name="sortOrder"
+            defaultValue={area?.sortOrder ?? ""}
+            min={0}
+            step={1}
+          />
+        </div>
         <div className="field full">
           <label htmlFor={`practice-name-${area?.id ?? "new"}`}>Name</label>
           <input
@@ -406,8 +418,20 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
             <h3>{attorney?.name ?? "Add attorney"}</h3>
           </div>
         </div>
+        <p className="admin-editor-note">Lower display-order values appear earlier in the homepage and team lists.</p>
         <FormMessage state={saveState} />
         <div className="admin-editor-fields">
+          <div className="field">
+            <label htmlFor={`attorney-order-${attorney?.id ?? "new"}`}>Display order</label>
+            <input
+              id={`attorney-order-${attorney?.id ?? "new"}`}
+              type="number"
+              name="sortOrder"
+              defaultValue={attorney?.sortOrder ?? ""}
+              min={0}
+              step={1}
+            />
+          </div>
           <div className="field">
             <label htmlFor={`attorney-name-${attorney?.id ?? "new"}`}>Full name</label>
             <input
@@ -514,15 +538,26 @@ function TestimonialEditorCard({
     <article className="admin-editor-card">
       <form action={saveAction} className="admin-editor-stack">
         <input type="hidden" name="id" value={testimonial?.id ?? ""} />
-        <input type="hidden" name="sortOrder" value={testimonial ? sortOrder : ""} />
         <div className="admin-editor-heading">
           <div>
             <p className="eyebrow">{testimonial ? "Testimonial" : "New testimonial"}</p>
             <h3>{testimonial?.name ?? "Add testimonial"}</h3>
           </div>
         </div>
+        <p className="admin-editor-note">Lower display-order values appear first in the homepage testimonials section.</p>
         <FormMessage state={saveState} />
         <div className="admin-editor-fields">
+          <div className="field">
+            <label htmlFor={`testimonial-order-${testimonial?.id ?? "new"}`}>Display order</label>
+            <input
+              id={`testimonial-order-${testimonial?.id ?? "new"}`}
+              type="number"
+              name="sortOrder"
+              defaultValue={testimonial?.sortOrder ?? sortOrder}
+              min={0}
+              step={1}
+            />
+          </div>
           <div className="field">
             <label htmlFor={`testimonial-name-${testimonial?.id ?? "new"}`}>Client name</label>
             <input

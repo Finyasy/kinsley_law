@@ -25,15 +25,21 @@ const practiceAreaOwnerByName: Record<string, string | null> = {
 };
 
 async function main() {
-  for (const attorney of fallbackAttorneys) {
+  for (const [index, attorney] of fallbackAttorneys.entries()) {
     await prisma.attorney.upsert({
       where: { email: attorney.email },
-      update: attorney,
-      create: attorney,
+      update: {
+        ...attorney,
+        sortOrder: index,
+      },
+      create: {
+        ...attorney,
+        sortOrder: index,
+      },
     });
   }
 
-  for (const practiceArea of fallbackPracticeAreas) {
+  for (const [index, practiceArea] of fallbackPracticeAreas.entries()) {
     const attorneyEmail = practiceAreaOwnerByName[practiceArea.name];
     const attorney = attorneyEmail
       ? await prisma.attorney.findUnique({
@@ -47,11 +53,13 @@ async function main() {
       update: {
         description: practiceArea.description,
         attorneyId: attorney?.id ?? null,
+        sortOrder: index,
       },
       create: {
         name: practiceArea.name,
         description: practiceArea.description,
         attorneyId: attorney?.id ?? null,
+        sortOrder: index,
       },
       select: { id: true },
     });

@@ -14,7 +14,7 @@ export async function GET() {
 
   try {
     const practiceAreas = await prisma.practiceArea.findMany({
-      orderBy: { name: "asc" },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       include: {
         attorney: true,
         highlights: {
