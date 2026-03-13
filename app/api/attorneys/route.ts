@@ -14,10 +14,10 @@ export async function GET() {
 
   try {
     const attorneys = await prisma.attorney.findMany({
-      orderBy: { name: "asc" },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       include: {
         practiceAreas: {
-          orderBy: { name: "asc" },
+          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
         },
       },
     });

@@ -30,7 +30,7 @@ export async function GET(_: Request, context: RouteContext) {
       where: { id: attorneyId },
       include: {
         practiceAreas: {
-          orderBy: { name: "asc" },
+          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
         },
         appointments: {
           orderBy: { createdAt: "desc" },

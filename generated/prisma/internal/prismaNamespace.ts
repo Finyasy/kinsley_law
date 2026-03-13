@@ -976,6 +976,7 @@ export const AttorneyScalarFieldEnum = {
   position: 'position',
   specialization: 'specialization',
   photoUrl: 'photoUrl',
+  sortOrder: 'sortOrder',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -988,6 +989,7 @@ export const PracticeAreaScalarFieldEnum = {
   name: 'name',
   description: 'description',
   attorneyId: 'attorneyId',
+  sortOrder: 'sortOrder',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

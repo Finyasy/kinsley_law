@@ -2,7 +2,9 @@
 
 import { useActionState } from "react";
 import {
+  deleteAttorneyAction,
   deleteTestimonialAction,
+  saveAttorneyAction,
   savePracticeAreaAction,
   saveTestimonialAction,
   updateHomePageContentAction,
@@ -38,6 +40,10 @@ type PracticeAreaEditorCardProps = {
 type TestimonialEditorCardProps = {
   testimonial?: PageTestimonial;
   sortOrder: number;
+};
+
+type AttorneyEditorCardProps = {
+  attorney?: PageAttorney;
 };
 
 function FormMessage({ state }: { state: AdminActionState }) {
@@ -324,8 +330,20 @@ function PracticeAreaEditorCard({
           <h3>{heading}</h3>
         </div>
       </div>
+      <p className="admin-editor-note">Lower display-order values appear first on the site.</p>
       <FormMessage state={state} />
       <div className="admin-editor-fields">
+        <div className="field">
+          <label htmlFor={`practice-order-${area?.id ?? "new"}`}>Display order</label>
+          <input
+            id={`practice-order-${area?.id ?? "new"}`}
+            type="number"
+            name="sortOrder"
+            defaultValue={area?.sortOrder ?? ""}
+            min={0}
+            step={1}
+          />
+        </div>
         <div className="field full">
           <label htmlFor={`practice-name-${area?.id ?? "new"}`}>Name</label>
           <input
@@ -380,6 +398,129 @@ function PracticeAreaEditorCard({
   );
 }
 
+function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
+  const [saveState, saveAction, isSaving] = useActionState(
+    saveAttorneyAction,
+    initialAdminActionState,
+  );
+  const [deleteState, deleteAction, isDeleting] = useActionState(
+    deleteAttorneyAction,
+    initialAdminActionState,
+  );
+
+  return (
+    <article className="admin-editor-card">
+      <form action={saveAction} className="admin-editor-stack">
+        <input type="hidden" name="id" value={attorney?.id ?? ""} />
+        <div className="admin-editor-heading">
+          <div>
+            <p className="eyebrow">{attorney ? "Attorney profile" : "New attorney"}</p>
+            <h3>{attorney?.name ?? "Add attorney"}</h3>
+          </div>
+        </div>
+        <p className="admin-editor-note">Lower display-order values appear earlier in the homepage and team lists.</p>
+        <FormMessage state={saveState} />
+        <div className="admin-editor-fields">
+          <div className="field">
+            <label htmlFor={`attorney-order-${attorney?.id ?? "new"}`}>Display order</label>
+            <input
+              id={`attorney-order-${attorney?.id ?? "new"}`}
+              type="number"
+              name="sortOrder"
+              defaultValue={attorney?.sortOrder ?? ""}
+              min={0}
+              step={1}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor={`attorney-name-${attorney?.id ?? "new"}`}>Full name</label>
+            <input
+              id={`attorney-name-${attorney?.id ?? "new"}`}
+              name="name"
+              defaultValue={attorney?.name ?? ""}
+              required
+            />
+          </div>
+          <div className="field">
+            <label htmlFor={`attorney-email-${attorney?.id ?? "new"}`}>Email</label>
+            <input
+              id={`attorney-email-${attorney?.id ?? "new"}`}
+              type="email"
+              name="email"
+              defaultValue={attorney?.email ?? ""}
+              required
+            />
+          </div>
+          <div className="field">
+            <label htmlFor={`attorney-phone-${attorney?.id ?? "new"}`}>Phone</label>
+            <input
+              id={`attorney-phone-${attorney?.id ?? "new"}`}
+              name="phone"
+              defaultValue={attorney?.phone ?? ""}
+              required
+            />
+          </div>
+          <div className="field">
+            <label htmlFor={`attorney-position-${attorney?.id ?? "new"}`}>Position</label>
+            <input
+              id={`attorney-position-${attorney?.id ?? "new"}`}
+              name="position"
+              defaultValue={attorney?.position ?? ""}
+              required
+            />
+          </div>
+          <div className="field full">
+            <label htmlFor={`attorney-specialization-${attorney?.id ?? "new"}`}>Specialization</label>
+            <input
+              id={`attorney-specialization-${attorney?.id ?? "new"}`}
+              name="specialization"
+              defaultValue={attorney?.specialization ?? ""}
+              required
+            />
+          </div>
+          <div className="field full">
+            <label htmlFor={`attorney-bio-${attorney?.id ?? "new"}`}>Biography</label>
+            <textarea
+              id={`attorney-bio-${attorney?.id ?? "new"}`}
+              name="bio"
+              rows={5}
+              defaultValue={attorney?.bio ?? ""}
+              required
+            />
+          </div>
+        </div>
+        {attorney?.practiceAreas.length ? (
+          <div className="admin-editor-chip-row">
+            {attorney.practiceAreas.map((practiceArea) => (
+              <span key={practiceArea.id}>{practiceArea.name}</span>
+            ))}
+          </div>
+        ) : null}
+        <div className="button-row">
+          <FormSubmitButton
+            idleLabel={attorney ? "Save Attorney" : "Create Attorney"}
+            pendingLabel="Saving..."
+            isPending={isSaving}
+          />
+        </div>
+      </form>
+
+      {attorney?.id ? (
+        <form action={deleteAction} className="admin-editor-delete-row">
+          <input type="hidden" name="id" value={attorney.id} />
+          <FormMessage state={deleteState} />
+          <FormSubmitButton
+            idleLabel="Delete Attorney"
+            pendingLabel="Deleting..."
+            isPending={isDeleting}
+            className="button-secondary"
+          />
+        </form>
+      ) : null}
+    </article>
+  );
+}
+
 function TestimonialEditorCard({
   testimonial,
   sortOrder,
@@ -397,15 +538,26 @@ function TestimonialEditorCard({
     <article className="admin-editor-card">
       <form action={saveAction} className="admin-editor-stack">
         <input type="hidden" name="id" value={testimonial?.id ?? ""} />
-        <input type="hidden" name="sortOrder" value={testimonial ? sortOrder : ""} />
         <div className="admin-editor-heading">
           <div>
             <p className="eyebrow">{testimonial ? "Testimonial" : "New testimonial"}</p>
             <h3>{testimonial?.name ?? "Add testimonial"}</h3>
           </div>
         </div>
+        <p className="admin-editor-note">Lower display-order values appear first in the homepage testimonials section.</p>
         <FormMessage state={saveState} />
         <div className="admin-editor-fields">
+          <div className="field">
+            <label htmlFor={`testimonial-order-${testimonial?.id ?? "new"}`}>Display order</label>
+            <input
+              id={`testimonial-order-${testimonial?.id ?? "new"}`}
+              type="number"
+              name="sortOrder"
+              defaultValue={testimonial?.sortOrder ?? sortOrder}
+              min={0}
+              step={1}
+            />
+          </div>
           <div className="field">
             <label htmlFor={`testimonial-name-${testimonial?.id ?? "new"}`}>Client name</label>
             <input
@@ -475,6 +627,24 @@ export function ContentStudio({
       <div className="admin-editor-grid">
         <OfficeDetailsEditor officeDetails={officeDetails} />
         <HomePageContentEditor homePageContent={homePageContent} />
+      </div>
+
+      <div className="admin-editor-section">
+        <div className="admin-panel-heading">
+          <div>
+            <p className="eyebrow">Attorneys</p>
+            <h2>Manage the firm profile and practice leads</h2>
+          </div>
+        </div>
+        <div className="admin-editor-grid">
+          {attorneys.map((attorney) => (
+            <AttorneyEditorCard
+              key={attorney.id ?? attorney.email}
+              attorney={attorney}
+            />
+          ))}
+          <AttorneyEditorCard />
+        </div>
       </div>
 
       <div className="admin-editor-section">

@@ -39,6 +39,53 @@ function parseLineList(value: string) {
     .filter(Boolean);
 }
 
+async function resolveSortOrder(options: {
+  id: number | null;
+  providedSortOrder: number | null;
+  providedSortOrderValue: string;
+  entity: "attorney" | "practiceArea" | "testimonial";
+}): Promise<number> {
+  const { id, providedSortOrder, providedSortOrderValue, entity } = options;
+
+  if (providedSortOrderValue) {
+    return providedSortOrder ?? 0;
+  }
+
+  if (id) {
+    if (entity === "attorney") {
+      const existingRecord = await prisma.attorney.findUnique({
+        where: { id },
+        select: { sortOrder: true },
+      });
+      return existingRecord?.sortOrder ?? 0;
+    }
+
+    if (entity === "practiceArea") {
+      const existingRecord = await prisma.practiceArea.findUnique({
+        where: { id },
+        select: { sortOrder: true },
+      });
+      return existingRecord?.sortOrder ?? 0;
+    }
+
+    const existingRecord = await prisma.testimonial.findUnique({
+      where: { id },
+      select: { sortOrder: true },
+    });
+    return existingRecord?.sortOrder ?? 0;
+  }
+
+  if (entity === "attorney") {
+    return prisma.attorney.count();
+  }
+
+  if (entity === "practiceArea") {
+    return prisma.practiceArea.count();
+  }
+
+  return prisma.testimonial.count();
+}
+
 async function validateAdminWriteAccess() {
   if (!isDatabaseConfigured()) {
     return "Database access is unavailable. Content editing is disabled.";
@@ -216,9 +263,11 @@ export async function savePracticeAreaAction(
 
   const idValue = readOptionalText(formData, "id");
   const attorneyIdValue = readOptionalText(formData, "attorneyId");
+  const sortOrderValue = readOptionalText(formData, "sortOrder");
   const sortHighlights = parseLineList(readRequiredText(formData, "highlights"));
   const id = readInteger(idValue);
   const attorneyId = readInteger(attorneyIdValue);
+  const sortOrder = readInteger(sortOrderValue);
   const name = readRequiredText(formData, "name");
   const description = readRequiredText(formData, "description");
 
@@ -234,6 +283,17 @@ export async function savePracticeAreaAction(
     return errorState("Lead attorney selection is invalid.");
   }
 
+  if (sortOrderValue && sortOrder === null) {
+    return errorState("Practice area display order is invalid.");
+  }
+
+  const resolvedSortOrder = await resolveSortOrder({
+    id,
+    providedSortOrder: sortOrder,
+    providedSortOrderValue: sortOrderValue,
+    entity: "practiceArea",
+  });
+
   try {
     await prisma.$transaction(async (transaction) => {
       const practiceArea = id
@@ -243,6 +303,7 @@ export async function savePracticeAreaAction(
               name,
               description,
               attorneyId,
+              sortOrder: resolvedSortOrder,
             },
           })
         : await transaction.practiceArea.create({
@@ -250,6 +311,7 @@ export async function savePracticeAreaAction(
               name,
               description,
               attorneyId,
+              sortOrder: resolvedSortOrder,
             },
           });
 
@@ -275,6 +337,109 @@ export async function savePracticeAreaAction(
 
   revalidateAdminContent(["/", "/about", "/contact", "/services"]);
   return successState(id ? "Practice area updated." : "Practice area created.");
+}
+
+export async function saveAttorneyAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const accessError = await validateAdminWriteAccess();
+
+  if (accessError) {
+    return errorState(accessError);
+  }
+
+  const idValue = readOptionalText(formData, "id");
+  const id = readInteger(idValue);
+  const sortOrderValue = readOptionalText(formData, "sortOrder");
+  const sortOrder = readInteger(sortOrderValue);
+  const name = readRequiredText(formData, "name");
+  const email = readRequiredText(formData, "email").toLowerCase();
+  const phone = readRequiredText(formData, "phone");
+  const position = readRequiredText(formData, "position");
+  const specialization = readRequiredText(formData, "specialization");
+  const bio = readRequiredText(formData, "bio");
+
+  if (!name || !email || !phone || !position || !specialization || !bio) {
+    return errorState("Complete every attorney field before saving.");
+  }
+
+  if (idValue && id === null) {
+    return errorState("Attorney ID is invalid.");
+  }
+
+  if (sortOrderValue && sortOrder === null) {
+    return errorState("Attorney display order is invalid.");
+  }
+
+  const resolvedSortOrder = await resolveSortOrder({
+    id,
+    providedSortOrder: sortOrder,
+    providedSortOrderValue: sortOrderValue,
+    entity: "attorney",
+  });
+
+  try {
+    if (id) {
+      await prisma.attorney.update({
+        where: { id },
+        data: {
+          name,
+          email,
+          phone,
+          position,
+          specialization,
+          bio,
+          sortOrder: resolvedSortOrder,
+        },
+      });
+    } else {
+      await prisma.attorney.create({
+        data: {
+          name,
+          email,
+          phone,
+          position,
+          specialization,
+          bio,
+          sortOrder: resolvedSortOrder,
+        },
+      });
+    }
+  } catch (error) {
+    return errorState(
+      error instanceof Error
+        ? error.message
+        : "Unable to save the attorney.",
+    );
+  }
+
+  revalidateAdminContent(["/", "/about", "/services"]);
+  return successState(id ? "Attorney updated." : "Attorney created.");
+}
+
+export async function deleteAttorneyAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const accessError = await validateAdminWriteAccess();
+
+  if (accessError) {
+    return errorState(accessError);
+  }
+
+  const id = readInteger(readRequiredText(formData, "id"));
+
+  if (id === null) {
+    return errorState("Attorney ID is invalid.");
+  }
+
+  await prisma.attorney.delete({
+    where: { id },
+  });
+
+  revalidateAdminContent(["/", "/about", "/services", "/contact"]);
+  return successState("Attorney deleted and related assignments were cleared.");
 }
 
 export async function saveTestimonialAction(
@@ -307,9 +472,12 @@ export async function saveTestimonialAction(
     return errorState("Testimonial ordering is invalid.");
   }
 
-  const resolvedSortOrder =
-    sortOrder ??
-    (await prisma.testimonial.count());
+  const resolvedSortOrder = await resolveSortOrder({
+    id,
+    providedSortOrder: sortOrder,
+    providedSortOrderValue: sortOrderValue,
+    entity: "testimonial",
+  });
 
   if (id) {
     await prisma.testimonial.update({
