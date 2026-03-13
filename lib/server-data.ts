@@ -18,6 +18,7 @@ type PracticeSummary = {
 export type PageAttorney = (typeof fallbackAttorneys)[number] & {
   id?: number;
   sortOrder?: number;
+  photoUrl?: string | null;
   practiceAreas: PracticeSummary[];
 };
 
@@ -135,6 +136,7 @@ export async function getAttorneysForPage(): Promise<PageAttorney[]> {
   if (!isDatabaseConfigured()) {
     return fallbackAttorneys.map((attorney) => ({
       ...attorney,
+      photoUrl: attorney.photoUrl ?? null,
       practiceAreas: [],
     }));
   }
@@ -158,6 +160,7 @@ export async function getAttorneysForPage(): Promise<PageAttorney[]> {
       bio: attorney.bio,
       position: attorney.position ?? "",
       specialization: attorney.specialization ?? "",
+      photoUrl: attorney.photoUrl ?? null,
       practiceAreas: attorney.practiceAreas.map((practiceArea) => ({
         id: practiceArea.id,
         name: practiceArea.name,
@@ -166,6 +169,7 @@ export async function getAttorneysForPage(): Promise<PageAttorney[]> {
   } catch {
     return fallbackAttorneys.map((attorney) => ({
       ...attorney,
+      photoUrl: attorney.photoUrl ?? null,
       practiceAreas: [],
     }));
   }

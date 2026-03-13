@@ -358,6 +358,7 @@ export async function saveAttorneyAction(
   const phone = readRequiredText(formData, "phone");
   const position = readRequiredText(formData, "position");
   const specialization = readRequiredText(formData, "specialization");
+  const photoUrl = readOptionalText(formData, "photoUrl");
   const bio = readRequiredText(formData, "bio");
 
   if (!name || !email || !phone || !position || !specialization || !bio) {
@@ -389,6 +390,7 @@ export async function saveAttorneyAction(
           phone,
           position,
           specialization,
+          photoUrl: photoUrl || null,
           bio,
           sortOrder: resolvedSortOrder,
         },
@@ -401,6 +403,7 @@ export async function saveAttorneyAction(
           phone,
           position,
           specialization,
+          photoUrl: photoUrl || null,
           bio,
           sortOrder: resolvedSortOrder,
         },

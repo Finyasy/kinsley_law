@@ -432,6 +432,15 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
               step={1}
             />
           </div>
+          <div className="field full">
+            <label htmlFor={`attorney-photo-${attorney?.id ?? "new"}`}>Photo URL</label>
+            <input
+              id={`attorney-photo-${attorney?.id ?? "new"}`}
+              name="photoUrl"
+              defaultValue={attorney?.photoUrl ?? ""}
+              placeholder="https://example.com/attorneys/jane-kinsley.jpg or /images/jane-kinsley.jpg"
+            />
+          </div>
           <div className="field">
             <label htmlFor={`attorney-name-${attorney?.id ?? "new"}`}>Full name</label>
             <input

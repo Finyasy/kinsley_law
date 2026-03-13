@@ -171,7 +171,11 @@ export default async function HomePage() {
             {featuredAttorneys.map((attorney, index) => (
               <article key={attorney.email} className="attorney-card">
                 <div className="attorney-card-image">
-                  <AttorneyAvatar name={attorney.name} role={attorney.specialization} />
+                  <AttorneyAvatar
+                    name={attorney.name}
+                    role={attorney.specialization}
+                    photoUrl={attorney.photoUrl}
+                  />
                 </div>
                 <div className="attorney-card-content">
                   <span className="attorney-index">0{index + 1}</span>
