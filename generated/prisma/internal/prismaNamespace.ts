@@ -1004,6 +1004,9 @@ export const ContactScalarFieldEnum = {
   phone: 'phone',
   service: 'service',
   message: 'message',
+  status: 'status',
+  assignedTo: 'assignedTo',
+  internalNotes: 'internalNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1020,6 +1023,9 @@ export const AppointmentScalarFieldEnum = {
   time: 'time',
   practiceArea: 'practiceArea',
   description: 'description',
+  status: 'status',
+  assignedTo: 'assignedTo',
+  internalNotes: 'internalNotes',
   attorneyId: 'attorneyId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

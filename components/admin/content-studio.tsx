@@ -410,7 +410,7 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
 
   return (
     <article className="admin-editor-card">
-      <form action={saveAction} className="admin-editor-stack">
+      <form action={saveAction} className="admin-editor-stack" encType="multipart/form-data">
         <input type="hidden" name="id" value={attorney?.id ?? ""} />
         <div className="admin-editor-heading">
           <div>
@@ -420,6 +420,16 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
         </div>
         <p className="admin-editor-note">Lower display-order values appear earlier in the homepage and team lists.</p>
         <FormMessage state={saveState} />
+        {attorney?.photoUrl ? (
+          <div className="admin-asset-preview">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={attorney.photoUrl} alt="" className="admin-asset-preview-image" />
+            <div>
+              <strong>Current attorney photo</strong>
+              <span>{attorney.photoUrl}</span>
+            </div>
+          </div>
+        ) : null}
         <div className="admin-editor-fields">
           <div className="field">
             <label htmlFor={`attorney-order-${attorney?.id ?? "new"}`}>Display order</label>
@@ -431,6 +441,27 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
               min={0}
               step={1}
             />
+          </div>
+          <div className="field full">
+            <label htmlFor={`attorney-photo-${attorney?.id ?? "new"}`}>Photo URL</label>
+            <input
+              id={`attorney-photo-${attorney?.id ?? "new"}`}
+              name="photoUrl"
+              defaultValue={attorney?.photoUrl ?? ""}
+              placeholder="https://example.com/attorneys/jane-kinsley.jpg or /images/jane-kinsley.jpg"
+            />
+          </div>
+          <div className="field full">
+            <label htmlFor={`attorney-photo-file-${attorney?.id ?? "new"}`}>Upload photo</label>
+            <input
+              id={`attorney-photo-file-${attorney?.id ?? "new"}`}
+              type="file"
+              name="photoFile"
+              accept="image/jpeg,image/png,image/webp,image/avif"
+            />
+            <p className="field-hint">
+              Local uploads are saved to `/public/uploads/attorneys` and replace the URL above when a file is selected.
+            </p>
           </div>
           <div className="field">
             <label htmlFor={`attorney-name-${attorney?.id ?? "new"}`}>Full name</label>
@@ -608,6 +639,69 @@ function TestimonialEditorCard({
   );
 }
 
+export function ContentStudioCoreSection({
+  homePageContent,
+  officeDetails,
+}: Pick<ContentStudioProps, "homePageContent" | "officeDetails">) {
+  return (
+    <div className="admin-editor-grid">
+      <OfficeDetailsEditor officeDetails={officeDetails} />
+      <HomePageContentEditor homePageContent={homePageContent} />
+    </div>
+  );
+}
+
+export function ContentStudioAttorneysSection({
+  attorneys,
+}: Pick<ContentStudioProps, "attorneys">) {
+  return (
+    <div className="admin-editor-grid">
+      {attorneys.map((attorney) => (
+        <AttorneyEditorCard
+          key={attorney.id ?? attorney.email}
+          attorney={attorney}
+        />
+      ))}
+      <AttorneyEditorCard />
+    </div>
+  );
+}
+
+export function ContentStudioPracticeAreasSection({
+  practiceAreas,
+  attorneys,
+}: Pick<ContentStudioProps, "practiceAreas" | "attorneys">) {
+  return (
+    <div className="admin-editor-grid">
+      {practiceAreas.map((practiceArea) => (
+        <PracticeAreaEditorCard
+          key={practiceArea.id ?? practiceArea.name}
+          area={practiceArea}
+          attorneys={attorneys}
+        />
+      ))}
+      <PracticeAreaEditorCard attorneys={attorneys} />
+    </div>
+  );
+}
+
+export function ContentStudioTestimonialsSection({
+  testimonials,
+}: Pick<ContentStudioProps, "testimonials">) {
+  return (
+    <div className="admin-editor-grid">
+      {testimonials.map((testimonial, index) => (
+        <TestimonialEditorCard
+          key={testimonial.id ?? `${testimonial.name}-${testimonial.title}`}
+          testimonial={testimonial}
+          sortOrder={index}
+        />
+      ))}
+      <TestimonialEditorCard sortOrder={testimonials.length} />
+    </div>
+  );
+}
+
 export function ContentStudio({
   homePageContent,
   officeDetails,
@@ -624,10 +718,10 @@ export function ContentStudio({
         </div>
       </div>
 
-      <div className="admin-editor-grid">
-        <OfficeDetailsEditor officeDetails={officeDetails} />
-        <HomePageContentEditor homePageContent={homePageContent} />
-      </div>
+      <ContentStudioCoreSection
+        homePageContent={homePageContent}
+        officeDetails={officeDetails}
+      />
 
       <div className="admin-editor-section">
         <div className="admin-panel-heading">
@@ -636,15 +730,7 @@ export function ContentStudio({
             <h2>Manage the firm profile and practice leads</h2>
           </div>
         </div>
-        <div className="admin-editor-grid">
-          {attorneys.map((attorney) => (
-            <AttorneyEditorCard
-              key={attorney.id ?? attorney.email}
-              attorney={attorney}
-            />
-          ))}
-          <AttorneyEditorCard />
-        </div>
+        <ContentStudioAttorneysSection attorneys={attorneys} />
       </div>
 
       <div className="admin-editor-section">
@@ -654,16 +740,10 @@ export function ContentStudio({
             <h2>Manage services and attorney assignments</h2>
           </div>
         </div>
-        <div className="admin-editor-grid">
-          {practiceAreas.map((practiceArea) => (
-            <PracticeAreaEditorCard
-              key={practiceArea.id ?? practiceArea.name}
-              area={practiceArea}
-              attorneys={attorneys}
-            />
-          ))}
-          <PracticeAreaEditorCard attorneys={attorneys} />
-        </div>
+        <ContentStudioPracticeAreasSection
+          practiceAreas={practiceAreas}
+          attorneys={attorneys}
+        />
       </div>
 
       <div className="admin-editor-section">
@@ -673,16 +753,7 @@ export function ContentStudio({
             <h2>Manage homepage social proof</h2>
           </div>
         </div>
-        <div className="admin-editor-grid">
-          {testimonials.map((testimonial, index) => (
-            <TestimonialEditorCard
-              key={testimonial.id ?? `${testimonial.name}-${testimonial.title}`}
-              testimonial={testimonial}
-              sortOrder={index}
-            />
-          ))}
-          <TestimonialEditorCard sortOrder={testimonials.length} />
-        </div>
+        <ContentStudioTestimonialsSection testimonials={testimonials} />
       </div>
     </section>
   );

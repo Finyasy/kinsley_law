@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendAppointmentNotification } from "@/lib/email-notifications";
 import { formatDatabaseErrorMessage, isDatabaseConfigured } from "@/lib/persistence";
 import { prisma } from "@/lib/prisma";
 
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
           { practiceAreas: { some: { name: payload.practiceArea!.trim() } } },
         ],
       },
-      select: { id: true },
+      select: { id: true, name: true },
     });
 
     const submission = await prisma.appointment.create({
@@ -66,12 +67,23 @@ export async function POST(request: Request) {
         attorneyId: attorney?.id ?? null,
       },
     });
+    const notification = await sendAppointmentNotification({
+      name: submission.name,
+      email: submission.email,
+      phone: submission.phone,
+      date: submission.date,
+      time: submission.time,
+      practiceArea: submission.practiceArea,
+      description: submission.description,
+      attorneyName: attorney?.name ?? null,
+    });
 
     return NextResponse.json(
       {
         message: "Consultation request received. A member of the firm will confirm availability.",
         submission,
         persistence: "postgresql",
+        notification,
       },
       { status: 201 },
     );

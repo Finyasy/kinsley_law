@@ -41,29 +41,39 @@ model PracticeArea {
 }
 
 model Contact {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String
-  phone     String?
-  service   String
-  message   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String
+  phone         String?
+  service       String
+  message       String
+  status        String   @default("new")
+  assignedTo    String?
+  internalNotes String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status, createdAt])
 }
 
 model Appointment {
-  id           Int       @id @default(autoincrement())
-  name         String
-  email        String
-  phone        String
-  date         DateTime
-  time         String
-  practiceArea String
-  description  String
-  attorneyId   Int?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  attorney     Attorney? @relation(fields: [attorneyId], references: [id], onDelete: SetNull)
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String
+  phone         String
+  date          DateTime
+  time          String
+  practiceArea  String
+  description   String
+  status        String    @default("new")
+  assignedTo    String?
+  internalNotes String?
+  attorneyId    Int?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  attorney      Attorney? @relation(fields: [attorneyId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
 }
 
 model PracticeAreaHighlight {

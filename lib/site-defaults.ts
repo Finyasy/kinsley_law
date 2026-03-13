@@ -5,6 +5,7 @@ export type AttorneySeed = {
   bio: string;
   position: string;
   specialization: string;
+  photoUrl?: string | null;
 };
 
 export type PracticeAreaSeed = {

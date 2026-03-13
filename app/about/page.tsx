@@ -123,7 +123,11 @@ export default async function AboutPage() {
             {attorneys.map((attorney, index) => (
               <article key={attorney.email} className="team-card card-surface">
                 <div className="team-card-media">
-                  <AttorneyAvatar name={attorney.name} role={attorney.position} />
+                  <AttorneyAvatar
+                    name={attorney.name}
+                    role={attorney.position}
+                    photoUrl={attorney.photoUrl}
+                  />
                   <span className="team-card-tag">Attorney {index + 1}</span>
                 </div>
                 <div className="team-card-body">
