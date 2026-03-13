@@ -8,6 +8,7 @@ import {
   hasAdminPasswordConfigured,
   isAdminSessionValid,
 } from "@/lib/admin-auth";
+import { getNotificationStatusLabel } from "@/lib/email-notifications";
 import { getAdminDashboardData } from "@/lib/server-data";
 
 export const metadata: Metadata = {
@@ -114,6 +115,10 @@ export default async function AdminPage() {
     {
       label: "Recent intake",
       value: `${dashboard.counts.contacts + dashboard.counts.appointments} total submissions`,
+    },
+    {
+      label: "Notifications",
+      value: getNotificationStatusLabel(),
     },
   ];
 

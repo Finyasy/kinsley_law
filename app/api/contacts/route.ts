@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendContactNotification } from "@/lib/email-notifications";
 import { formatDatabaseErrorMessage, isDatabaseConfigured } from "@/lib/persistence";
 import { prisma } from "@/lib/prisma";
 
@@ -48,12 +49,20 @@ export async function POST(request: Request) {
         message: payload.message!.trim(),
       },
     });
+    const notification = await sendContactNotification({
+      name: submission.name,
+      email: submission.email,
+      phone: submission.phone,
+      service: submission.service,
+      message: submission.message,
+    });
 
     return NextResponse.json(
       {
         message: "Thank you for contacting Kinsley Law Advocates. We will be in touch shortly.",
         submission,
         persistence: "postgresql",
+        notification,
       },
       { status: 201 },
     );

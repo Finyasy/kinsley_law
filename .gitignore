@@ -28,6 +28,7 @@ next-app/.next/
 /artifacts/ui-audit/*
 !/artifacts/ui-audit/README.md
 /artifacts/admin-content-editing/*
+/.email-previews/
 legacy/**/node_modules/
 legacy/**/.next/
 

@@ -63,6 +63,34 @@ Set a local admin password in `.env` to unlock `/admin`:
 ADMIN_DASHBOARD_PASSWORD="replace-with-a-strong-local-password"
 ```
 
+## Email notifications
+
+New contact enquiries and consultation requests can notify an internal inbox.
+
+SMTP delivery:
+
+```bash
+NOTIFICATION_TO_EMAILS="intake@kinsleylaw.com"
+SMTP_FROM_EMAIL="notifications@kinsleylaw.com"
+SMTP_FROM_NAME="Kinsley Law Intake"
+SMTP_HOST="smtp.example.com"
+SMTP_PORT="587"
+SMTP_SECURE="false"
+SMTP_USER="smtp-user"
+SMTP_PASS="smtp-password"
+```
+
+Local preview mode without SMTP:
+
+```bash
+NOTIFICATION_TO_EMAILS="intake@kinsleylaw.com"
+SMTP_FROM_EMAIL="notifications@kinsleylaw.com"
+EMAIL_PREVIEW_DIR=".email-previews"
+```
+
+When preview mode is enabled, each notification is written as a JSON payload
+under `.email-previews/` instead of being sent over SMTP.
+
 ## Run locally
 
 ```bash
@@ -107,6 +135,6 @@ migration history in sync.
 
 ## Next steps
 
-1. Add create/update actions inside `/admin` for attorneys, practice areas, testimonials, and site settings.
-2. Replace placeholder imagery with real firm assets.
+1. Add direct content reordering drag/drop UX inside `/admin` instead of numeric ordering fields.
+2. Replace temporary attorney photo URLs with approved final firm images.
 3. Remove the temporary `next-app/` stub after any stale dev process using it is fully gone.
