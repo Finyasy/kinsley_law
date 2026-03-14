@@ -5,6 +5,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
 import {
+  hashAdminPassword,
+  normalizeAdminEmail,
   requireAdminSessionUser,
 } from "@/lib/admin-auth";
 import { type AdminActionState } from "@/lib/admin-editor-state";
@@ -18,6 +20,8 @@ import {
   type HomePageContent,
   type OfficeDetails,
 } from "@/lib/site-defaults";
+
+const adminRoleOptions = ["admin", "editor"] as const;
 
 function readRequiredText(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -153,6 +157,29 @@ async function validateAdminWriteAccess() {
   }
 
   return null;
+}
+
+async function getValidatedAdminUser() {
+  if (!isDatabaseConfigured()) {
+    return {
+      adminUser: null,
+      error: "Database access is unavailable. Content editing is disabled.",
+    };
+  }
+
+  const adminUser = await requireAdminSessionUser();
+
+  if (!adminUser) {
+    return {
+      adminUser: null,
+      error: "Your admin session is no longer valid. Refresh and sign in again.",
+    };
+  }
+
+  return {
+    adminUser,
+    error: null,
+  };
 }
 
 function errorState(message: string): AdminActionState {
@@ -660,4 +687,164 @@ export async function updateAppointmentWorkflowAction(
 
   revalidateAdminContent([]);
   return successState("Consultation workflow saved.");
+}
+
+export async function saveAdminUserAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const { adminUser: currentAdmin, error } = await getValidatedAdminUser();
+
+  if (error || !currentAdmin) {
+    return errorState(error ?? "Your admin session is no longer valid.");
+  }
+
+  const idValue = readOptionalText(formData, "id");
+  const id = readInteger(idValue);
+  const name = readRequiredText(formData, "name");
+  const email = normalizeAdminEmail(readRequiredText(formData, "email"));
+  const role = readRequiredText(formData, "role");
+  const password = readOptionalText(formData, "password");
+
+  if (!name || !email || !role) {
+    return errorState("Name, email, and role are required.");
+  }
+
+  if (!adminRoleOptions.includes(role as (typeof adminRoleOptions)[number])) {
+    return errorState("Select a valid admin role.");
+  }
+
+  if (idValue && id === null) {
+    return errorState("Admin user ID is invalid.");
+  }
+
+  if (!id && !password) {
+    return errorState("A password is required when creating a new admin user.");
+  }
+
+  try {
+    const passwordHash = password ? await hashAdminPassword(password) : null;
+
+    if (id) {
+      const existingUser = await prisma.adminUser.findUnique({
+        where: { id },
+        select: { id: true },
+      });
+
+      if (!existingUser) {
+        return errorState("That admin user no longer exists.");
+      }
+
+      await prisma.adminUser.update({
+        where: { id },
+        data: {
+          name,
+          email,
+          role,
+          ...(passwordHash ? { passwordHash } : {}),
+        },
+      });
+    } else {
+      await prisma.adminUser.create({
+        data: {
+          name,
+          email,
+          role,
+          passwordHash: passwordHash!,
+          isActive: true,
+        },
+      });
+    }
+  } catch (error) {
+    return errorState(
+      error instanceof Error
+        ? error.message
+        : "Unable to save the admin user.",
+    );
+  }
+
+  revalidateAdminContent([]);
+  return successState(id ? "Admin user updated." : "Admin user created.");
+}
+
+export async function toggleAdminUserStatusAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const { adminUser: currentAdmin, error } = await getValidatedAdminUser();
+
+  if (error || !currentAdmin) {
+    return errorState(error ?? "Your admin session is no longer valid.");
+  }
+
+  const id = readInteger(readRequiredText(formData, "id"));
+  const nextActiveState = readRequiredText(formData, "nextActiveState");
+
+  if (id === null) {
+    return errorState("Admin user ID is invalid.");
+  }
+
+  if (nextActiveState !== "active" && nextActiveState !== "inactive") {
+    return errorState("Admin status change is invalid.");
+  }
+
+  if (id === currentAdmin.id && nextActiveState === "inactive") {
+    return errorState("You cannot deactivate the admin account you are currently using.");
+  }
+
+  try {
+    await prisma.adminUser.update({
+      where: { id },
+      data: {
+        isActive: nextActiveState === "active",
+      },
+    });
+
+    if (nextActiveState === "inactive") {
+      await prisma.adminSession.deleteMany({
+        where: { adminUserId: id },
+      });
+    }
+  } catch (error) {
+    return errorState(
+      error instanceof Error
+        ? error.message
+        : "Unable to update the admin user status.",
+    );
+  }
+
+  revalidateAdminContent([]);
+  return successState(
+    nextActiveState === "active"
+      ? "Admin user reactivated."
+      : "Admin user deactivated and signed out everywhere.",
+  );
+}
+
+export async function revokeAdminUserSessionsAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const { adminUser: currentAdmin, error } = await getValidatedAdminUser();
+
+  if (error || !currentAdmin) {
+    return errorState(error ?? "Your admin session is no longer valid.");
+  }
+
+  const id = readInteger(readRequiredText(formData, "id"));
+
+  if (id === null) {
+    return errorState("Admin user ID is invalid.");
+  }
+
+  if (id === currentAdmin.id) {
+    return errorState("Use Sign out if you want to end the current admin session.");
+  }
+
+  await prisma.adminSession.deleteMany({
+    where: { adminUserId: id },
+  });
+
+  revalidateAdminContent([]);
+  return successState("Active sessions revoked for that admin user.");
 }

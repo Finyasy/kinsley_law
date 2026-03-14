@@ -70,6 +70,18 @@ export type AppointmentSubmission = {
   updatedAt: Date;
 };
 
+export type AdminAccountSummary = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  activeSessionCount: number;
+  lastSeenAt: Date | null;
+};
+
 export type AdminDashboardData = {
   databaseConfigured: boolean;
   homePageContent: HomePageContent;
@@ -80,12 +92,15 @@ export type AdminDashboardData = {
     contacts: number;
     appointments: number;
     testimonials: number;
+    adminUsers: number;
+    activeAdminSessions: number;
   };
   attorneys: PageAttorney[];
   practiceAreas: PagePracticeArea[];
   testimonials: PageTestimonial[];
   contacts: ContactSubmission[];
   appointments: AppointmentSubmission[];
+  adminUsers: AdminAccountSummary[];
   settings: Array<{
     key: string;
     value: unknown;
@@ -254,12 +269,15 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         contacts: 0,
         appointments: 0,
         testimonials: testimonials.length,
+        adminUsers: 0,
+        activeAdminSessions: 0,
       },
       attorneys,
       practiceAreas,
       testimonials,
       contacts: [],
       appointments: [],
+      adminUsers: [],
       settings,
     };
   }
@@ -268,12 +286,23 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
     const [
       contactCount,
       appointmentCount,
+      adminUserCount,
+      activeAdminSessionCount,
       storedSettings,
       contacts,
       appointments,
+      adminUsers,
     ] = await Promise.all([
       prisma.contact.count(),
       prisma.appointment.count(),
+      prisma.adminUser.count(),
+      prisma.adminSession.count({
+        where: {
+          expiresAt: {
+            gt: new Date(),
+          },
+        },
+      }),
       prisma.siteSetting.findMany({
         orderBy: { key: "asc" },
       }),
@@ -285,6 +314,21 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         include: {
           attorney: {
             select: { name: true },
+          },
+        },
+      }),
+      prisma.adminUser.findMany({
+        orderBy: [{ isActive: "desc" }, { name: "asc" }],
+        include: {
+          sessions: {
+            where: {
+              expiresAt: {
+                gt: new Date(),
+              },
+            },
+            orderBy: {
+              lastSeenAt: "desc",
+            },
           },
         },
       }),
@@ -300,6 +344,8 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         contacts: contactCount,
         appointments: appointmentCount,
         testimonials: testimonials.length,
+        adminUsers: adminUserCount,
+        activeAdminSessions: activeAdminSessionCount,
       },
       attorneys,
       practiceAreas,
@@ -333,6 +379,17 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         createdAt: appointment.createdAt,
         updatedAt: appointment.updatedAt,
       })),
+      adminUsers: adminUsers.map((adminUser) => ({
+        id: adminUser.id,
+        name: adminUser.name,
+        email: adminUser.email,
+        role: adminUser.role,
+        isActive: adminUser.isActive,
+        createdAt: adminUser.createdAt,
+        updatedAt: adminUser.updatedAt,
+        activeSessionCount: adminUser.sessions.length,
+        lastSeenAt: adminUser.sessions[0]?.lastSeenAt ?? null,
+      })),
       settings: storedSettings.map((setting) => ({
         key: setting.key,
         value: setting.value,
@@ -350,12 +407,15 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         contacts: 0,
         appointments: 0,
         testimonials: testimonials.length,
+        adminUsers: 0,
+        activeAdminSessions: 0,
       },
       attorneys,
       practiceAreas,
       testimonials,
       contacts: [],
       appointments: [],
+      adminUsers: [],
       settings,
     };
   }

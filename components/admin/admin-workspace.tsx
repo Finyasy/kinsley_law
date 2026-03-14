@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AdminSessionButton } from "@/components/admin/admin-session-button";
+import { AdminUserManagement } from "@/components/admin/admin-user-management";
 import {
   ContentStudioAttorneysSection,
   ContentStudioCoreSection,
@@ -19,6 +20,7 @@ type AdminWorkspaceProps = {
     value: string;
   }>;
   currentAdmin: {
+    id: number;
     name: string;
     email: string;
     role: string;
@@ -30,6 +32,7 @@ type AdminTab =
   | "inbox"
   | "content"
   | "attorneys"
+  | "admins"
   | "practice-areas"
   | "testimonials";
 
@@ -57,6 +60,11 @@ const adminTabs: Array<{
     id: "attorneys",
     label: "Attorneys",
     description: "Profiles, order, and photos.",
+  },
+  {
+    id: "admins",
+    label: "Admins",
+    description: "Users, roles, and sessions.",
   },
   {
     id: "practice-areas",
@@ -222,10 +230,18 @@ export function AdminWorkspace({
             <button
               type="button"
               className="admin-stat-card admin-stat-button"
+              onClick={() => setActiveTab("admins")}
+            >
+              <span>Admin users</span>
+              <strong>{dashboard.counts.adminUsers}</strong>
+            </button>
+            <button
+              type="button"
+              className="admin-stat-card admin-stat-button"
               onClick={() => setActiveTab("testimonials")}
             >
-              <span>Testimonials</span>
-              <strong>{dashboard.counts.testimonials}</strong>
+              <span>Active sessions</span>
+              <strong>{dashboard.counts.activeAdminSessions}</strong>
             </button>
           </div>
 
@@ -313,6 +329,10 @@ export function AdminWorkspace({
                     <article className="admin-mini-stat">
                       <span>Practice areas</span>
                       <strong>{dashboard.counts.practiceAreas}</strong>
+                    </article>
+                    <article className="admin-mini-stat">
+                      <span>Admin users</span>
+                      <strong>{dashboard.counts.adminUsers}</strong>
                     </article>
                   </div>
                   <div className="button-row">
@@ -460,6 +480,26 @@ export function AdminWorkspace({
                 </div>
               </div>
               <ContentStudioAttorneysSection attorneys={dashboard.attorneys} />
+            </section>
+          ) : null}
+
+          {activeTab === "admins" ? (
+            <section
+              className="admin-panel admin-content-studio"
+              id="admin-panel-admins"
+              role="tabpanel"
+              aria-labelledby="admin-tab-admins"
+            >
+              <div className="admin-panel-heading">
+                <div>
+                  <p className="eyebrow">Admin access</p>
+                  <h2>Manage dashboard users, roles, and active sessions</h2>
+                </div>
+              </div>
+              <AdminUserManagement
+                adminUsers={dashboard.adminUsers}
+                currentAdminId={currentAdmin.id}
+              />
             </section>
           ) : null}
 

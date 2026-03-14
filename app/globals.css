@@ -1458,7 +1458,7 @@ button {
 }
 
 .admin-stat-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 .admin-stat-card span {
@@ -1489,7 +1489,7 @@ button {
 
 .admin-tab-bar {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.8rem;
 }
 
@@ -1862,6 +1862,11 @@ button {
   gap: 0.8rem;
   padding-top: 0.2rem;
   border-top: 1px solid rgba(21, 52, 91, 0.08);
+}
+
+.admin-editor-action-stack {
+  display: grid;
+  gap: 0.8rem;
 }
 
 .admin-setting-header {
