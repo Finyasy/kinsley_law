@@ -57,16 +57,17 @@ npm run prisma:generate
 npm run prisma:seed
 ```
 
-Set local admin auth secrets in `.env` to unlock `/admin`:
+Create the first admin user before opening `/admin`:
 
 ```bash
-ADMIN_DASHBOARD_PASSWORD="replace-with-a-strong-local-password"
-ADMIN_SESSION_SECRET="replace-with-a-second-long-random-secret"
+npm run admin:create -- --email "admin@kinsleylaw.com" --name "Kinsley Admin" --password "replace-with-a-long-password"
 ```
 
-`ADMIN_SESSION_SECRET` is recommended. The admin cookie is now signed and
-time-limited, and using a second secret prevents the session signature from
-being derived from the dashboard password alone.
+Admin access is now database-backed:
+
+- named users instead of a shared environment password
+- persistent sessions stored in PostgreSQL
+- per-user sign-in with email and password
 
 ## Email notifications
 
@@ -114,6 +115,23 @@ Attorney profiles now accept either a direct `Photo URL` or a local image
 upload. Local uploads are written to `public/uploads/attorneys/` and are
 ignored by Git so they can be managed as runtime content.
 
+## Admin authentication
+
+`/admin` now uses real user accounts stored in PostgreSQL:
+
+- create or rotate an account with `npm run admin:create`
+- sign in with the configured email and password
+- sessions are stored in the `AdminSession` table and expire automatically
+
+Example:
+
+```bash
+npm run admin:create -- --email "admin@kinsleylaw.com" --name "Kinsley Admin" --password "replace-with-a-long-password"
+```
+
+Running the command again with the same email updates the password, keeps the
+user active, and clears old sessions for that account.
+
 ## Run locally
 
 ```bash
@@ -158,6 +176,6 @@ migration history in sync.
 
 ## Next steps
 
-1. Replace the password-only admin login with a proper user identity provider when the site is deployed publicly.
+1. Add role-aware authorization and an admin user management screen inside `/admin`.
 2. Add direct content reordering drag/drop UX inside `/admin` instead of numeric ordering fields.
 3. Move local attorney uploads to durable object storage if you do not plan to self-host the app on a persistent filesystem.
