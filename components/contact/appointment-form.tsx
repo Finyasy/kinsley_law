@@ -15,6 +15,8 @@ const initialState = {
   time: "",
   practiceArea: "",
   description: "",
+  website: "",
+  formStartedAt: Date.now(),
 };
 
 export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
@@ -50,7 +52,10 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
       }
 
       setMessage(result?.message ?? "Consultation request sent.");
-      setFormData(initialState);
+      setFormData({
+        ...initialState,
+        formStartedAt: Date.now(),
+      });
     } catch (submissionError) {
       setError(
         submissionError instanceof Error
@@ -172,6 +177,18 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
             placeholder="Share the issue, desired consultation outcome, and any timing constraints."
             onChange={(event) => updateField(event.target.name, event.target.value)}
             required
+          />
+        </div>
+
+        <div className="field full hidden-honeypot" aria-hidden="true">
+          <label htmlFor="appointment-website">Website</label>
+          <input
+            id="appointment-website"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            value={formData.website}
+            onChange={(event) => updateField(event.target.name, event.target.value)}
           />
         </div>
       </div>

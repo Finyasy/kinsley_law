@@ -66,7 +66,11 @@ export default async function AdminPage() {
                 </div>
                 <div>
                   <strong>Persistent roles</strong>
-                  <span>Admin users are stored in PostgreSQL with role and active state.</span>
+                  <span>
+                    Admin users are stored in PostgreSQL with role and active
+                    state. After the first admin signs in, they can create
+                    editor accounts from the same `/admin` portal.
+                  </span>
                 </div>
               </div>
             </div>

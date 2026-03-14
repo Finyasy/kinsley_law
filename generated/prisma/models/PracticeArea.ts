@@ -468,14 +468,6 @@ export type PracticeAreaUncheckedUpdateManyWithoutAttorneyNestedInput = {
   deleteMany?: Prisma.PracticeAreaScalarWhereInput | Prisma.PracticeAreaScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type PracticeAreaCreateNestedOneWithoutHighlightsInput = {
   create?: Prisma.XOR<Prisma.PracticeAreaCreateWithoutHighlightsInput, Prisma.PracticeAreaUncheckedCreateWithoutHighlightsInput>
   connectOrCreate?: Prisma.PracticeAreaCreateOrConnectWithoutHighlightsInput

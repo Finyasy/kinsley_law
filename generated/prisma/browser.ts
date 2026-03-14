@@ -28,6 +28,11 @@ export type AdminUser = Prisma.AdminUserModel
  */
 export type AdminSession = Prisma.AdminSessionModel
 /**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel
+/**
  * Model Attorney
  * 
  */

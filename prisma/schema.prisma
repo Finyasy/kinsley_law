@@ -18,6 +18,7 @@ model AdminUser {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   sessions     AdminSession[]
+  auditLogs    AuditLog[]
 
   @@index([role, isActive])
 }
@@ -35,6 +36,22 @@ model AdminSession {
   adminUser        AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
 
   @@index([adminUserId, expiresAt])
+}
+
+model AuditLog {
+  id               Int        @id @default(autoincrement())
+  action           String
+  entityType       String
+  entityId         String?
+  summary          String
+  metadata         Json?
+  createdAt        DateTime   @default(now())
+  actorAdminUserId Int?
+  actorAdminUser   AdminUser? @relation(fields: [actorAdminUserId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([entityType, createdAt])
+  @@index([actorAdminUserId, createdAt])
 }
 
 model Attorney {
