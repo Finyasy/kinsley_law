@@ -236,6 +236,10 @@ export function AdminUserManagement({
 }: AdminUserManagementProps) {
   return (
     <div className="admin-editor-section">
+      <p className="admin-editor-note">
+        Only full admin accounts can manage dashboard users and revoke sessions.
+        Editors continue to handle intake and content without access to account controls.
+      </p>
       <div className="admin-editor-grid">
         {adminUsers.map((adminUser) => (
           <AdminUserEditorCard
