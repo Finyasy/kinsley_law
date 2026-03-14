@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:e2e": "playwright test",
     "db:init": "./scripts/db-init.sh",
     "db:start": "./scripts/db-start.sh",
     "db:stop": "./scripts/db-stop.sh",

@@ -1,7 +1,7 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { recordAdminAuditEvent } from "@/lib/admin-audit";
@@ -47,6 +47,11 @@ function parseLineList(value: string) {
     .split(/\r?\n/)
     .map((entry) => entry.trim())
     .filter(Boolean);
+}
+
+function readBoolean(formData: FormData, key: string) {
+  const value = String(formData.get(key) ?? "").trim().toLowerCase();
+  return value === "true" || value === "1" || value === "on";
 }
 
 function slugifyFileName(value: string) {
@@ -97,6 +102,43 @@ async function saveAttorneyPhotoUpload(file: File, attorneyName: string) {
   await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
 
   return `/uploads/attorneys/${fileName}`;
+}
+
+async function removeManagedAttorneyPhoto(photoUrl: string | null | undefined) {
+  if (!photoUrl?.startsWith("/uploads/attorneys/")) {
+    return;
+  }
+
+  const relativePath = photoUrl.replace(/^\/+/, "");
+  const filePath = path.join(process.cwd(), "public", relativePath);
+
+  await rm(filePath, { force: true });
+}
+
+function parseOrderedIds(formData: FormData, key: string) {
+  const value = readRequiredText(formData, key);
+
+  if (!value) {
+    return [];
+  }
+
+  let parsedValue: unknown;
+
+  try {
+    parsedValue = JSON.parse(value);
+  } catch {
+    return null;
+  }
+
+  if (!Array.isArray(parsedValue)) {
+    return null;
+  }
+
+  const ids = parsedValue
+    .map((entry) => (typeof entry === "number" ? entry : Number.parseInt(String(entry), 10)))
+    .filter((entry) => Number.isInteger(entry) && entry > 0);
+
+  return ids.length === parsedValue.length ? ids : null;
 }
 
 async function resolveSortOrder(options: {
@@ -204,6 +246,93 @@ function revalidateAdminContent(paths: string[]) {
   for (const path of ["/admin", ...paths]) {
     revalidatePath(path);
   }
+}
+
+async function reorderEntity(options: {
+  adminUserId: number;
+  adminUserName: string;
+  entity:
+    | "attorney"
+    | "practiceArea"
+    | "testimonial";
+  entityLabel: string;
+  orderedIds: number[];
+}) {
+  const { adminUserId, adminUserName, entity, entityLabel, orderedIds } = options;
+
+  if (orderedIds.length === 0) {
+    return errorState(`Add at least one ${entityLabel.toLowerCase()} before saving display order.`);
+  }
+
+  const existingRecords =
+    entity === "attorney"
+      ? await prisma.attorney.findMany({
+          select: { id: true },
+        })
+      : entity === "practiceArea"
+        ? await prisma.practiceArea.findMany({
+            select: { id: true },
+          })
+        : await prisma.testimonial.findMany({
+            select: { id: true },
+          });
+
+  if (existingRecords.length !== orderedIds.length) {
+    return errorState(
+      `Refresh the page before reordering. The available ${entityLabel.toLowerCase()} list changed.`,
+    );
+  }
+
+  const existingIds = new Set(existingRecords.map((record) => record.id));
+
+  if (orderedIds.some((id) => !existingIds.has(id))) {
+    return errorState(`One or more ${entityLabel.toLowerCase()} records are invalid.`);
+  }
+
+  await prisma.$transaction(async (transaction) => {
+    if (entity === "attorney") {
+      await Promise.all(
+        orderedIds.map((id, index) =>
+          transaction.attorney.update({
+            where: { id },
+            data: { sortOrder: index },
+          }),
+        ),
+      );
+    } else if (entity === "practiceArea") {
+      await Promise.all(
+        orderedIds.map((id, index) =>
+          transaction.practiceArea.update({
+            where: { id },
+            data: { sortOrder: index },
+          }),
+        ),
+      );
+    } else {
+      await Promise.all(
+        orderedIds.map((id, index) =>
+          transaction.testimonial.update({
+            where: { id },
+            data: { sortOrder: index },
+          }),
+        ),
+      );
+    }
+
+    await transaction.auditLog.create({
+      data: {
+        actorAdminUserId: adminUserId,
+        action: `${entity}.reordered`,
+        entityType: entity,
+        summary: `${adminUserName} reordered ${orderedIds.length} ${entityLabel.toLowerCase()} records.`,
+        metadata: {
+          orderedIds,
+        },
+      },
+    });
+  });
+
+  return successState(`${entityLabel} order saved.`);
 }
 
 export async function updateOfficeDetailsAction(
@@ -476,6 +605,7 @@ export async function saveAttorneyAction(
   const position = readRequiredText(formData, "position");
   const specialization = readRequiredText(formData, "specialization");
   const photoUrl = readOptionalText(formData, "photoUrl");
+  const removePhoto = readBoolean(formData, "removePhoto");
   const photoFile = formData.get("photoFile");
   const bio = readRequiredText(formData, "bio");
 
@@ -499,10 +629,21 @@ export async function saveAttorneyAction(
   });
 
   try {
-    let resolvedPhotoUrl = photoUrl || null;
+    const existingAttorney = id
+      ? await prisma.attorney.findUnique({
+          where: { id },
+          select: { photoUrl: true },
+        })
+      : null;
+    const previousPhotoUrl = existingAttorney?.photoUrl ?? null;
+    let resolvedPhotoUrl = removePhoto ? null : photoUrl || previousPhotoUrl || null;
+    let nextManagedPhotoToDelete: string | null = null;
 
     if (photoFile instanceof File && photoFile.size > 0) {
       resolvedPhotoUrl = await saveAttorneyPhotoUpload(photoFile, name);
+      nextManagedPhotoToDelete = previousPhotoUrl;
+    } else if (removePhoto) {
+      nextManagedPhotoToDelete = previousPhotoUrl;
     }
 
     if (id) {
@@ -519,6 +660,13 @@ export async function saveAttorneyAction(
           sortOrder: resolvedSortOrder,
         },
       });
+
+      if (
+        nextManagedPhotoToDelete &&
+        nextManagedPhotoToDelete !== resolvedPhotoUrl
+      ) {
+        await removeManagedAttorneyPhoto(nextManagedPhotoToDelete);
+      }
     } else {
       const attorney = await prisma.attorney.create({
         data: {
@@ -544,6 +692,7 @@ export async function saveAttorneyAction(
           email,
           position,
           specialization,
+          photoManaged: Boolean(resolvedPhotoUrl),
           sortOrder: resolvedSortOrder,
         },
       });
@@ -570,6 +719,8 @@ export async function saveAttorneyAction(
       email,
       position,
       specialization,
+      photoRemoved: removePhoto,
+      photoManaged: Boolean(photoFile instanceof File && photoFile.size > 0),
       sortOrder: resolvedSortOrder,
     },
   });
@@ -789,6 +940,90 @@ export async function updateContactWorkflowAction(
 
   revalidateAdminContent([]);
   return successState("Message workflow saved.");
+}
+
+export async function reorderAttorneysAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const { adminUser, error } = await getValidatedAdminUser();
+
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
+  }
+
+  const orderedIds = parseOrderedIds(formData, "orderedIds");
+
+  if (orderedIds === null) {
+    return errorState("Attorney ordering payload is invalid.");
+  }
+
+  const result = await reorderEntity({
+    adminUserId: adminUser.id,
+    adminUserName: adminUser.name,
+    entity: "attorney",
+    entityLabel: "Attorney",
+    orderedIds,
+  });
+
+  revalidateAdminContent(["/", "/about", "/services"]);
+  return result;
+}
+
+export async function reorderPracticeAreasAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const { adminUser, error } = await getValidatedAdminUser();
+
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
+  }
+
+  const orderedIds = parseOrderedIds(formData, "orderedIds");
+
+  if (orderedIds === null) {
+    return errorState("Practice area ordering payload is invalid.");
+  }
+
+  const result = await reorderEntity({
+    adminUserId: adminUser.id,
+    adminUserName: adminUser.name,
+    entity: "practiceArea",
+    entityLabel: "Practice area",
+    orderedIds,
+  });
+
+  revalidateAdminContent(["/", "/about", "/contact", "/services"]);
+  return result;
+}
+
+export async function reorderTestimonialsAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const { adminUser, error } = await getValidatedAdminUser();
+
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
+  }
+
+  const orderedIds = parseOrderedIds(formData, "orderedIds");
+
+  if (orderedIds === null) {
+    return errorState("Testimonial ordering payload is invalid.");
+  }
+
+  const result = await reorderEntity({
+    adminUserId: adminUser.id,
+    adminUserName: adminUser.name,
+    entity: "testimonial",
+    entityLabel: "Testimonial",
+    orderedIds,
+  });
+
+  revalidateAdminContent(["/"]);
+  return result;
 }
 
 export async function updateAppointmentWorkflowAction(

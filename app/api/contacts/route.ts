@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendContactNotification } from "@/lib/email-notifications";
+import { enforceIntakeProtection } from "@/lib/intake-protection";
 import { formatDatabaseErrorMessage, isDatabaseConfigured } from "@/lib/persistence";
 import { prisma } from "@/lib/prisma";
 
@@ -9,6 +10,8 @@ type ContactPayload = {
   phone?: string;
   service?: string;
   message?: string;
+  website?: string;
+  formStartedAt?: number;
 };
 
 function validate(payload: ContactPayload) {
@@ -33,6 +36,17 @@ export async function POST(request: Request) {
   }
 
   const payload = (await request.json()) as ContactPayload;
+  const protectionResponse = enforceIntakeProtection({
+    request,
+    routeKey: "contact",
+    honeypot: payload.website,
+    formStartedAt: payload.formStartedAt,
+  });
+
+  if (protectionResponse) {
+    return protectionResponse;
+  }
+
   const errors = validate(payload);
 
   if (errors.length > 0) {

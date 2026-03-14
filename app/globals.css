@@ -991,6 +991,14 @@ button {
   margin: 0;
 }
 
+.hidden-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .field-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1735,6 +1743,17 @@ button {
   box-shadow: var(--shadow-md);
 }
 
+.admin-order-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(21, 52, 91, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 244, 239, 0.88));
+  box-shadow: var(--shadow-md);
+}
+
 .admin-editor-card-wide {
   align-content: start;
 }
@@ -1811,6 +1830,18 @@ button {
   font-size: 0.95rem;
 }
 
+.admin-inline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-weight: 600;
+}
+
+.admin-inline-toggle input {
+  width: 1rem;
+  height: 1rem;
+}
+
 .admin-asset-preview {
   display: grid;
   grid-template-columns: 5rem minmax(0, 1fr);
@@ -1866,6 +1897,50 @@ button {
   gap: 0.8rem;
   padding-top: 0.2rem;
   border-top: 1px solid rgba(21, 52, 91, 0.08);
+}
+
+.admin-order-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.admin-order-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(21, 52, 91, 0.08);
+  background: rgba(255, 255, 255, 0.66);
+  cursor: grab;
+}
+
+.admin-order-item[data-dragging="true"] {
+  opacity: 0.62;
+  border-color: rgba(122, 32, 34, 0.24);
+}
+
+.admin-order-item-copy {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.admin-order-item-copy strong,
+.admin-order-item-copy span {
+  display: block;
+}
+
+.admin-order-item-copy span {
+  color: rgba(11, 23, 39, 0.62);
+  overflow-wrap: anywhere;
+}
+
+.admin-order-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
 .admin-editor-action-stack {
@@ -2282,6 +2357,12 @@ button {
   .admin-intake-contact-list,
   .admin-activity-meta {
     grid-template-columns: 1fr;
+  }
+
+  .admin-order-item,
+  .admin-order-item-actions {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 

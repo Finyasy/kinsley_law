@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendAppointmentNotification } from "@/lib/email-notifications";
+import { enforceIntakeProtection } from "@/lib/intake-protection";
 import { formatDatabaseErrorMessage, isDatabaseConfigured } from "@/lib/persistence";
 import { prisma } from "@/lib/prisma";
 
@@ -11,6 +12,8 @@ type AppointmentPayload = {
   time?: string;
   practiceArea?: string;
   description?: string;
+  website?: string;
+  formStartedAt?: number;
 };
 
 function validate(payload: AppointmentPayload) {
@@ -38,6 +41,17 @@ export async function POST(request: Request) {
   }
 
   const payload = (await request.json()) as AppointmentPayload;
+  const protectionResponse = enforceIntakeProtection({
+    request,
+    routeKey: "appointment",
+    honeypot: payload.website,
+    formStartedAt: payload.formStartedAt,
+  });
+
+  if (protectionResponse) {
+    return protectionResponse;
+  }
+
   const errors = validate(payload);
 
   if (errors.length > 0) {

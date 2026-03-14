@@ -1,9 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { type ChangeEvent, useActionState, useEffect, useState } from "react";
 import {
   deleteAttorneyAction,
   deleteTestimonialAction,
+  reorderAttorneysAction,
+  reorderPracticeAreasAction,
+  reorderTestimonialsAction,
   saveAttorneyAction,
   savePracticeAreaAction,
   saveTestimonialAction,
@@ -46,6 +49,23 @@ type AttorneyEditorCardProps = {
   attorney?: PageAttorney;
 };
 
+type SortableEntity = {
+  id: number;
+  label: string;
+  meta: string;
+};
+
+type OrderEditorProps = {
+  title: string;
+  note: string;
+  entities: SortableEntity[];
+  action: (
+    state: AdminActionState,
+    formData: FormData,
+  ) => Promise<AdminActionState>;
+  emptyMessage: string;
+};
+
 function FormMessage({ state }: { state: AdminActionState }) {
   if (state.status === "idle" || !state.message) {
     return null;
@@ -73,6 +93,137 @@ function FormSubmitButton({
     <button type="submit" className={className} disabled={isPending}>
       {isPending ? pendingLabel : idleLabel}
     </button>
+  );
+}
+
+function OrderEditor({
+  title,
+  note,
+  entities,
+  action,
+  emptyMessage,
+}: OrderEditorProps) {
+  const [state, formAction, isPending] = useActionState(
+    action,
+    initialAdminActionState,
+  );
+  const [orderedEntities, setOrderedEntities] = useState(entities);
+  const [draggedId, setDraggedId] = useState<number | null>(null);
+
+  useEffect(() => {
+    setOrderedEntities(entities);
+  }, [entities]);
+
+  function moveEntity(id: number, direction: -1 | 1) {
+    setOrderedEntities((current) => {
+      const index = current.findIndex((entry) => entry.id === id);
+
+      if (index === -1) {
+        return current;
+      }
+
+      const nextIndex = index + direction;
+
+      if (nextIndex < 0 || nextIndex >= current.length) {
+        return current;
+      }
+
+      const next = [...current];
+      const [item] = next.splice(index, 1);
+      next.splice(nextIndex, 0, item);
+      return next;
+    });
+  }
+
+  function handleDrop(targetId: number) {
+    if (draggedId === null || draggedId === targetId) {
+      setDraggedId(null);
+      return;
+    }
+
+    setOrderedEntities((current) => {
+      const draggedIndex = current.findIndex((entry) => entry.id === draggedId);
+      const targetIndex = current.findIndex((entry) => entry.id === targetId);
+
+      if (draggedIndex === -1 || targetIndex === -1) {
+        return current;
+      }
+
+      const next = [...current];
+      const [dragged] = next.splice(draggedIndex, 1);
+      next.splice(targetIndex, 0, dragged);
+      return next;
+    });
+    setDraggedId(null);
+  }
+
+  return (
+    <form action={formAction} className="admin-order-card">
+      <div className="admin-editor-heading">
+        <div>
+          <p className="eyebrow">Ordering</p>
+          <h3>{title}</h3>
+        </div>
+      </div>
+      <p className="admin-editor-note">{note}</p>
+      <FormMessage state={state} />
+      <input
+        type="hidden"
+        name="orderedIds"
+        value={JSON.stringify(orderedEntities.map((entry) => entry.id))}
+      />
+
+      {orderedEntities.length === 0 ? (
+        <p className="admin-empty">{emptyMessage}</p>
+      ) : (
+        <div className="admin-order-list">
+          {orderedEntities.map((entity, index) => (
+            <div
+              key={entity.id}
+              className="admin-order-item"
+              draggable
+              onDragStart={() => setDraggedId(entity.id)}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={() => handleDrop(entity.id)}
+              data-dragging={draggedId === entity.id}
+            >
+              <div className="admin-order-item-copy">
+                <strong>
+                  {index + 1}. {entity.label}
+                </strong>
+                <span>{entity.meta}</span>
+              </div>
+              <div className="admin-order-item-actions">
+                <button
+                  type="button"
+                  className="button-secondary"
+                  onClick={() => moveEntity(entity.id, -1)}
+                  disabled={index === 0}
+                >
+                  Up
+                </button>
+                <button
+                  type="button"
+                  className="button-secondary"
+                  onClick={() => moveEntity(entity.id, 1)}
+                  disabled={index === orderedEntities.length - 1}
+                >
+                  Down
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="button-row">
+        <FormSubmitButton
+          idleLabel="Save Display Order"
+          pendingLabel="Saving..."
+          isPending={isPending}
+        />
+      </div>
+    </form>
   );
 }
 
@@ -407,6 +558,23 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
     deleteAttorneyAction,
     initialAdminActionState,
   );
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
+  const [removePhoto, setRemovePhoto] = useState(false);
+  const effectivePhotoPreview =
+    removePhoto ? "" : photoPreviewUrl ?? attorney?.photoUrl ?? "";
+
+  function handlePhotoFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      setPhotoPreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setPhotoPreviewUrl(objectUrl);
+    setRemovePhoto(false);
+  }
 
   return (
     <article className="admin-editor-card">
@@ -420,13 +588,17 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
         </div>
         <p className="admin-editor-note">Lower display-order values appear earlier in the homepage and team lists.</p>
         <FormMessage state={saveState} />
-        {attorney?.photoUrl ? (
+        {effectivePhotoPreview ? (
           <div className="admin-asset-preview">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={attorney.photoUrl} alt="" className="admin-asset-preview-image" />
+            <img
+              src={effectivePhotoPreview}
+              alt=""
+              className="admin-asset-preview-image"
+            />
             <div>
-              <strong>Current attorney photo</strong>
-              <span>{attorney.photoUrl}</span>
+              <strong>{removePhoto ? "Photo marked for removal" : "Attorney photo preview"}</strong>
+              <span>{removePhoto ? "Saving will remove the current attorney photo." : effectivePhotoPreview}</span>
             </div>
           </div>
         ) : null}
@@ -449,6 +621,7 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
               name="photoUrl"
               defaultValue={attorney?.photoUrl ?? ""}
               placeholder="https://example.com/attorneys/jane-kinsley.jpg or /images/jane-kinsley.jpg"
+              disabled={removePhoto}
             />
           </div>
           <div className="field full">
@@ -458,11 +631,33 @@ function AttorneyEditorCard({ attorney }: AttorneyEditorCardProps) {
               type="file"
               name="photoFile"
               accept="image/jpeg,image/png,image/webp,image/avif"
+              onChange={handlePhotoFileChange}
             />
             <p className="field-hint">
               Local uploads are saved to `/public/uploads/attorneys` and replace the URL above when a file is selected.
             </p>
           </div>
+          {attorney?.photoUrl ? (
+            <div className="field full">
+              <label className="admin-inline-toggle" htmlFor={`attorney-remove-photo-${attorney.id}`}>
+                <input
+                  id={`attorney-remove-photo-${attorney.id}`}
+                  type="checkbox"
+                  name="removePhoto"
+                  checked={removePhoto}
+                  onChange={(event) => {
+                    setRemovePhoto(event.target.checked);
+                    if (event.target.checked) {
+                      setPhotoPreviewUrl(null);
+                    } else {
+                      setPhotoPreviewUrl(null);
+                    }
+                  }}
+                />
+                <span>Remove the current attorney photo on save</span>
+              </label>
+            </div>
+          ) : null}
           <div className="field">
             <label htmlFor={`attorney-name-${attorney?.id ?? "new"}`}>Full name</label>
             <input
@@ -655,14 +850,29 @@ export function ContentStudioAttorneysSection({
   attorneys,
 }: Pick<ContentStudioProps, "attorneys">) {
   return (
-    <div className="admin-editor-grid">
-      {attorneys.map((attorney) => (
-        <AttorneyEditorCard
-          key={attorney.id ?? attorney.email}
-          attorney={attorney}
-        />
-      ))}
-      <AttorneyEditorCard />
+    <div className="admin-editor-section">
+      <OrderEditor
+        title="Attorney display order"
+        note="Drag cards or use the Up and Down controls to reorder the team shown on the homepage and about page."
+        entities={attorneys
+          .filter((attorney) => typeof attorney.id === "number")
+          .map((attorney) => ({
+            id: attorney.id!,
+            label: attorney.name,
+            meta: attorney.position || attorney.specialization || attorney.email,
+          }))}
+        action={reorderAttorneysAction}
+        emptyMessage="Create at least one attorney before reordering the team."
+      />
+      <div className="admin-editor-grid">
+        {attorneys.map((attorney) => (
+          <AttorneyEditorCard
+            key={`${attorney.id ?? attorney.email}-${attorney.photoUrl ?? "none"}-${attorney.sortOrder ?? "na"}`}
+            attorney={attorney}
+          />
+        ))}
+        <AttorneyEditorCard />
+      </div>
     </div>
   );
 }
@@ -672,15 +882,30 @@ export function ContentStudioPracticeAreasSection({
   attorneys,
 }: Pick<ContentStudioProps, "practiceAreas" | "attorneys">) {
   return (
-    <div className="admin-editor-grid">
-      {practiceAreas.map((practiceArea) => (
-        <PracticeAreaEditorCard
-          key={practiceArea.id ?? practiceArea.name}
-          area={practiceArea}
-          attorneys={attorneys}
-        />
-      ))}
-      <PracticeAreaEditorCard attorneys={attorneys} />
+    <div className="admin-editor-section">
+      <OrderEditor
+        title="Practice area display order"
+        note="This order controls how service cards appear on the public services page and related navigation areas."
+        entities={practiceAreas
+          .filter((practiceArea) => typeof practiceArea.id === "number")
+          .map((practiceArea) => ({
+            id: practiceArea.id!,
+            label: practiceArea.name,
+            meta: practiceArea.attorney?.name ?? "No lead attorney assigned",
+          }))}
+        action={reorderPracticeAreasAction}
+        emptyMessage="Create at least one practice area before reordering services."
+      />
+      <div className="admin-editor-grid">
+        {practiceAreas.map((practiceArea) => (
+          <PracticeAreaEditorCard
+            key={practiceArea.id ?? practiceArea.name}
+            area={practiceArea}
+            attorneys={attorneys}
+          />
+        ))}
+        <PracticeAreaEditorCard attorneys={attorneys} />
+      </div>
     </div>
   );
 }
@@ -689,15 +914,30 @@ export function ContentStudioTestimonialsSection({
   testimonials,
 }: Pick<ContentStudioProps, "testimonials">) {
   return (
-    <div className="admin-editor-grid">
-      {testimonials.map((testimonial, index) => (
-        <TestimonialEditorCard
-          key={testimonial.id ?? `${testimonial.name}-${testimonial.title}`}
-          testimonial={testimonial}
-          sortOrder={index}
-        />
-      ))}
-      <TestimonialEditorCard sortOrder={testimonials.length} />
+    <div className="admin-editor-section">
+      <OrderEditor
+        title="Testimonial display order"
+        note="Reorder trust signals without editing each card manually."
+        entities={testimonials
+          .filter((testimonial) => typeof testimonial.id === "number")
+          .map((testimonial) => ({
+            id: testimonial.id!,
+            label: testimonial.name,
+            meta: testimonial.title,
+          }))}
+        action={reorderTestimonialsAction}
+        emptyMessage="Create at least one testimonial before reordering social proof."
+      />
+      <div className="admin-editor-grid">
+        {testimonials.map((testimonial, index) => (
+          <TestimonialEditorCard
+            key={testimonial.id ?? `${testimonial.name}-${testimonial.title}`}
+            testimonial={testimonial}
+            sortOrder={index}
+          />
+        ))}
+        <TestimonialEditorCard sortOrder={testimonials.length} />
+      </div>
     </div>
   );
 }
