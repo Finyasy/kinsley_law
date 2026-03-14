@@ -25,6 +25,7 @@ type AdminWorkspaceProps = {
     email: string;
     role: string;
   };
+  canManageAdmins: boolean;
 };
 
 type AdminTab =
@@ -132,6 +133,7 @@ export function AdminWorkspace({
   dashboard,
   systemHealth,
   currentAdmin,
+  canManageAdmins,
 }: AdminWorkspaceProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
@@ -227,21 +229,29 @@ export function AdminWorkspace({
               <span>Open consultations</span>
               <strong>{openAppointments}</strong>
             </button>
+            {canManageAdmins ? (
+              <button
+                type="button"
+                className="admin-stat-card admin-stat-button"
+                onClick={() => setActiveTab("admins")}
+              >
+                <span>Admin users</span>
+                <strong>{dashboard.counts.adminUsers}</strong>
+              </button>
+            ) : null}
             <button
               type="button"
               className="admin-stat-card admin-stat-button"
-              onClick={() => setActiveTab("admins")}
+              onClick={() =>
+                setActiveTab(canManageAdmins ? "admins" : "testimonials")
+              }
             >
-              <span>Admin users</span>
-              <strong>{dashboard.counts.adminUsers}</strong>
-            </button>
-            <button
-              type="button"
-              className="admin-stat-card admin-stat-button"
-              onClick={() => setActiveTab("testimonials")}
-            >
-              <span>Active sessions</span>
-              <strong>{dashboard.counts.activeAdminSessions}</strong>
+              <span>{canManageAdmins ? "Active sessions" : "Testimonials"}</span>
+              <strong>
+                {canManageAdmins
+                  ? dashboard.counts.activeAdminSessions
+                  : dashboard.counts.testimonials}
+              </strong>
             </button>
           </div>
 
@@ -250,7 +260,9 @@ export function AdminWorkspace({
             aria-label="Admin sections"
             role="tablist"
           >
-            {adminTabs.map((tab) => (
+            {adminTabs
+              .filter((tab) => canManageAdmins || tab.id !== "admins")
+              .map((tab) => (
               <button
                 key={tab.id}
                 id={`admin-tab-${tab.id}`}
@@ -330,10 +342,12 @@ export function AdminWorkspace({
                       <span>Practice areas</span>
                       <strong>{dashboard.counts.practiceAreas}</strong>
                     </article>
-                    <article className="admin-mini-stat">
-                      <span>Admin users</span>
-                      <strong>{dashboard.counts.adminUsers}</strong>
-                    </article>
+                    {canManageAdmins ? (
+                      <article className="admin-mini-stat">
+                        <span>Admin users</span>
+                        <strong>{dashboard.counts.adminUsers}</strong>
+                      </article>
+                    ) : null}
                   </div>
                   <div className="button-row">
                     <button
@@ -483,7 +497,7 @@ export function AdminWorkspace({
             </section>
           ) : null}
 
-          {activeTab === "admins" ? (
+          {canManageAdmins && activeTab === "admins" ? (
             <section
               className="admin-panel admin-content-studio"
               id="admin-panel-admins"

@@ -9,6 +9,9 @@ import { prisma } from "@/lib/prisma";
 import { isDatabaseConfigured } from "@/lib/persistence";
 
 export const ADMIN_SESSION_COOKIE = "kinsley_admin_session";
+export const ADMIN_ROLE_ADMIN = "admin";
+export const ADMIN_ROLE_EDITOR = "editor";
+export const ADMIN_ROLE_OPTIONS = [ADMIN_ROLE_ADMIN, ADMIN_ROLE_EDITOR] as const;
 const ADMIN_SESSION_TTL_SECONDS = 60 * 60 * 8;
 const PASSWORD_KEY_LENGTH = 64;
 const SCRYPT_COST = 16384;
@@ -317,6 +320,10 @@ export async function getAdminSessionFromCookies() {
 export async function requireAdminSessionUser() {
   const session = await getAdminSessionFromCookies();
   return session?.user ?? null;
+}
+
+export function isAdminManager(role: string) {
+  return role === ADMIN_ROLE_ADMIN;
 }
 
 export async function touchAdminSession(sessionToken: string | undefined) {

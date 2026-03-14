@@ -5,7 +5,9 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
 import {
+  ADMIN_ROLE_OPTIONS,
   hashAdminPassword,
+  isAdminManager,
   normalizeAdminEmail,
   requireAdminSessionUser,
 } from "@/lib/admin-auth";
@@ -20,8 +22,6 @@ import {
   type HomePageContent,
   type OfficeDetails,
 } from "@/lib/site-defaults";
-
-const adminRoleOptions = ["admin", "editor"] as const;
 
 function readRequiredText(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -180,6 +180,23 @@ async function getValidatedAdminUser() {
     adminUser,
     error: null,
   };
+}
+
+async function getValidatedAdminManager() {
+  const result = await getValidatedAdminUser();
+
+  if (result.error || !result.adminUser) {
+    return result;
+  }
+
+  if (!isAdminManager(result.adminUser.role)) {
+    return {
+      adminUser: null,
+      error: "Only full admin accounts can manage dashboard users and sessions.",
+    };
+  }
+
+  return result;
 }
 
 function errorState(message: string): AdminActionState {
@@ -693,7 +710,7 @@ export async function saveAdminUserAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const { adminUser: currentAdmin, error } = await getValidatedAdminUser();
+  const { adminUser: currentAdmin, error } = await getValidatedAdminManager();
 
   if (error || !currentAdmin) {
     return errorState(error ?? "Your admin session is no longer valid.");
@@ -710,7 +727,7 @@ export async function saveAdminUserAction(
     return errorState("Name, email, and role are required.");
   }
 
-  if (!adminRoleOptions.includes(role as (typeof adminRoleOptions)[number])) {
+  if (!ADMIN_ROLE_OPTIONS.includes(role as (typeof ADMIN_ROLE_OPTIONS)[number])) {
     return errorState("Select a valid admin role.");
   }
 
@@ -771,7 +788,7 @@ export async function toggleAdminUserStatusAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const { adminUser: currentAdmin, error } = await getValidatedAdminUser();
+  const { adminUser: currentAdmin, error } = await getValidatedAdminManager();
 
   if (error || !currentAdmin) {
     return errorState(error ?? "Your admin session is no longer valid.");
@@ -825,7 +842,7 @@ export async function revokeAdminUserSessionsAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const { adminUser: currentAdmin, error } = await getValidatedAdminUser();
+  const { adminUser: currentAdmin, error } = await getValidatedAdminManager();
 
   if (error || !currentAdmin) {
     return errorState(error ?? "Your admin session is no longer valid.");

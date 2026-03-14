@@ -239,7 +239,10 @@ export async function getPracticeAreasForPage(): Promise<PagePracticeArea[]> {
   }
 }
 
-export async function getAdminDashboardData(): Promise<AdminDashboardData> {
+export async function getAdminDashboardData(options?: {
+  includeAdminManagement?: boolean;
+}): Promise<AdminDashboardData> {
+  const includeAdminManagement = options?.includeAdminManagement ?? false;
   const attorneys = await getAttorneysForPage();
   const practiceAreas = await getPracticeAreasForPage();
   const testimonials = await getTestimonialsForPage();
@@ -295,14 +298,16 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
     ] = await Promise.all([
       prisma.contact.count(),
       prisma.appointment.count(),
-      prisma.adminUser.count(),
-      prisma.adminSession.count({
-        where: {
-          expiresAt: {
-            gt: new Date(),
-          },
-        },
-      }),
+      includeAdminManagement ? prisma.adminUser.count() : Promise.resolve(0),
+      includeAdminManagement
+        ? prisma.adminSession.count({
+            where: {
+              expiresAt: {
+                gt: new Date(),
+              },
+            },
+          })
+        : Promise.resolve(0),
       prisma.siteSetting.findMany({
         orderBy: { key: "asc" },
       }),
@@ -317,21 +322,23 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
           },
         },
       }),
-      prisma.adminUser.findMany({
-        orderBy: [{ isActive: "desc" }, { name: "asc" }],
-        include: {
-          sessions: {
-            where: {
-              expiresAt: {
-                gt: new Date(),
+      includeAdminManagement
+        ? prisma.adminUser.findMany({
+            orderBy: [{ isActive: "desc" }, { name: "asc" }],
+            include: {
+              sessions: {
+                where: {
+                  expiresAt: {
+                    gt: new Date(),
+                  },
+                },
+                orderBy: {
+                  lastSeenAt: "desc",
+                },
               },
             },
-            orderBy: {
-              lastSeenAt: "desc",
-            },
-          },
-        },
-      }),
+          })
+        : Promise.resolve([]),
     ]);
 
     return {
@@ -379,17 +386,19 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
         createdAt: appointment.createdAt,
         updatedAt: appointment.updatedAt,
       })),
-      adminUsers: adminUsers.map((adminUser) => ({
-        id: adminUser.id,
-        name: adminUser.name,
-        email: adminUser.email,
-        role: adminUser.role,
-        isActive: adminUser.isActive,
-        createdAt: adminUser.createdAt,
-        updatedAt: adminUser.updatedAt,
-        activeSessionCount: adminUser.sessions.length,
-        lastSeenAt: adminUser.sessions[0]?.lastSeenAt ?? null,
-      })),
+      adminUsers: includeAdminManagement
+        ? adminUsers.map((adminUser) => ({
+            id: adminUser.id,
+            name: adminUser.name,
+            email: adminUser.email,
+            role: adminUser.role,
+            isActive: adminUser.isActive,
+            createdAt: adminUser.createdAt,
+            updatedAt: adminUser.updatedAt,
+            activeSessionCount: adminUser.sessions.length,
+            lastSeenAt: adminUser.sessions[0]?.lastSeenAt ?? null,
+          }))
+        : [],
       settings: storedSettings.map((setting) => ({
         key: setting.key,
         value: setting.value,

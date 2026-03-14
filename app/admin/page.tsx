@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { AdminWorkspace } from "@/components/admin/admin-workspace";
 import {
+  isAdminManager,
   getAdminSessionFromCookies,
   hasAdminUsersConfigured,
 } from "@/lib/admin-auth";
@@ -87,7 +88,10 @@ export default async function AdminPage() {
     );
   }
 
-  const dashboard = await getAdminDashboardData();
+  const canManageAdmins = isAdminManager(session.user.role);
+  const dashboard = await getAdminDashboardData({
+    includeAdminManagement: canManageAdmins,
+  });
   const systemHealth = [
     {
       label: "Database",
@@ -112,6 +116,7 @@ export default async function AdminPage() {
       dashboard={dashboard}
       systemHealth={systemHealth}
       currentAdmin={session.user}
+      canManageAdmins={canManageAdmins}
     />
   );
 }
