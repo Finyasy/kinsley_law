@@ -82,6 +82,22 @@ export type AdminAccountSummary = {
   lastSeenAt: Date | null;
 };
 
+export type AdminAuditEntry = {
+  id: number;
+  action: string;
+  entityType: string;
+  entityId: string | null;
+  summary: string;
+  metadata: unknown;
+  createdAt: Date;
+  actor: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+};
+
 export type AdminDashboardData = {
   databaseConfigured: boolean;
   homePageContent: HomePageContent;
@@ -101,6 +117,7 @@ export type AdminDashboardData = {
   contacts: ContactSubmission[];
   appointments: AppointmentSubmission[];
   adminUsers: AdminAccountSummary[];
+  auditLogs: AdminAuditEntry[];
   settings: Array<{
     key: string;
     value: unknown;
@@ -281,6 +298,7 @@ export async function getAdminDashboardData(options?: {
       contacts: [],
       appointments: [],
       adminUsers: [],
+      auditLogs: [],
       settings,
     };
   }
@@ -295,6 +313,7 @@ export async function getAdminDashboardData(options?: {
       contacts,
       appointments,
       adminUsers,
+      auditLogs,
     ] = await Promise.all([
       prisma.contact.count(),
       prisma.appointment.count(),
@@ -339,6 +358,20 @@ export async function getAdminDashboardData(options?: {
             },
           })
         : Promise.resolve([]),
+      prisma.auditLog.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 18,
+        include: {
+          actorAdminUser: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              role: true,
+            },
+          },
+        },
+      }),
     ]);
 
     return {
@@ -399,6 +432,23 @@ export async function getAdminDashboardData(options?: {
             lastSeenAt: adminUser.sessions[0]?.lastSeenAt ?? null,
           }))
         : [],
+      auditLogs: auditLogs.map((auditLog) => ({
+        id: auditLog.id,
+        action: auditLog.action,
+        entityType: auditLog.entityType,
+        entityId: auditLog.entityId,
+        summary: auditLog.summary,
+        metadata: auditLog.metadata,
+        createdAt: auditLog.createdAt,
+        actor: auditLog.actorAdminUser
+          ? {
+              id: auditLog.actorAdminUser.id,
+              name: auditLog.actorAdminUser.name,
+              email: auditLog.actorAdminUser.email,
+              role: auditLog.actorAdminUser.role,
+            }
+          : null,
+      })),
       settings: storedSettings.map((setting) => ({
         key: setting.key,
         value: setting.value,
@@ -425,6 +475,7 @@ export async function getAdminDashboardData(options?: {
       contacts: [],
       appointments: [],
       adminUsers: [],
+      auditLogs: [],
       settings,
     };
   }

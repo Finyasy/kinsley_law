@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AdminActivityFeed } from "@/components/admin/admin-activity-feed";
 import { AdminSessionButton } from "@/components/admin/admin-session-button";
 import { AdminUserManagement } from "@/components/admin/admin-user-management";
 import {
@@ -444,6 +445,16 @@ export function AdminWorkspace({
                   </div>
                 </section>
               </div>
+
+              <section className="admin-panel">
+                <div className="admin-panel-heading">
+                  <div>
+                    <p className="eyebrow">Audit trail</p>
+                    <h2>Recent admin activity</h2>
+                  </div>
+                </div>
+                <AdminActivityFeed entries={dashboard.auditLogs} />
+              </section>
             </section>
           ) : null}
 
@@ -456,6 +467,8 @@ export function AdminWorkspace({
               <IntakeWorkspace
                 contacts={dashboard.contacts}
                 appointments={dashboard.appointments}
+                currentAdminName={currentAdmin.name}
+                currentAdminEmail={currentAdmin.email}
               />
             </div>
           ) : null}

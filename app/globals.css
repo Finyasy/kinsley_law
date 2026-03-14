@@ -1374,6 +1374,10 @@ button {
   line-height: 1.7;
 }
 
+.admin-auth-note code {
+  color: rgba(255, 255, 255, 0.88);
+}
+
 .admin-hero-actions {
   display: flex;
   align-items: center;
@@ -1916,6 +1920,61 @@ button {
   gap: 1.5rem;
 }
 
+.admin-inbox-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-filter-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.admin-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.65rem;
+  padding: 0 1rem;
+  border: 1px solid rgba(21, 52, 91, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink-900);
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.admin-filter-chip:hover {
+  transform: translateY(-1px);
+}
+
+.admin-filter-chip[data-active="true"] {
+  border-color: rgba(122, 32, 34, 0.28);
+  background:
+    linear-gradient(135deg, rgba(178, 61, 65, 0.94), rgba(21, 52, 91, 0.98));
+  color: var(--white);
+}
+
+.admin-inbox-results {
+  color: rgba(11, 23, 39, 0.66);
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.admin-empty-state {
+  padding: 1.15rem 1.25rem;
+  border: 1px dashed rgba(21, 52, 91, 0.18);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.58);
+}
+
 .admin-inbox-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2049,6 +2108,75 @@ button {
   gap: 1rem;
 }
 
+.admin-activity-feed {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-activity-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(21, 52, 91, 0.08);
+  background:
+    radial-gradient(circle at top right, rgba(214, 162, 77, 0.1), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 244, 239, 0.92));
+}
+
+.admin-activity-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-activity-header h3 {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.admin-activity-header span {
+  color: rgba(11, 23, 39, 0.58);
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.admin-activity-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.admin-activity-meta div {
+  padding: 0.85rem 0.95rem;
+  border-radius: 1rem;
+  background: rgba(21, 52, 91, 0.04);
+  border: 1px solid rgba(21, 52, 91, 0.08);
+}
+
+.admin-activity-meta span,
+.admin-activity-meta strong {
+  display: block;
+}
+
+.admin-activity-meta span {
+  color: rgba(21, 52, 91, 0.56);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-activity-meta strong {
+  margin-top: 0.35rem;
+  color: var(--ink-950);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
 .site-footer {
   margin-top: 4rem;
   padding: 4rem 0 1.75rem;
@@ -2149,8 +2277,10 @@ button {
 
   .admin-inbox-grid,
   .admin-tab-bar,
+  .admin-inbox-toolbar,
   .admin-intake-meta,
-  .admin-intake-contact-list {
+  .admin-intake-contact-list,
+  .admin-activity-meta {
     grid-template-columns: 1fr;
   }
 }

@@ -10,6 +10,7 @@
  */
 export type * from './models/AdminUser'
 export type * from './models/AdminSession'
+export type * from './models/AuditLog'
 export type * from './models/Attorney'
 export type * from './models/PracticeArea'
 export type * from './models/Contact'

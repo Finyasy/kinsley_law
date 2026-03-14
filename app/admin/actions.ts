@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
+import { recordAdminAuditEvent } from "@/lib/admin-audit";
 import {
   ADMIN_ROLE_OPTIONS,
   hashAdminPassword,
@@ -145,20 +146,6 @@ async function resolveSortOrder(options: {
   return prisma.testimonial.count();
 }
 
-async function validateAdminWriteAccess() {
-  if (!isDatabaseConfigured()) {
-    return "Database access is unavailable. Content editing is disabled.";
-  }
-
-  const adminUser = await requireAdminSessionUser();
-
-  if (!adminUser) {
-    return "Your admin session is no longer valid. Refresh and sign in again.";
-  }
-
-  return null;
-}
-
 async function getValidatedAdminUser() {
   if (!isDatabaseConfigured()) {
     return {
@@ -223,10 +210,10 @@ export async function updateOfficeDetailsAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const officeDetails: OfficeDetails = {
@@ -252,6 +239,14 @@ export async function updateOfficeDetailsAction(
     },
   });
 
+  await recordAdminAuditEvent({
+    actorAdminUserId: adminUser.id,
+    action: "settings.office_details.updated",
+    entityType: "siteSetting",
+    entityId: "officeDetails",
+    summary: `${adminUser.name} updated office details shown on the contact surfaces.`,
+  });
+
   revalidateAdminContent(["/contact"]);
   return successState("Office details saved.");
 }
@@ -260,10 +255,10 @@ export async function updateHomePageContentAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const highlights = Array.from({ length: 4 }, (_, index) => ({
@@ -343,6 +338,14 @@ export async function updateHomePageContentAction(
     },
   });
 
+  await recordAdminAuditEvent({
+    actorAdminUserId: adminUser.id,
+    action: "settings.homepage.updated",
+    entityType: "siteSetting",
+    entityId: "homePageContent",
+    summary: `${adminUser.name} updated homepage copy, metrics, and CTA content.`,
+  });
+
   revalidateAdminContent(["/"]);
   return successState("Homepage content saved.");
 }
@@ -351,10 +354,10 @@ export async function savePracticeAreaAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const idValue = readOptionalText(formData, "id");
@@ -422,6 +425,24 @@ export async function savePracticeAreaAction(
           sortOrder: index,
         })),
       });
+
+      await transaction.auditLog.create({
+        data: {
+          actorAdminUserId: adminUser.id,
+          action: id
+            ? "practice_area.updated"
+            : "practice_area.created",
+          entityType: "practiceArea",
+          entityId: String(practiceArea.id),
+          summary: `${adminUser.name} ${id ? "updated" : "created"} the ${name} practice area.`,
+          metadata: {
+            name,
+            attorneyId,
+            highlightCount: sortHighlights.length,
+            sortOrder: resolvedSortOrder,
+          },
+        },
+      });
     });
   } catch (error) {
     return errorState(
@@ -439,10 +460,10 @@ export async function saveAttorneyAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const idValue = readOptionalText(formData, "id");
@@ -499,7 +520,7 @@ export async function saveAttorneyAction(
         },
       });
     } else {
-      await prisma.attorney.create({
+      const attorney = await prisma.attorney.create({
         data: {
           name,
           email,
@@ -511,6 +532,24 @@ export async function saveAttorneyAction(
           sortOrder: resolvedSortOrder,
         },
       });
+
+      await recordAdminAuditEvent({
+        actorAdminUserId: adminUser.id,
+        action: "attorney.created",
+        entityType: "attorney",
+        entityId: attorney.id,
+        summary: `${adminUser.name} created the ${name} attorney profile.`,
+        metadata: {
+          name,
+          email,
+          position,
+          specialization,
+          sortOrder: resolvedSortOrder,
+        },
+      });
+
+      revalidateAdminContent(["/", "/about", "/services"]);
+      return successState("Attorney created.");
     }
   } catch (error) {
     return errorState(
@@ -520,6 +559,21 @@ export async function saveAttorneyAction(
     );
   }
 
+  await recordAdminAuditEvent({
+    actorAdminUserId: adminUser.id,
+    action: "attorney.updated",
+    entityType: "attorney",
+    entityId: id,
+    summary: `${adminUser.name} updated the ${name} attorney profile.`,
+    metadata: {
+      name,
+      email,
+      position,
+      specialization,
+      sortOrder: resolvedSortOrder,
+    },
+  });
+
   revalidateAdminContent(["/", "/about", "/services"]);
   return successState(id ? "Attorney updated." : "Attorney created.");
 }
@@ -528,10 +582,10 @@ export async function deleteAttorneyAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const id = readInteger(readRequiredText(formData, "id"));
@@ -540,8 +594,21 @@ export async function deleteAttorneyAction(
     return errorState("Attorney ID is invalid.");
   }
 
-  await prisma.attorney.delete({
+  const deletedAttorney = await prisma.attorney.delete({
     where: { id },
+    select: { id: true, name: true, email: true },
+  });
+
+  await recordAdminAuditEvent({
+    actorAdminUserId: adminUser.id,
+    action: "attorney.deleted",
+    entityType: "attorney",
+    entityId: deletedAttorney.id,
+    summary: `${adminUser.name} deleted the ${deletedAttorney.name} attorney profile.`,
+    metadata: {
+      name: deletedAttorney.name,
+      email: deletedAttorney.email,
+    },
   });
 
   revalidateAdminContent(["/", "/about", "/services", "/contact"]);
@@ -552,10 +619,10 @@ export async function saveTestimonialAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const idValue = readOptionalText(formData, "id");
@@ -596,7 +663,7 @@ export async function saveTestimonialAction(
       },
     });
   } else {
-    await prisma.testimonial.create({
+    const testimonial = await prisma.testimonial.create({
       data: {
         name,
         title,
@@ -604,7 +671,36 @@ export async function saveTestimonialAction(
         sortOrder: resolvedSortOrder,
       },
     });
+
+    await recordAdminAuditEvent({
+      actorAdminUserId: adminUser.id,
+      action: "testimonial.created",
+      entityType: "testimonial",
+      entityId: testimonial.id,
+      summary: `${adminUser.name} added a testimonial for ${name}.`,
+      metadata: {
+        name,
+        title,
+        sortOrder: resolvedSortOrder,
+      },
+    });
+
+    revalidateAdminContent(["/"]);
+    return successState("Testimonial added.");
   }
+
+  await recordAdminAuditEvent({
+    actorAdminUserId: adminUser.id,
+    action: "testimonial.updated",
+    entityType: "testimonial",
+    entityId: id,
+    summary: `${adminUser.name} updated the testimonial for ${name}.`,
+    metadata: {
+      name,
+      title,
+      sortOrder: resolvedSortOrder,
+    },
+  });
 
   revalidateAdminContent(["/"]);
   return successState(id ? "Testimonial updated." : "Testimonial added.");
@@ -614,10 +710,10 @@ export async function deleteTestimonialAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const id = readInteger(readRequiredText(formData, "id"));
@@ -626,8 +722,21 @@ export async function deleteTestimonialAction(
     return errorState("Testimonial ID is invalid.");
   }
 
-  await prisma.testimonial.delete({
+  const deletedTestimonial = await prisma.testimonial.delete({
     where: { id },
+    select: { id: true, name: true, title: true },
+  });
+
+  await recordAdminAuditEvent({
+    actorAdminUserId: adminUser.id,
+    action: "testimonial.deleted",
+    entityType: "testimonial",
+    entityId: deletedTestimonial.id,
+    summary: `${adminUser.name} removed the testimonial for ${deletedTestimonial.name}.`,
+    metadata: {
+      name: deletedTestimonial.name,
+      title: deletedTestimonial.title,
+    },
   });
 
   revalidateAdminContent(["/"]);
@@ -638,10 +747,10 @@ export async function updateContactWorkflowAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const id = readInteger(readRequiredText(formData, "id"));
@@ -666,6 +775,18 @@ export async function updateContactWorkflowAction(
     },
   });
 
+  await recordAdminAuditEvent({
+    actorAdminUserId: adminUser.id,
+    action: "contact.workflow.updated",
+    entityType: "contact",
+    entityId: id,
+    summary: `${adminUser.name} moved contact #${id} to ${status}.`,
+    metadata: {
+      status,
+      assignedTo: assignedTo || null,
+    },
+  });
+
   revalidateAdminContent([]);
   return successState("Message workflow saved.");
 }
@@ -674,10 +795,10 @@ export async function updateAppointmentWorkflowAction(
   _previousState: AdminActionState,
   formData: FormData,
 ): Promise<AdminActionState> {
-  const accessError = await validateAdminWriteAccess();
+  const { adminUser, error } = await getValidatedAdminUser();
 
-  if (accessError) {
-    return errorState(accessError);
+  if (error || !adminUser) {
+    return errorState(error ?? "Your admin session is no longer valid.");
   }
 
   const id = readInteger(readRequiredText(formData, "id"));
@@ -699,6 +820,18 @@ export async function updateAppointmentWorkflowAction(
       status,
       assignedTo: assignedTo || null,
       internalNotes: internalNotes || null,
+    },
+  });
+
+  await recordAdminAuditEvent({
+    actorAdminUserId: adminUser.id,
+    action: "appointment.workflow.updated",
+    entityType: "appointment",
+    entityId: id,
+    summary: `${adminUser.name} moved consultation #${id} to ${status}.`,
+    metadata: {
+      status,
+      assignedTo: assignedTo || null,
     },
   });
 
@@ -761,14 +894,41 @@ export async function saveAdminUserAction(
           ...(passwordHash ? { passwordHash } : {}),
         },
       });
+
+      await recordAdminAuditEvent({
+        actorAdminUserId: currentAdmin.id,
+        action: "admin_user.updated",
+        entityType: "adminUser",
+        entityId: id,
+        summary: `${currentAdmin.name} updated dashboard access for ${name}.`,
+        metadata: {
+          name,
+          email,
+          role,
+          passwordRotated: Boolean(passwordHash),
+        },
+      });
     } else {
-      await prisma.adminUser.create({
+      const adminUser = await prisma.adminUser.create({
         data: {
           name,
           email,
           role,
           passwordHash: passwordHash!,
           isActive: true,
+        },
+      });
+
+      await recordAdminAuditEvent({
+        actorAdminUserId: currentAdmin.id,
+        action: "admin_user.created",
+        entityType: "adminUser",
+        entityId: adminUser.id,
+        summary: `${currentAdmin.name} created a new ${role} dashboard account for ${name}.`,
+        metadata: {
+          name,
+          email,
+          role,
         },
       });
     }
@@ -822,6 +982,20 @@ export async function toggleAdminUserStatusAction(
         where: { adminUserId: id },
       });
     }
+
+    await recordAdminAuditEvent({
+      actorAdminUserId: currentAdmin.id,
+      action:
+        nextActiveState === "active"
+          ? "admin_user.activated"
+          : "admin_user.deactivated",
+      entityType: "adminUser",
+      entityId: id,
+      summary: `${currentAdmin.name} ${nextActiveState === "active" ? "reactivated" : "deactivated"} dashboard access for admin user #${id}.`,
+      metadata: {
+        nextActiveState,
+      },
+    });
   } catch (error) {
     return errorState(
       error instanceof Error
@@ -860,6 +1034,14 @@ export async function revokeAdminUserSessionsAction(
 
   await prisma.adminSession.deleteMany({
     where: { adminUserId: id },
+  });
+
+  await recordAdminAuditEvent({
+    actorAdminUserId: currentAdmin.id,
+    action: "admin_session.revoked",
+    entityType: "adminUser",
+    entityId: id,
+    summary: `${currentAdmin.name} revoked active sessions for admin user #${id}.`,
   });
 
   revalidateAdminContent([]);

@@ -1,6 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import {
+  useActionState,
+  useDeferredValue,
+  useMemo,
+  useState,
+} from "react";
 import {
   updateAppointmentWorkflowAction,
   updateContactWorkflowAction,
@@ -23,13 +28,122 @@ import type {
 type IntakeWorkspaceProps = {
   contacts: ContactSubmission[];
   appointments: AppointmentSubmission[];
+  currentAdminName: string;
+  currentAdminEmail: string;
 };
+
+type QueueFilter = "all" | "messages" | "consultations";
+type AssignmentFilter = "all" | "mine" | "unassigned" | "assigned";
+type StatusFilter =
+  | "all"
+  | "open"
+  | "closed"
+  | (typeof contactStatusOptions)[number]["value"]
+  | (typeof appointmentStatusOptions)[number]["value"];
+
+const queueOptions: Array<{ value: QueueFilter; label: string }> = [
+  { value: "all", label: "All queues" },
+  { value: "messages", label: "Messages only" },
+  { value: "consultations", label: "Consultations only" },
+];
+
+const assignmentOptions: Array<{ value: AssignmentFilter; label: string }> = [
+  { value: "all", label: "All assignments" },
+  { value: "mine", label: "Assigned to me" },
+  { value: "unassigned", label: "Unassigned" },
+  { value: "assigned", label: "Assigned items" },
+];
+
+const statusOptions: Array<{ value: StatusFilter; label: string }> = [
+  { value: "all", label: "All statuses" },
+  { value: "open", label: "Open work" },
+  { value: "closed", label: "Closed" },
+  ...contactStatusOptions,
+  ...appointmentStatusOptions.filter(
+    (option) => !contactStatusOptions.some((item) => item.value === option.value),
+  ),
+];
 
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
+}
+
+function normalizeText(value: string | null | undefined) {
+  return value?.trim().toLowerCase() ?? "";
+}
+
+function matchesCurrentAdmin(
+  assignedTo: string | null | undefined,
+  currentAdminName: string,
+  currentAdminEmail: string,
+) {
+  const normalizedAssigned = normalizeText(assignedTo);
+
+  if (!normalizedAssigned) {
+    return false;
+  }
+
+  const nameTokens = normalizeText(currentAdminName)
+    .split(/\s+/)
+    .filter(Boolean);
+  const emailTokens = normalizeText(currentAdminEmail)
+    .split(/[@._-]+/)
+    .filter(Boolean);
+
+  return [...nameTokens, ...emailTokens].some(
+    (token) => token.length > 2 && normalizedAssigned.includes(token),
+  );
+}
+
+function matchesStatusFilter(status: string, statusFilter: StatusFilter) {
+  if (statusFilter === "all") {
+    return true;
+  }
+
+  if (statusFilter === "open") {
+    return isOpenWorkflowStatus(status);
+  }
+
+  if (statusFilter === "closed") {
+    return status === "closed";
+  }
+
+  return status === statusFilter;
+}
+
+function matchesAssignmentFilter(
+  assignedTo: string | null | undefined,
+  assignmentFilter: AssignmentFilter,
+  currentAdminName: string,
+  currentAdminEmail: string,
+) {
+  if (assignmentFilter === "all") {
+    return true;
+  }
+
+  if (assignmentFilter === "mine") {
+    return matchesCurrentAdmin(assignedTo, currentAdminName, currentAdminEmail);
+  }
+
+  if (assignmentFilter === "unassigned") {
+    return !normalizeText(assignedTo);
+  }
+
+  return Boolean(normalizeText(assignedTo));
+}
+
+function matchesSearch(
+  fields: Array<string | null | undefined>,
+  searchQuery: string,
+) {
+  if (!searchQuery) {
+    return true;
+  }
+
+  return fields.some((field) => normalizeText(field).includes(searchQuery));
 }
 
 function FormMessage({ state }: { state: AdminActionState }) {
@@ -73,10 +187,7 @@ function ContactWorkflowCard({ contact }: { contact: ContactSubmission }) {
           <p className="eyebrow">Message</p>
           <h3>{contact.name}</h3>
         </div>
-        <span
-          className="admin-intake-status"
-          data-status={contact.status}
-        >
+        <span className="admin-intake-status" data-status={contact.status}>
           {getWorkflowStatusLabel(contact.status)}
         </span>
       </div>
@@ -93,6 +204,10 @@ function ContactWorkflowCard({ contact }: { contact: ContactSubmission }) {
         <div>
           <span>Last update</span>
           <strong>{formatDate(contact.updatedAt)}</strong>
+        </div>
+        <div>
+          <span>Assignment</span>
+          <strong>{contact.assignedTo ?? "Unassigned"}</strong>
         </div>
       </div>
 
@@ -191,10 +306,7 @@ function AppointmentWorkflowCard({
           <p className="eyebrow">Consultation</p>
           <h3>{appointment.name}</h3>
         </div>
-        <span
-          className="admin-intake-status"
-          data-status={appointment.status}
-        >
+        <span className="admin-intake-status" data-status={appointment.status}>
           {getWorkflowStatusLabel(appointment.status)}
         </span>
       </div>
@@ -216,6 +328,10 @@ function AppointmentWorkflowCard({
         <div>
           <span>Lead attorney</span>
           <strong>{appointment.attorneyName ?? "Unassigned"}</strong>
+        </div>
+        <div>
+          <span>Assignment</span>
+          <strong>{appointment.assignedTo ?? "Unassigned"}</strong>
         </div>
       </div>
 
@@ -276,9 +392,7 @@ function AppointmentWorkflowCard({
             <input
               id={`appointment-assigned-${appointment.id}`}
               name="assignedTo"
-              defaultValue={
-                appointment.assignedTo ?? appointment.attorneyName ?? ""
-              }
+              defaultValue={appointment.assignedTo ?? appointment.attorneyName ?? ""}
               placeholder="Attorney or operations owner"
             />
           </div>
@@ -310,39 +424,117 @@ function AppointmentWorkflowCard({
 export function IntakeWorkspace({
   contacts,
   appointments,
+  currentAdminName,
+  currentAdminEmail,
 }: IntakeWorkspaceProps) {
-  const orderedContacts = [...contacts].sort((left, right) => {
-    const openDelta =
-      Number(isOpenWorkflowStatus(right.status)) -
-      Number(isOpenWorkflowStatus(left.status));
+  const [searchQuery, setSearchQuery] = useState("");
+  const [queueFilter, setQueueFilter] = useState<QueueFilter>("all");
+  const [assignmentFilter, setAssignmentFilter] =
+    useState<AssignmentFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("open");
+  const deferredSearchQuery = useDeferredValue(normalizeText(searchQuery));
 
-    if (openDelta !== 0) {
-      return openDelta;
-    }
+  const visibleContacts = useMemo(() => {
+    return contacts
+      .filter((contact) => {
+        return (
+          matchesStatusFilter(contact.status, statusFilter) &&
+          matchesAssignmentFilter(
+            contact.assignedTo,
+            assignmentFilter,
+            currentAdminName,
+            currentAdminEmail,
+          ) &&
+          matchesSearch(
+            [
+              contact.name,
+              contact.email,
+              contact.phone,
+              contact.service,
+              contact.message,
+              contact.assignedTo,
+              contact.internalNotes,
+            ],
+            deferredSearchQuery,
+          )
+        );
+      })
+      .sort((left, right) => {
+        const openDelta =
+          Number(isOpenWorkflowStatus(right.status)) -
+          Number(isOpenWorkflowStatus(left.status));
 
-    return (
-      new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
-    );
-  });
-  const orderedAppointments = [...appointments].sort((left, right) => {
-    const openDelta =
-      Number(isOpenWorkflowStatus(right.status)) -
-      Number(isOpenWorkflowStatus(left.status));
+        if (openDelta !== 0) {
+          return openDelta;
+        }
 
-    if (openDelta !== 0) {
-      return openDelta;
-    }
+        return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+      });
+  }, [
+    assignmentFilter,
+    contacts,
+    currentAdminEmail,
+    currentAdminName,
+    deferredSearchQuery,
+    statusFilter,
+  ]);
 
-    return (
-      new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
-    );
-  });
-  const openContacts = contacts.filter((contact) =>
-    isOpenWorkflowStatus(contact.status),
-  ).length;
-  const openAppointments = appointments.filter((appointment) =>
-    isOpenWorkflowStatus(appointment.status),
-  ).length;
+  const visibleAppointments = useMemo(() => {
+    return appointments
+      .filter((appointment) => {
+        return (
+          matchesStatusFilter(appointment.status, statusFilter) &&
+          matchesAssignmentFilter(
+            appointment.assignedTo,
+            assignmentFilter,
+            currentAdminName,
+            currentAdminEmail,
+          ) &&
+          matchesSearch(
+            [
+              appointment.name,
+              appointment.email,
+              appointment.phone,
+              appointment.practiceArea,
+              appointment.description,
+              appointment.attorneyName,
+              appointment.assignedTo,
+              appointment.internalNotes,
+            ],
+            deferredSearchQuery,
+          )
+        );
+      })
+      .sort((left, right) => {
+        const openDelta =
+          Number(isOpenWorkflowStatus(right.status)) -
+          Number(isOpenWorkflowStatus(left.status));
+
+        if (openDelta !== 0) {
+          return openDelta;
+        }
+
+        return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+      });
+  }, [
+    appointments,
+    assignmentFilter,
+    currentAdminEmail,
+    currentAdminName,
+    deferredSearchQuery,
+    statusFilter,
+  ]);
+
+  const visibleMessageCount = visibleContacts.length;
+  const visibleConsultationCount = visibleAppointments.length;
+  const visibleTrackedCount = visibleMessageCount + visibleConsultationCount;
+  const visibleUnassignedCount =
+    visibleContacts.filter((contact) => !normalizeText(contact.assignedTo)).length +
+    visibleAppointments.filter((appointment) => !normalizeText(appointment.assignedTo))
+      .length;
+
+  const showMessages = queueFilter !== "consultations";
+  const showConsultations = queueFilter !== "messages";
 
   return (
     <section className="admin-panel admin-inbox" id="admin-inbox">
@@ -353,57 +545,179 @@ export function IntakeWorkspace({
         </div>
       </div>
 
+      <div className="admin-inbox-toolbar">
+        <div className="field full">
+          <label htmlFor="admin-inbox-search">Search the queue</label>
+          <input
+            id="admin-inbox-search"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search by client, service, practice area, message, note, or assignee"
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="admin-inbox-queue">Queue</label>
+          <select
+            id="admin-inbox-queue"
+            value={queueFilter}
+            onChange={(event) => setQueueFilter(event.target.value as QueueFilter)}
+          >
+            {queueOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="field">
+          <label htmlFor="admin-inbox-status">Status</label>
+          <select
+            id="admin-inbox-status"
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}
+          >
+            {statusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="field">
+          <label htmlFor="admin-inbox-assignment">Assignment</label>
+          <select
+            id="admin-inbox-assignment"
+            value={assignmentFilter}
+            onChange={(event) =>
+              setAssignmentFilter(event.target.value as AssignmentFilter)
+            }
+          >
+            {assignmentOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="admin-filter-chip-row" aria-label="Inbox quick filters">
+        <button
+          type="button"
+          className="admin-filter-chip"
+          data-active={statusFilter === "open"}
+          onClick={() => setStatusFilter("open")}
+        >
+          Open work
+        </button>
+        <button
+          type="button"
+          className="admin-filter-chip"
+          data-active={assignmentFilter === "mine"}
+          onClick={() => setAssignmentFilter("mine")}
+        >
+          Assigned to me
+        </button>
+        <button
+          type="button"
+          className="admin-filter-chip"
+          data-active={assignmentFilter === "unassigned"}
+          onClick={() => setAssignmentFilter("unassigned")}
+        >
+          Unassigned
+        </button>
+        <button
+          type="button"
+          className="admin-filter-chip"
+          data-active={
+            searchQuery.length === 0 &&
+            queueFilter === "all" &&
+            assignmentFilter === "all" &&
+            statusFilter === "all"
+          }
+          onClick={() => {
+            setSearchQuery("");
+            setQueueFilter("all");
+            setAssignmentFilter("all");
+            setStatusFilter("all");
+          }}
+        >
+          Clear filters
+        </button>
+      </div>
+
       <div className="admin-inbox-summary">
         <article className="admin-mini-stat">
-          <span>Open messages</span>
-          <strong>{openContacts}</strong>
+          <span>Visible messages</span>
+          <strong>{visibleMessageCount}</strong>
         </article>
         <article className="admin-mini-stat">
-          <span>Open consultations</span>
-          <strong>{openAppointments}</strong>
+          <span>Visible consultations</span>
+          <strong>{visibleConsultationCount}</strong>
         </article>
         <article className="admin-mini-stat">
-          <span>Total tracked</span>
-          <strong>{contacts.length + appointments.length}</strong>
+          <span>Needs assignment</span>
+          <strong>{visibleUnassignedCount}</strong>
         </article>
       </div>
 
-      <div className="admin-inbox-grid">
-        <section className="admin-inbox-column">
-          <div className="admin-section-kicker">
-            <p className="eyebrow">Messages</p>
-            <h3>General enquiries and intake</h3>
-          </div>
-          <div className="admin-intake-stack">
-            {contacts.length === 0 ? (
-              <p className="admin-empty">No message submissions yet.</p>
-            ) : (
-              orderedContacts.map((contact) => (
-                <ContactWorkflowCard key={contact.id} contact={contact} />
-              ))
-            )}
-          </div>
-        </section>
-
-        <section className="admin-inbox-column">
-          <div className="admin-section-kicker">
-            <p className="eyebrow">Consultations</p>
-            <h3>Requested calls and appointments</h3>
-          </div>
-          <div className="admin-intake-stack">
-            {appointments.length === 0 ? (
-              <p className="admin-empty">No consultation requests yet.</p>
-            ) : (
-              orderedAppointments.map((appointment) => (
-                <AppointmentWorkflowCard
-                  key={appointment.id}
-                  appointment={appointment}
-                />
-              ))
-            )}
-          </div>
-        </section>
+      <div className="admin-inbox-results">
+        Showing {visibleTrackedCount} matching item
+        {visibleTrackedCount === 1 ? "" : "s"} across the selected queue.
       </div>
+
+      {visibleTrackedCount === 0 ? (
+        <div className="admin-empty-state">
+          <p className="admin-empty">
+            No messages or consultations match the current filters.
+          </p>
+        </div>
+      ) : null}
+
+      {visibleTrackedCount > 0 ? (
+        <div className="admin-inbox-grid">
+          {showMessages ? (
+            <section className="admin-inbox-column">
+              <div className="admin-section-kicker">
+                <p className="eyebrow">Messages</p>
+                <h3>General enquiries and intake</h3>
+              </div>
+              <div className="admin-intake-stack">
+                {visibleContacts.length === 0 ? (
+                  <p className="admin-empty">No message submissions match these filters.</p>
+                ) : (
+                  visibleContacts.map((contact) => (
+                    <ContactWorkflowCard key={contact.id} contact={contact} />
+                  ))
+                )}
+              </div>
+            </section>
+          ) : null}
+
+          {showConsultations ? (
+            <section className="admin-inbox-column">
+              <div className="admin-section-kicker">
+                <p className="eyebrow">Consultations</p>
+                <h3>Requested calls and appointments</h3>
+              </div>
+              <div className="admin-intake-stack">
+                {visibleAppointments.length === 0 ? (
+                  <p className="admin-empty">
+                    No consultation requests match these filters.
+                  </p>
+                ) : (
+                  visibleAppointments.map((appointment) => (
+                    <AppointmentWorkflowCard
+                      key={appointment.id}
+                      appointment={appointment}
+                    />
+                  ))
+                )}
+              </div>
+            </section>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }

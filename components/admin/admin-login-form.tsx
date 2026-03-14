@@ -57,6 +57,13 @@ export function AdminLoginForm() {
             <span>Each admin uses a real account instead of a shared environment password.</span>
           </div>
           <div>
+            <strong>Editors sign in here too</strong>
+            <span>
+              The `editor` role uses this same `/admin` login and can work on inbox
+              and content tasks without seeing user-management controls.
+            </span>
+          </div>
+          <div>
             <strong>Database-backed sessions</strong>
             <span>Session state is stored in PostgreSQL and expires automatically.</span>
           </div>
@@ -101,8 +108,9 @@ export function AdminLoginForm() {
         </div>
 
         <p className="admin-auth-note">
-          Access is limited to configured admin users. If you do not yet have an
-          account, bootstrap one locally and then sign in here.
+          Access is limited to configured dashboard users. Editors and full admins
+          both sign in here with their own email and password. Only full admins can
+          manage accounts and sessions.
         </p>
       </div>
     </form>
