@@ -7,10 +7,13 @@ type NotificationSection = {
   value: string;
 };
 
-type InternalNotificationInput = {
+type NotificationEmailInput = {
+  to: string[];
   subject: string;
   previewSlug: string;
   replyTo?: string;
+  intro?: string[];
+  closing?: string[];
   sections: NotificationSection[];
 };
 
@@ -63,13 +66,9 @@ function getNotificationConfig(): NotificationConfig {
     Number.isFinite(smtpPort) &&
     Boolean(smtpUser) &&
     Boolean(smtpPass) &&
-    Boolean(fromEmail) &&
-    recipients.length > 0;
+    Boolean(fromEmail);
 
-  const hasPreviewMode =
-    Boolean(previewDirectory) &&
-    Boolean(fromEmail) &&
-    recipients.length > 0;
+  const hasPreviewMode = Boolean(previewDirectory) && Boolean(fromEmail);
 
   return {
     mode: hasSmtpCredentials ? "smtp" : hasPreviewMode ? "preview" : "disabled",
@@ -108,16 +107,30 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#39;");
 }
 
-function buildPlainTextBody(sections: NotificationSection[]) {
-  return sections.map((section) => `${section.label}\n${section.value}`).join("\n\n");
+function buildPlainTextBody(input: NotificationEmailInput) {
+  return [
+    ...(input.intro ?? []),
+    ...(input.intro?.length ? [""] : []),
+    ...input.sections.map((section) => `${section.label}\n${section.value}`),
+    ...(input.closing?.length ? [""] : []),
+    ...(input.closing ?? []),
+  ].join("\n\n");
 }
 
-function buildHtmlBody(sections: NotificationSection[]) {
+function buildHtmlBody(input: NotificationEmailInput) {
   return [
     "<div style=\"font-family: Avenir Next, Segoe UI, Arial, sans-serif; color: #0b1727; line-height: 1.6;\">",
-    ...sections.map(
+    ...(input.intro ?? []).map(
+      (paragraph) =>
+        `<p style="margin: 0 0 16px;">${escapeHtml(paragraph)}</p>`,
+    ),
+    ...input.sections.map(
       (section) =>
         `<div style="margin-bottom: 16px;"><div style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7a2022; font-weight: 700;">${escapeHtml(section.label)}</div><div style="margin-top: 6px; white-space: pre-wrap;">${escapeHtml(section.value)}</div></div>`,
+    ),
+    ...(input.closing ?? []).map(
+      (paragraph) =>
+        `<p style="margin: 0 0 16px;">${escapeHtml(paragraph)}</p>`,
     ),
     "</div>",
   ].join("");
@@ -141,7 +154,7 @@ function getTransporter() {
   return transporterPromise;
 }
 
-async function writePreviewFile(input: InternalNotificationInput, config: NotificationConfig) {
+async function writePreviewFile(input: NotificationEmailInput, config: NotificationConfig) {
   const previewRoot = path.resolve(config.previewDir);
   await mkdir(previewRoot, { recursive: true });
 
@@ -153,12 +166,12 @@ async function writePreviewFile(input: InternalNotificationInput, config: Notifi
     outputPath,
     JSON.stringify(
       {
-        to: config.recipients,
+        to: input.to,
         from: `${config.fromName} <${config.fromEmail}>`,
         replyTo: input.replyTo ?? null,
         subject: input.subject,
-        text: buildPlainTextBody(input.sections),
-        html: buildHtmlBody(input.sections),
+        text: buildPlainTextBody(input),
+        html: buildHtmlBody(input),
       },
       null,
       2,
@@ -168,10 +181,17 @@ async function writePreviewFile(input: InternalNotificationInput, config: Notifi
   return outputPath;
 }
 
-async function deliverInternalNotification(
-  input: InternalNotificationInput,
+async function deliverNotification(
+  input: NotificationEmailInput,
 ): Promise<NotificationDeliveryResult> {
   const config = getNotificationConfig();
+
+  if (input.to.length === 0) {
+    return {
+      status: "disabled",
+      detail: "No notification recipient is configured.",
+    };
+  }
 
   if (config.mode === "disabled") {
     return {
@@ -193,17 +213,17 @@ async function deliverInternalNotification(
     const transporter = getTransporter();
 
     await transporter.sendMail({
-      to: config.recipients,
+      to: input.to,
       from: `${config.fromName} <${config.fromEmail}>`,
       replyTo: input.replyTo,
       subject: input.subject,
-      text: buildPlainTextBody(input.sections),
-      html: buildHtmlBody(input.sections),
+      text: buildPlainTextBody(input),
+      html: buildHtmlBody(input),
     });
 
     return {
       status: "sent",
-      detail: `Delivered to ${config.recipients.join(", ")}.`,
+      detail: `Delivered to ${input.to.join(", ")}.`,
     };
   } catch (error) {
     const detail =
@@ -225,7 +245,8 @@ export async function sendContactNotification(input: {
   service: string;
   message: string;
 }) {
-  return deliverInternalNotification({
+  return deliverNotification({
+    to: recipients,
     subject: `[Kinsley Law] New contact enquiry: ${input.service}`,
     previewSlug: `contact-${input.service}-${input.name}`,
     replyTo: input.email,
@@ -240,6 +261,39 @@ export async function sendContactNotification(input: {
   });
 }
 
+export async function sendContactAutoReply(input: {
+  name: string;
+  email: string;
+  service: string;
+}) {
+  return deliverNotification({
+    to: [input.email],
+    subject: "Kinsley Advocates received your enquiry",
+    previewSlug: `contact-autoreply-${input.service}-${input.name}`,
+    intro: [
+      `Dear ${input.name},`,
+      "Thank you for contacting Kinsley Advocates. Your enquiry has been received and a member of the firm will review it shortly.",
+    ],
+    sections: [
+      { label: "Matter category", value: input.service },
+      {
+        label: "What happens next",
+        value:
+          "We will review the details you shared and contact you using the email address or phone number you provided.",
+      },
+      {
+        label: "Urgent matters",
+        value:
+          "If your issue is time-sensitive, please reply to this email or call the firm directly so we can prioritize the matter.",
+      },
+    ],
+    closing: [
+      "Regards,",
+      "Kinsley Advocates",
+    ],
+  });
+}
+
 export async function sendAppointmentNotification(input: {
   name: string;
   email: string;
@@ -250,7 +304,8 @@ export async function sendAppointmentNotification(input: {
   description: string;
   attorneyName: string | null;
 }) {
-  return deliverInternalNotification({
+  return deliverNotification({
+    to: recipients,
     subject: `[Kinsley Law] New consultation request: ${input.practiceArea}`,
     previewSlug: `appointment-${input.practiceArea}-${input.name}`,
     replyTo: input.email,
@@ -266,6 +321,40 @@ export async function sendAppointmentNotification(input: {
       { label: "Practice area", value: input.practiceArea },
       { label: "Assigned attorney", value: input.attorneyName ?? "Unassigned" },
       { label: "Matter summary", value: input.description },
+    ],
+  });
+}
+
+export async function sendAppointmentAutoReply(input: {
+  name: string;
+  email: string;
+  date: Date;
+  time: string;
+  practiceArea: string;
+}) {
+  return deliverNotification({
+    to: [input.email],
+    subject: "Kinsley Advocates received your consultation request",
+    previewSlug: `appointment-autoreply-${input.practiceArea}-${input.name}`,
+    intro: [
+      `Dear ${input.name},`,
+      "Thank you for requesting a consultation with Kinsley Advocates. We have received your preferred appointment window and will confirm availability with the appropriate attorney.",
+    ],
+    sections: [
+      { label: "Practice area", value: input.practiceArea },
+      {
+        label: "Requested consultation window",
+        value: `${input.date.toLocaleDateString("en-GB", { dateStyle: "medium" })} at ${input.time}`,
+      },
+      {
+        label: "What happens next",
+        value:
+          "Our team will review the request and respond with confirmation or an alternative time if your preferred slot is unavailable.",
+      },
+    ],
+    closing: [
+      "Regards,",
+      "Kinsley Advocates",
     ],
   });
 }

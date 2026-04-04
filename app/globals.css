@@ -3048,6 +3048,60 @@ button {
   gap: 0.8rem;
 }
 
+.admin-delivery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.admin-delivery-card {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(21, 52, 91, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.admin-delivery-card span,
+.admin-delivery-card strong {
+  display: block;
+}
+
+.admin-delivery-card span {
+  color: rgba(21, 52, 91, 0.56);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-delivery-card strong {
+  color: var(--ink-950);
+}
+
+.admin-delivery-card p {
+  margin: 0;
+  color: rgba(11, 23, 39, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.admin-delivery-card[data-status="sent"] {
+  border-color: rgba(36, 112, 73, 0.18);
+  background: rgba(241, 250, 245, 0.92);
+}
+
+.admin-delivery-card[data-status="failed"] {
+  border-color: rgba(152, 30, 37, 0.16);
+  background: rgba(255, 244, 244, 0.94);
+}
+
+.admin-delivery-card[data-status="disabled"],
+.admin-delivery-card[data-status="preview"] {
+  background: rgba(248, 244, 239, 0.94);
+}
+
 .admin-intake-form {
   display: grid;
   gap: 1rem;

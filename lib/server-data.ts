@@ -57,6 +57,10 @@ export type ContactSubmission = {
   service: string;
   message: string;
   status: string;
+  notificationStatus: string | null;
+  notificationDetail: string | null;
+  clientReplyStatus: string | null;
+  clientReplyDetail: string | null;
   assignedTo: string | null;
   internalNotes: string | null;
   createdAt: Date;
@@ -73,6 +77,10 @@ export type AppointmentSubmission = {
   practiceArea: string;
   description: string;
   status: string;
+  notificationStatus: string | null;
+  notificationDetail: string | null;
+  clientReplyStatus: string | null;
+  clientReplyDetail: string | null;
   assignedTo: string | null;
   internalNotes: string | null;
   attorneyName: string | null;
@@ -417,6 +425,10 @@ export async function getAdminDashboardData(options?: {
         service: contact.service,
         message: contact.message,
         status: contact.status,
+        notificationStatus: contact.notificationStatus,
+        notificationDetail: contact.notificationDetail,
+        clientReplyStatus: contact.clientReplyStatus,
+        clientReplyDetail: contact.clientReplyDetail,
         assignedTo: contact.assignedTo,
         internalNotes: contact.internalNotes,
         createdAt: contact.createdAt,
@@ -432,6 +444,10 @@ export async function getAdminDashboardData(options?: {
         practiceArea: appointment.practiceArea,
         description: appointment.description,
         status: appointment.status,
+        notificationStatus: appointment.notificationStatus,
+        notificationDetail: appointment.notificationDetail,
+        clientReplyStatus: appointment.clientReplyStatus,
+        clientReplyDetail: appointment.clientReplyDetail,
         assignedTo: appointment.assignedTo,
         internalNotes: appointment.internalNotes,
         attorneyName: appointment.attorney?.name ?? null,

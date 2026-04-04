@@ -174,6 +174,39 @@ function FormSubmitButton({
   );
 }
 
+function getDeliveryLabel(status: string | null) {
+  switch (status) {
+    case "sent":
+      return "Sent";
+    case "failed":
+      return "Failed";
+    case "preview":
+      return "Preview";
+    case "disabled":
+      return "Disabled";
+    default:
+      return "Pending";
+  }
+}
+
+function DeliveryStatusBlock({
+  title,
+  status,
+  detail,
+}: {
+  title: string;
+  status: string | null;
+  detail: string | null;
+}) {
+  return (
+    <div className="admin-delivery-card" data-status={status ?? "pending"}>
+      <span>{title}</span>
+      <strong>{getDeliveryLabel(status)}</strong>
+      <p>{detail ?? "No delivery attempt has been recorded yet."}</p>
+    </div>
+  );
+}
+
 function ContactWorkflowCard({ contact }: { contact: ContactSubmission }) {
   const [state, formAction, isPending] = useActionState(
     updateContactWorkflowAction,
@@ -237,6 +270,19 @@ function ContactWorkflowCard({ contact }: { contact: ContactSubmission }) {
             <strong>{contact.phone}</strong>
           </div>
         ) : null}
+      </div>
+
+      <div className="admin-delivery-grid">
+        <DeliveryStatusBlock
+          title="Internal alert"
+          status={contact.notificationStatus}
+          detail={contact.notificationDetail}
+        />
+        <DeliveryStatusBlock
+          title="Client auto-reply"
+          status={contact.clientReplyStatus}
+          detail={contact.clientReplyDetail}
+        />
       </div>
 
       <form action={formAction} className="admin-intake-form">
@@ -365,6 +411,19 @@ function AppointmentWorkflowCard({
           <span>Last update</span>
           <strong>{formatDate(appointment.updatedAt)}</strong>
         </div>
+      </div>
+
+      <div className="admin-delivery-grid">
+        <DeliveryStatusBlock
+          title="Internal alert"
+          status={appointment.notificationStatus}
+          detail={appointment.notificationDetail}
+        />
+        <DeliveryStatusBlock
+          title="Client auto-reply"
+          status={appointment.clientReplyStatus}
+          detail={appointment.clientReplyDetail}
+        />
       </div>
 
       <form action={formAction} className="admin-intake-form">
