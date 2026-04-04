@@ -15,7 +15,7 @@ function splitRotatorPrefix(prefix: string) {
   const trimmed = prefix.trim();
 
   if (!trimmed) {
-    return { primaryText: "Strategic counsel", staticText: "with" };
+    return { primaryText: "Strategic attorneys", staticText: "with" };
   }
 
   const parts = trimmed.split(/\s+/);
@@ -31,9 +31,9 @@ function splitRotatorPrefix(prefix: string) {
 }
 
 export const metadata: Metadata = {
-  title: "Strategic Counsel for High-Stakes Matters",
+  title: "Strategic Attorneys for High-Stakes Matters",
   description:
-    "Kinsley Advocates delivers strategic, senior-led legal counsel for private clients, businesses, property matters, disputes, and mineral-sector work in Nairobi.",
+    "Kinsley Advocates delivers strategic legal services led by experienced attorneys for private clients, businesses, property matters, disputes, and mineral-sector work in Nairobi.",
 };
 
 export const dynamic = "force-dynamic";
@@ -67,7 +67,7 @@ export default async function HomePage() {
               staticText={staticText}
               values={homePageContent.valueRotatorWords}
             />
-            <p className="hero-kicker">Strategic legal counsel for matters that need calm control.</p>
+            <p className="hero-kicker">Strategic legal services led by attorneys for matters that need calm control.</p>
             <p className="hero-description">{homePageContent.heroDescription}</p>
             <div className="hero-actions">
               <Link href="/contact" className="button-primary">

@@ -42,6 +42,10 @@ export type ContactMinAggregateOutputType = {
   service: string | null
   message: string | null
   status: string | null
+  notificationStatus: string | null
+  notificationDetail: string | null
+  clientReplyStatus: string | null
+  clientReplyDetail: string | null
   assignedTo: string | null
   internalNotes: string | null
   createdAt: Date | null
@@ -56,6 +60,10 @@ export type ContactMaxAggregateOutputType = {
   service: string | null
   message: string | null
   status: string | null
+  notificationStatus: string | null
+  notificationDetail: string | null
+  clientReplyStatus: string | null
+  clientReplyDetail: string | null
   assignedTo: string | null
   internalNotes: string | null
   createdAt: Date | null
@@ -70,6 +78,10 @@ export type ContactCountAggregateOutputType = {
   service: number
   message: number
   status: number
+  notificationStatus: number
+  notificationDetail: number
+  clientReplyStatus: number
+  clientReplyDetail: number
   assignedTo: number
   internalNotes: number
   createdAt: number
@@ -94,6 +106,10 @@ export type ContactMinAggregateInputType = {
   service?: true
   message?: true
   status?: true
+  notificationStatus?: true
+  notificationDetail?: true
+  clientReplyStatus?: true
+  clientReplyDetail?: true
   assignedTo?: true
   internalNotes?: true
   createdAt?: true
@@ -108,6 +124,10 @@ export type ContactMaxAggregateInputType = {
   service?: true
   message?: true
   status?: true
+  notificationStatus?: true
+  notificationDetail?: true
+  clientReplyStatus?: true
+  clientReplyDetail?: true
   assignedTo?: true
   internalNotes?: true
   createdAt?: true
@@ -122,6 +142,10 @@ export type ContactCountAggregateInputType = {
   service?: true
   message?: true
   status?: true
+  notificationStatus?: true
+  notificationDetail?: true
+  clientReplyStatus?: true
+  clientReplyDetail?: true
   assignedTo?: true
   internalNotes?: true
   createdAt?: true
@@ -223,6 +247,10 @@ export type ContactGroupByOutputType = {
   service: string
   message: string
   status: string
+  notificationStatus: string | null
+  notificationDetail: string | null
+  clientReplyStatus: string | null
+  clientReplyDetail: string | null
   assignedTo: string | null
   internalNotes: string | null
   createdAt: Date
@@ -260,6 +288,10 @@ export type ContactWhereInput = {
   service?: Prisma.StringFilter<"Contact"> | string
   message?: Prisma.StringFilter<"Contact"> | string
   status?: Prisma.StringFilter<"Contact"> | string
+  notificationStatus?: Prisma.StringNullableFilter<"Contact"> | string | null
+  notificationDetail?: Prisma.StringNullableFilter<"Contact"> | string | null
+  clientReplyStatus?: Prisma.StringNullableFilter<"Contact"> | string | null
+  clientReplyDetail?: Prisma.StringNullableFilter<"Contact"> | string | null
   assignedTo?: Prisma.StringNullableFilter<"Contact"> | string | null
   internalNotes?: Prisma.StringNullableFilter<"Contact"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Contact"> | Date | string
@@ -274,6 +306,10 @@ export type ContactOrderByWithRelationInput = {
   service?: Prisma.SortOrder
   message?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   internalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -291,6 +327,10 @@ export type ContactWhereUniqueInput = Prisma.AtLeast<{
   service?: Prisma.StringFilter<"Contact"> | string
   message?: Prisma.StringFilter<"Contact"> | string
   status?: Prisma.StringFilter<"Contact"> | string
+  notificationStatus?: Prisma.StringNullableFilter<"Contact"> | string | null
+  notificationDetail?: Prisma.StringNullableFilter<"Contact"> | string | null
+  clientReplyStatus?: Prisma.StringNullableFilter<"Contact"> | string | null
+  clientReplyDetail?: Prisma.StringNullableFilter<"Contact"> | string | null
   assignedTo?: Prisma.StringNullableFilter<"Contact"> | string | null
   internalNotes?: Prisma.StringNullableFilter<"Contact"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Contact"> | Date | string
@@ -305,6 +345,10 @@ export type ContactOrderByWithAggregationInput = {
   service?: Prisma.SortOrder
   message?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   internalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -327,6 +371,10 @@ export type ContactScalarWhereWithAggregatesInput = {
   service?: Prisma.StringWithAggregatesFilter<"Contact"> | string
   message?: Prisma.StringWithAggregatesFilter<"Contact"> | string
   status?: Prisma.StringWithAggregatesFilter<"Contact"> | string
+  notificationStatus?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
+  notificationDetail?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
+  clientReplyStatus?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
+  clientReplyDetail?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   assignedTo?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   internalNotes?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Contact"> | Date | string
@@ -340,6 +388,10 @@ export type ContactCreateInput = {
   service: string
   message: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   createdAt?: Date | string
@@ -354,6 +406,10 @@ export type ContactUncheckedCreateInput = {
   service: string
   message: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   createdAt?: Date | string
@@ -367,6 +423,10 @@ export type ContactUpdateInput = {
   service?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -381,6 +441,10 @@ export type ContactUncheckedUpdateInput = {
   service?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -395,6 +459,10 @@ export type ContactCreateManyInput = {
   service: string
   message: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   createdAt?: Date | string
@@ -408,6 +476,10 @@ export type ContactUpdateManyMutationInput = {
   service?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -422,6 +494,10 @@ export type ContactUncheckedUpdateManyInput = {
   service?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -436,6 +512,10 @@ export type ContactCountOrderByAggregateInput = {
   service?: Prisma.SortOrder
   message?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrder
   assignedTo?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -454,6 +534,10 @@ export type ContactMaxOrderByAggregateInput = {
   service?: Prisma.SortOrder
   message?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrder
   assignedTo?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -468,6 +552,10 @@ export type ContactMinOrderByAggregateInput = {
   service?: Prisma.SortOrder
   message?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrder
   assignedTo?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -488,6 +576,10 @@ export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   service?: boolean
   message?: boolean
   status?: boolean
+  notificationStatus?: boolean
+  notificationDetail?: boolean
+  clientReplyStatus?: boolean
+  clientReplyDetail?: boolean
   assignedTo?: boolean
   internalNotes?: boolean
   createdAt?: boolean
@@ -502,6 +594,10 @@ export type ContactSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   service?: boolean
   message?: boolean
   status?: boolean
+  notificationStatus?: boolean
+  notificationDetail?: boolean
+  clientReplyStatus?: boolean
+  clientReplyDetail?: boolean
   assignedTo?: boolean
   internalNotes?: boolean
   createdAt?: boolean
@@ -516,6 +612,10 @@ export type ContactSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   service?: boolean
   message?: boolean
   status?: boolean
+  notificationStatus?: boolean
+  notificationDetail?: boolean
+  clientReplyStatus?: boolean
+  clientReplyDetail?: boolean
   assignedTo?: boolean
   internalNotes?: boolean
   createdAt?: boolean
@@ -530,13 +630,17 @@ export type ContactSelectScalar = {
   service?: boolean
   message?: boolean
   status?: boolean
+  notificationStatus?: boolean
+  notificationDetail?: boolean
+  clientReplyStatus?: boolean
+  clientReplyDetail?: boolean
   assignedTo?: boolean
   internalNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ContactOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "service" | "message" | "status" | "assignedTo" | "internalNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["contact"]>
+export type ContactOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "service" | "message" | "status" | "notificationStatus" | "notificationDetail" | "clientReplyStatus" | "clientReplyDetail" | "assignedTo" | "internalNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["contact"]>
 
 export type $ContactPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Contact"
@@ -549,6 +653,10 @@ export type $ContactPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     service: string
     message: string
     status: string
+    notificationStatus: string | null
+    notificationDetail: string | null
+    clientReplyStatus: string | null
+    clientReplyDetail: string | null
     assignedTo: string | null
     internalNotes: string | null
     createdAt: Date
@@ -983,6 +1091,10 @@ export interface ContactFieldRefs {
   readonly service: Prisma.FieldRef<"Contact", 'String'>
   readonly message: Prisma.FieldRef<"Contact", 'String'>
   readonly status: Prisma.FieldRef<"Contact", 'String'>
+  readonly notificationStatus: Prisma.FieldRef<"Contact", 'String'>
+  readonly notificationDetail: Prisma.FieldRef<"Contact", 'String'>
+  readonly clientReplyStatus: Prisma.FieldRef<"Contact", 'String'>
+  readonly clientReplyDetail: Prisma.FieldRef<"Contact", 'String'>
   readonly assignedTo: Prisma.FieldRef<"Contact", 'String'>
   readonly internalNotes: Prisma.FieldRef<"Contact", 'String'>
   readonly createdAt: Prisma.FieldRef<"Contact", 'DateTime'>

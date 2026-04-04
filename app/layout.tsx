@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s | Kinsley Advocates",
   },
   description:
-    "Kinsley Advocates delivers dignified, strategic legal counsel for private clients, families, founders, investors, and businesses in Nairobi.",
+    "Kinsley Advocates delivers dignified, strategic legal services led by experienced attorneys for private clients, families, founders, investors, and businesses in Nairobi.",
   applicationName: "Kinsley Advocates",
   alternates: {
     canonical: "/",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     siteName: "Kinsley Advocates",
     title: "Kinsley Advocates",
     description:
-      "Strategic legal counsel for private clients, businesses, investors, disputes, and mineral-sector matters in Nairobi.",
+      "Strategic legal services led by experienced attorneys for private clients, businesses, investors, disputes, and mineral-sector matters in Nairobi.",
     images: [
       {
         url: "/images/kinsley-logo-new.png",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kinsley Advocates",
     description:
-      "Strategic legal counsel for private clients, businesses, investors, disputes, and mineral-sector matters in Nairobi.",
+      "Strategic legal services led by experienced attorneys for private clients, businesses, investors, disputes, and mineral-sector matters in Nairobi.",
     images: ["/images/kinsley-logo-new.png"],
   },
   icons: {

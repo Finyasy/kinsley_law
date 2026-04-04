@@ -23,7 +23,7 @@ export function SiteHeader() {
           <LogoMark size="sm" priority />
           <div className="brand-text">
             <strong>Kinsley Advocates</strong>
-            <span>Strategic counsel with calm authority</span>
+            <span>Strategic attorneys with calm authority</span>
           </div>
         </Link>
 

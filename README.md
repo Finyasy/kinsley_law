@@ -102,7 +102,8 @@ under `.email-previews/` instead of being sent over SMTP.
 Set these values in production:
 
 ```bash
-DATABASE_URL="postgresql://..."
+DATABASE_URL="postgresql://pooled-connection-for-runtime"
+MIGRATION_DATABASE_URL="postgresql://direct-connection-for-prisma-migrations"
 NEXT_PUBLIC_SITE_URL="https://www.kinsleylaw.com"
 NOTIFICATION_TO_EMAILS="intake@kinsleylaw.com"
 SMTP_FROM_EMAIL="notifications@kinsleylaw.com"
@@ -122,6 +123,17 @@ Production hardening now includes:
 - no-index handling for `/admin`
 - app-level `not-found` and `error` boundaries
 - no-store cache headers on API routes that should never be cached
+
+For Neon and other managed Postgres providers, keep runtime traffic and Prisma
+migrations on separate connection strings:
+
+- `DATABASE_URL`: the pooled/runtime connection used by the app server
+- `MIGRATION_DATABASE_URL`: the direct/non-pooled connection used by
+  `prisma migrate deploy`
+
+If you run migrations during Vercel builds, point `MIGRATION_DATABASE_URL` at
+the provider's direct connection string. Using a pooled URL for migrations can
+cause advisory lock timeouts during deploy.
 
 ## Admin workflow
 

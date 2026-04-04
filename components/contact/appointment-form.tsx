@@ -20,6 +20,22 @@ const initialState = {
   formStartedAt: Date.now(),
 };
 
+function getSuccessMessage(result: {
+  message?: string;
+  clientReply?: {
+    status?: string;
+  };
+}) {
+  if (result.clientReply?.status === "sent") {
+    return "Consultation request received. We have also sent a confirmation email to your inbox while the firm reviews your preferred appointment window.";
+  }
+
+  return (
+    result.message ??
+    "Consultation request received. A member of the firm will confirm availability."
+  );
+}
+
 export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
   const [formData, setFormData] = useState(initialState);
   const [message, setMessage] = useState("");
@@ -67,13 +83,16 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
       const result = await readJsonResponse<{
         message?: string;
         errors?: string[];
+        clientReply?: {
+          status?: string;
+        };
       }>(response);
 
       if (!response.ok) {
         throw new Error(result?.errors?.join(" ") ?? "Unable to submit consultation request.");
       }
 
-      setMessage(result?.message ?? "Consultation request sent.");
+      setMessage(getSuccessMessage(result ?? {}));
       setFormData({
         ...initialState,
         formStartedAt: Date.now(),
@@ -101,7 +120,7 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
       <div className="form-card-topline" />
       <p className="contact-note">
         Share your preferred consultation window and a short description of your
-        matter. We will confirm availability with the relevant attorney.
+        matter. We will confirm availability with one of our attorneys.
       </p>
 
       {message ? <div className="form-status">{message}</div> : null}

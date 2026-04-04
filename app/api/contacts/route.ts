@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { sendContactNotification } from "@/lib/email-notifications";
+import {
+  sendContactAutoReply,
+  sendContactNotification,
+} from "@/lib/email-notifications";
 import { enforceIntakeProtection } from "@/lib/intake-protection";
 import { formatDatabaseErrorMessage, isDatabaseConfigured } from "@/lib/persistence";
 import { prisma } from "@/lib/prisma";
@@ -70,20 +73,37 @@ export async function POST(request: Request) {
         message: payload.message!.trim(),
       },
     });
-    const notification = await sendContactNotification({
-      name: submission.name,
-      email: submission.email,
-      phone: submission.phone,
-      service: submission.service,
-      message: submission.message,
+    const [notification, clientReply] = await Promise.all([
+      sendContactNotification({
+        name: submission.name,
+        email: submission.email,
+        phone: submission.phone,
+        service: submission.service,
+        message: submission.message,
+      }),
+      sendContactAutoReply({
+        name: submission.name,
+        email: submission.email,
+        service: submission.service,
+      }),
+    ]);
+    const savedSubmission = await prisma.contact.update({
+      where: { id: submission.id },
+      data: {
+        notificationStatus: notification.status,
+        notificationDetail: notification.detail,
+        clientReplyStatus: clientReply.status,
+        clientReplyDetail: clientReply.detail,
+      },
     });
 
     return NextResponse.json(
       {
         message: "Thank you for contacting Kinsley Advocates. We will be in touch shortly.",
-        submission,
+        submission: savedSubmission,
         persistence: "postgresql",
         notification,
+        clientReply,
       },
       { status: 201 },
     );
