@@ -64,12 +64,49 @@ let transporterPromise:
   | ReturnType<typeof nodemailer.createTransport>
   | null = null;
 
+function isGmailHost(host: string) {
+  const normalizedHost = host.trim().toLowerCase();
+
+  return normalizedHost === "smtp.gmail.com" || normalizedHost === "smtp.googlemail.com";
+}
+
+function normalizeSmtpUser(host: string, value: string) {
+  return isGmailHost(host) ? value.trim().toLowerCase() : value.trim();
+}
+
+function normalizeSmtpPassword(host: string, value: string) {
+  const trimmedValue = value.trim();
+
+  // Gmail app passwords are often displayed in grouped blocks; accept pasted spaces.
+  return isGmailHost(host) ? trimmedValue.replace(/\s+/g, "") : trimmedValue;
+}
+
+function formatDeliveryFailureDetail(error: unknown, config: NotificationConfig) {
+  const rawDetail =
+    error instanceof Error ? error.message : "Unknown email delivery failure.";
+
+  if (
+    isGmailHost(config.smtpHost) &&
+    /(535|5\.7\.8|BadCredentials|Username and Password not accepted)/i.test(rawDetail)
+  ) {
+    return [
+      "Gmail rejected the SMTP login.",
+      `Create a fresh Google App Password for ${config.smtpUser || FIRM_CONTACT_EMAIL}, update \`SMTP_PASS\` in Vercel, and redeploy.`,
+      "If the password was copied with spaces, this app now strips them automatically.",
+    ].join(" ");
+  }
+
+  return rawDetail;
+}
+
 function getNotificationConfig(): NotificationConfig {
+  const normalizedSmtpUser = normalizeSmtpUser(smtpHost, smtpUser);
+  const normalizedSmtpPass = normalizeSmtpPassword(smtpHost, smtpPass);
   const hasSmtpCredentials =
     Boolean(smtpHost) &&
     Number.isFinite(smtpPort) &&
-    Boolean(smtpUser) &&
-    Boolean(smtpPass) &&
+    Boolean(normalizedSmtpUser) &&
+    Boolean(normalizedSmtpPass) &&
     Boolean(fromEmail);
 
   const hasPreviewMode = Boolean(previewDirectory) && Boolean(fromEmail);
@@ -82,8 +119,8 @@ function getNotificationConfig(): NotificationConfig {
     smtpHost,
     smtpPort,
     smtpSecure,
-    smtpUser,
-    smtpPass,
+    smtpUser: normalizedSmtpUser,
+    smtpPass: normalizedSmtpPass,
     previewDir: previewDirectory,
   };
 }
@@ -230,8 +267,7 @@ async function deliverNotification(
       detail: `Delivered to ${input.to.join(", ")}.`,
     };
   } catch (error) {
-    const detail =
-      error instanceof Error ? error.message : "Unknown email delivery failure.";
+    const detail = formatDeliveryFailureDetail(error, config);
 
     console.error("Email notification delivery failed:", detail);
 
