@@ -2,13 +2,14 @@
   <rect x="200" y="34" width="220" height="220" stroke="#C99A45" stroke-width="4"/>
   <text
     x="310"
-    y="186"
+    y="192"
     text-anchor="middle"
-    fill="#C99A45"
+    fill="#D6B06C"
     font-family="'Cormorant Garamond','Times New Roman',serif"
-    font-size="118"
-    font-weight="600"
-    letter-spacing="-4"
+    font-size="128"
+    font-style="italic"
+    font-weight="700"
+    letter-spacing="-8"
   >
     KA
   </text>

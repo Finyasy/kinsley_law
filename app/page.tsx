@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
 import { BrandPoster } from "@/components/brand/brand-poster";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { ValueRotator } from "@/components/home/value-rotator";
 import {
   getAttorneysForPage,
@@ -89,10 +90,13 @@ export default async function HomePage() {
           <div className="hero-panel">
             <div className="hero-visual-stage">
               <div className="hero-visual-card">
-                <BrandPoster priority className="hero-poster" />
+                <div className="hero-brand-tile">
+                  <LogoMark size="sm" priority className="hero-logo" />
+                  <span className="hero-brand-caption">Kinsley Advocates</span>
+                </div>
                 <div className="hero-visual-copy">
-                  <span className="eyebrow light">{homePageContent.portraitEyebrow}</span>
-                  <h2>Senior-led legal strategy with precision, restraint, and follow-through.</h2>
+                  <span className="hero-panel-kicker">{homePageContent.portraitEyebrow}</span>
+                  <h2>Senior-led strategy, measured communication, and clear follow-through.</h2>
                   <p>{homePageContent.portraitText}</p>
                 </div>
               </div>

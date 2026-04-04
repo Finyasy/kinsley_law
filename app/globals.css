@@ -246,9 +246,9 @@ button {
   display: inline-block;
   margin-bottom: 1rem;
   color: var(--wine-700);
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.22em;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -276,8 +276,8 @@ button {
 
 .rotator-title-primary {
   max-width: 10ch;
-  font-size: clamp(3.5rem, 6.1vw, 6rem);
-  line-height: 0.88;
+  font-size: clamp(3.2rem, 5.5vw, 5.2rem);
+  line-height: 0.92;
 }
 
 .rotator-title-secondary {
@@ -289,8 +289,8 @@ button {
 
 .rotator-static {
   font-family: var(--font-display), serif;
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
-  line-height: 0.95;
+  font-size: clamp(2.1rem, 3.5vw, 3.25rem);
+  line-height: 1;
   color: var(--ink-950);
 }
 
@@ -305,9 +305,9 @@ button {
   justify-content: flex-start;
   color: var(--wine-700);
   font-family: var(--font-body), sans-serif;
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
-  font-weight: 800;
-  letter-spacing: 0.32em;
+  font-size: clamp(0.95rem, 1.25vw, 1.08rem);
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   animation: rotatorWordIn 720ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -402,8 +402,8 @@ button {
   max-width: 24ch;
   margin: 1rem 0 0;
   font-family: var(--font-display), serif;
-  font-size: clamp(1.5rem, 2.5vw, 2.15rem);
-  line-height: 1;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  line-height: 1.05;
   color: var(--ink-900);
 }
 
@@ -424,19 +424,18 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3.25rem;
-  padding: 0 1.35rem;
+  min-height: 3.1rem;
+  padding: 0 1.25rem;
   border-radius: 999px;
-  font-weight: 700;
+  font-weight: 600;
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .button-primary {
   background:
-    linear-gradient(135deg, rgba(178, 61, 65, 0.92), rgba(21, 52, 91, 1)),
-    linear-gradient(135deg, var(--wine-700), var(--ink-900));
+    linear-gradient(135deg, rgba(164, 104, 45, 0.96), rgba(25, 39, 46, 0.96));
   color: var(--white);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 14px 32px rgba(8, 19, 25, 0.14);
 }
 
 .button-secondary {
@@ -510,9 +509,9 @@ button {
   display: block;
   margin-bottom: 0.25rem;
   color: rgba(21, 52, 91, 0.58);
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -632,8 +631,8 @@ button {
 
 .section-title {
   max-width: 18ch;
-  font-size: clamp(2.2rem, 4vw, 3.6rem);
-  line-height: 0.98;
+  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  line-height: 1.02;
 }
 
 .text-link {
@@ -683,7 +682,7 @@ button {
   display: inline-block;
   margin-bottom: 0.6rem;
   font-family: var(--font-display), serif;
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   color: var(--ink-900);
 }
 
@@ -744,8 +743,8 @@ button {
   border-radius: 999px;
   background: rgba(21, 52, 91, 0.08);
   color: var(--ink-900);
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
 .minerals-spotlight-actions {
@@ -849,8 +848,8 @@ button {
   background: rgba(21, 52, 91, 0.07);
   border: 1px solid rgba(21, 52, 91, 0.08);
   color: var(--ink-900);
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
   line-height: 1.3;
 }
 
@@ -1621,16 +1620,66 @@ button {
 
 .brand-poster-shell {
   width: 100%;
+  aspect-ratio: 9 / 14;
+  display: grid;
+  place-items: center;
   overflow: hidden;
   border-radius: 28px;
-  border: 1px solid rgba(214, 170, 99, 0.18);
-  box-shadow: 0 24px 70px rgba(8, 19, 25, 0.28);
+  border: 1px solid rgba(214, 170, 99, 0.22);
+  background:
+    radial-gradient(circle at top, rgba(214, 170, 99, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(8, 19, 25, 0.98), rgba(16, 28, 34, 0.98));
+  box-shadow: 0 24px 70px rgba(8, 19, 25, 0.22);
+  position: relative;
 }
 
-.brand-poster-image {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
+.brand-poster-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(214, 170, 99, 0.08), transparent 18%),
+    radial-gradient(circle at bottom left, rgba(214, 170, 99, 0.08), transparent 28%);
+}
+
+.brand-poster-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 0.85rem;
+  width: min(100%, 78%);
+}
+
+.brand-poster-frame {
+  display: grid;
+  place-items: center;
+  width: min(100%, 8.75rem);
+  aspect-ratio: 1;
+  border: 1px solid rgba(214, 170, 99, 0.42);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 0 0 1px rgba(214, 170, 99, 0.04);
+}
+
+.brand-poster-ka {
+  font-family: var(--font-display), serif;
+  font-size: clamp(3rem, 6vw, 4.4rem);
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: -0.08em;
+  line-height: 0.9;
+  color: #d6b06c;
+  text-shadow: 0 6px 18px rgba(214, 176, 108, 0.08);
+}
+
+.brand-poster-wordmark {
+  color: rgba(214, 170, 99, 0.78);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 .brand-card-shell {
@@ -1690,12 +1739,13 @@ button {
 .services-hero-panel {
   display: grid;
   justify-items: start;
-  gap: 1.4rem;
-  padding: 1.5rem;
+  gap: 1.2rem;
+  padding: 1.7rem;
   border-radius: calc(var(--radius-xl) + 6px);
   background:
-    linear-gradient(145deg, rgba(8, 19, 25, 0.98), rgba(17, 33, 41, 0.97)),
-    linear-gradient(145deg, rgba(214, 170, 99, 0.14), transparent);
+    radial-gradient(circle at top right, rgba(214, 170, 99, 0.12), transparent 34%),
+    linear-gradient(145deg, rgba(17, 28, 33, 0.96), rgba(32, 47, 55, 0.94));
+  border: 1px solid rgba(214, 170, 99, 0.14);
   box-shadow: var(--shadow-lg);
 }
 
@@ -1709,9 +1759,9 @@ button {
 .services-hero-copy h2 {
   margin: 0;
   font-family: var(--font-display), serif;
-  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  font-size: clamp(1.7rem, 2.45vw, 2.25rem);
   color: var(--white);
-  line-height: 0.96;
+  line-height: 1.02;
 }
 
 .hero-logo,
@@ -1726,6 +1776,28 @@ button {
   padding: 0;
 }
 
+.hero-brand-tile {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1.2rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(214, 170, 99, 0.14);
+}
+
+.hero-brand-tile .logo-mark-sm {
+  width: 7.8rem;
+}
+
+.hero-brand-caption {
+  color: rgba(214, 170, 99, 0.68);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .hero-visual-copy p,
 .services-hero-copy li,
 .page-brand-copy p {
@@ -1733,11 +1805,24 @@ button {
 }
 
 .hero-visual-copy {
-  max-width: 24rem;
+  max-width: 25rem;
+}
+
+.hero-panel-kicker {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.38rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(214, 170, 99, 0.1);
+  color: rgba(245, 232, 204, 0.88);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .hero-poster {
-  max-width: 13.5rem;
+  max-width: 12rem;
 }
 
 .page-poster {
@@ -1745,12 +1830,12 @@ button {
 }
 
 .legacy-poster {
-  max-width: 10.5rem;
+  max-width: 9.75rem;
   margin-bottom: 1.4rem;
 }
 
 .contact-poster {
-  max-width: 8rem;
+  max-width: 8.5rem;
 }
 
 .hero-floating-card {
@@ -1904,9 +1989,9 @@ button {
 .admin-list-card,
 .admin-tag-card,
 .admin-setting-card {
-  border: 1px solid rgba(21, 52, 91, 0.08);
+  border: 1px solid rgba(17, 33, 41, 0.08);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 244, 239, 0.86));
+    linear-gradient(180deg, rgba(255, 252, 247, 0.95), rgba(247, 241, 231, 0.88));
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
 }
@@ -1933,6 +2018,21 @@ button {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(19rem, 0.8fr);
   gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-auth-card::before,
+.admin-panel::before,
+.admin-stat-card::before,
+.admin-list-card::before,
+.admin-setting-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(214, 170, 99, 0.05), transparent 34%);
 }
 
 .admin-auth-copy {
@@ -1949,8 +2049,8 @@ button {
 .admin-auth-bullets div {
   padding: 0.95rem 1rem;
   border-radius: 1rem;
-  border: 1px solid rgba(21, 52, 91, 0.08);
-  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(214, 170, 99, 0.14);
+  background: rgba(255, 250, 243, 0.74);
 }
 
 .admin-auth-bullets strong,
@@ -1975,16 +2075,22 @@ button {
   display: grid;
   align-content: center;
   gap: 1rem;
-  padding: 1.2rem;
+  padding: 1.4rem;
   border-radius: 1.25rem;
   background:
-    radial-gradient(circle at top right, rgba(214, 162, 77, 0.15), transparent 30%),
-    linear-gradient(145deg, rgba(11, 23, 39, 0.98), rgba(21, 52, 91, 0.95));
+    radial-gradient(circle at top right, rgba(214, 170, 99, 0.16), transparent 30%),
+    linear-gradient(145deg, rgba(8, 19, 25, 0.98), rgba(17, 33, 41, 0.96));
   color: rgba(255, 255, 255, 0.86);
 }
 
-.admin-auth-brand-card {
-  max-width: 16rem;
+.admin-auth-brand-lockup {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: start;
+}
+
+.admin-auth-brand-poster {
+  max-width: 9.5rem;
 }
 
 .admin-auth-form label {
@@ -2017,8 +2123,8 @@ button {
   min-width: 0;
   padding: 0.85rem 1rem;
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(21, 52, 91, 0.08);
+  background: rgba(255, 251, 245, 0.78);
+  border: 1px solid rgba(214, 170, 99, 0.16);
 }
 
 .admin-hero-user span,
@@ -2029,9 +2135,9 @@ button {
 
 .admin-hero-user span {
   color: rgba(21, 52, 91, 0.56);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -2053,12 +2159,35 @@ button {
   margin-top: 1.4rem;
 }
 
+.admin-hero-note {
+  display: grid;
+  gap: 0.3rem;
+  max-width: 38rem;
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(214, 170, 99, 0.16);
+  background: rgba(255, 250, 242, 0.74);
+}
+
+.admin-hero-note strong {
+  color: var(--ink-900);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.admin-hero-note span {
+  color: rgba(8, 19, 25, 0.72);
+  line-height: 1.65;
+}
+
 .admin-status-pill {
   min-width: 12rem;
   padding: 0.85rem 1rem;
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(21, 52, 91, 0.08);
+  background: rgba(255, 250, 243, 0.78);
+  border: 1px solid rgba(214, 170, 99, 0.14);
 }
 
 .admin-status-pill span,
@@ -2068,9 +2197,9 @@ button {
 
 .admin-status-pill span {
   color: rgba(21, 52, 91, 0.56);
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -2094,10 +2223,10 @@ button {
 
 .admin-stat-card span {
   display: block;
-  color: rgba(21, 52, 91, 0.62);
-  font-size: 0.82rem;
+  color: rgba(17, 33, 41, 0.62);
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -2105,17 +2234,28 @@ button {
   display: block;
   margin-top: 0.7rem;
   font-family: var(--font-display), serif;
-  font-size: 2.5rem;
+  font-size: 2.15rem;
 }
 
 .admin-stat-button {
   width: 100%;
   text-align: left;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .admin-stat-button:hover {
   transform: translateY(-2px);
+}
+
+.admin-stat-button::after {
+  content: "";
+  position: absolute;
+  inset: auto auto 0 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(214, 170, 99, 0.92), rgba(17, 33, 41, 0.88));
 }
 
 .admin-tab-bar {
@@ -2129,9 +2269,9 @@ button {
   gap: 0.3rem;
   min-width: 0;
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(21, 52, 91, 0.08);
+  border: 1px solid rgba(214, 170, 99, 0.14);
   border-radius: 1.15rem;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 251, 245, 0.78);
   box-shadow: var(--shadow-sm);
   text-align: left;
   cursor: pointer;
@@ -2149,27 +2289,72 @@ button {
 
 .admin-tab-button strong {
   color: var(--ink-950);
-  font-size: 0.98rem;
+  font-size: 0.92rem;
 }
 
 .admin-tab-button span {
   color: rgba(11, 23, 39, 0.62);
   line-height: 1.55;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
 }
 
 .admin-tab-button:hover {
   transform: translateY(-2px);
-  border-color: rgba(116, 31, 48, 0.18);
+  border-color: rgba(214, 170, 99, 0.28);
   box-shadow: var(--shadow-md);
 }
 
 .admin-tab-button[data-active="true"] {
-  border-color: rgba(116, 31, 48, 0.28);
+  border-color: rgba(214, 170, 99, 0.34);
   background:
-    radial-gradient(circle at top right, rgba(214, 162, 77, 0.16), transparent 34%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 244, 239, 0.9));
-  box-shadow: 0 18px 42px rgba(15, 34, 58, 0.12);
+    radial-gradient(circle at top right, rgba(214, 170, 99, 0.16), transparent 34%),
+    linear-gradient(145deg, rgba(255, 253, 248, 0.98), rgba(247, 241, 231, 0.92));
+  box-shadow: 0 18px 42px rgba(8, 19, 25, 0.12);
+}
+
+.admin-tab-button[data-active="true"] strong {
+  color: var(--ink-900);
+}
+
+.admin-mini-stat {
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(214, 170, 99, 0.14);
+  background: rgba(255, 251, 245, 0.78);
+}
+
+.admin-mini-stat span {
+  display: block;
+  color: rgba(17, 33, 41, 0.58);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-mini-stat strong {
+  display: block;
+  margin-top: 0.45rem;
+  font-family: var(--font-display), serif;
+  font-size: 2rem;
+  color: var(--ink-900);
+}
+
+.admin-list-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(214, 170, 99, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(248, 243, 234, 0.94));
+}
+
+.admin-list-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(214, 170, 99, 0.92), rgba(17, 33, 41, 0.88));
 }
 
 .admin-grid {

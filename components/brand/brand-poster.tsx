@@ -1,21 +1,17 @@
-import Image from "next/image";
-
 type BrandPosterProps = {
   priority?: boolean;
   className?: string;
 };
 
-export function BrandPoster({ priority = false, className = "" }: BrandPosterProps) {
+export function BrandPoster({ className = "" }: BrandPosterProps) {
   return (
     <div className={`brand-poster-shell ${className}`.trim()}>
-      <Image
-        src="/images/kins_law.jpg"
-        alt="Kinsley Advocates brand poster"
-        width={576}
-        height={1024}
-        priority={priority}
-        className="brand-poster-image"
-      />
+      <div className="brand-poster-inner">
+        <div className="brand-poster-frame">
+          <span className="brand-poster-ka">KA</span>
+        </div>
+        <span className="brand-poster-wordmark">Kinsley Advocates</span>
+      </div>
     </div>
   );
 }

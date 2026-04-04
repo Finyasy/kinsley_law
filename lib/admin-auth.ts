@@ -1,9 +1,4 @@
-import {
-  createHash,
-  randomBytes,
-  scrypt as scryptCallback,
-  timingSafeEqual,
-} from "node:crypto";
+import { createHash, randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { isDatabaseConfigured } from "@/lib/persistence";
@@ -30,6 +25,34 @@ function normalizeText(value: string | undefined) {
   return value?.trim() || "";
 }
 
+function maybeDecodeBase64(value: string) {
+  const normalizedValue = normalizeText(value);
+
+  if (!normalizedValue || normalizedValue.length % 4 !== 0) {
+    return normalizedValue;
+  }
+
+  if (!/^[A-Za-z0-9+/=_-]+$/.test(normalizedValue)) {
+    return normalizedValue;
+  }
+
+  try {
+    const decodedValue = Buffer.from(
+      normalizedValue.replaceAll("-", "+").replaceAll("_", "/"),
+      "base64",
+    ).toString("utf8");
+
+    // Only accept decoded output when it looks like readable credential text.
+    if (!decodedValue || /[\u0000-\u0008\u000E-\u001F]/.test(decodedValue)) {
+      return normalizedValue;
+    }
+
+    return decodedValue.trim() || normalizedValue;
+  } catch {
+    return normalizedValue;
+  }
+}
+
 function hashSessionToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
@@ -46,7 +69,11 @@ function safeStringEquals(left: string, right: string) {
 }
 
 export function normalizeAdminEmail(email: string) {
-  return normalizeText(email).toLowerCase();
+  return maybeDecodeBase64(email).toLowerCase();
+}
+
+function normalizeAdminPasswordInput(password: string) {
+  return maybeDecodeBase64(password);
 }
 
 async function deriveScryptKey(password: string, salt: string) {
@@ -189,7 +216,9 @@ export async function authenticateAdminUser(
 
   const normalizedEmail = normalizeAdminEmail(email);
 
-  if (!normalizedEmail || !password) {
+  const normalizedPassword = normalizeAdminPasswordInput(password);
+
+  if (!normalizedEmail || !normalizedPassword) {
     return null;
   }
 
@@ -210,7 +239,7 @@ export async function authenticateAdminUser(
   }
 
   const isPasswordValid = await verifyAdminPassword(
-    password,
+    normalizedPassword,
     adminUser.passwordHash,
   );
 

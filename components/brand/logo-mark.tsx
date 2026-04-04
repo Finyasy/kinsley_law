@@ -7,9 +7,9 @@ type LogoMarkProps = {
 };
 
 const dimensions = {
-  sm: { width: 150, height: 100 },
-  md: { width: 240, height: 160 },
-  lg: { width: 360, height: 240 },
+  sm: { width: 168, height: 98 },
+  md: { width: 252, height: 147 },
+  lg: { width: 360, height: 210 },
 };
 
 export function LogoMark({
@@ -22,12 +22,19 @@ export function LogoMark({
   return (
     <div className={`logo-mark-shell logo-mark-${size} ${className}`.trim()}>
       <Image
-        src="/images/kinsley-logo-transparent.png"
+        src="/images/kinsley-logo-clean.svg"
         alt="Kinsley Advocates logo"
         width={width}
         height={height}
         priority={priority}
         className="logo-mark-image"
+        sizes={
+          size === "sm"
+            ? "168px"
+            : size === "md"
+              ? "252px"
+              : "360px"
+        }
       />
     </div>
   );
