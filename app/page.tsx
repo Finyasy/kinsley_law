@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
-import { LogoMark } from "@/components/brand/logo-mark";
+import { BrandPoster } from "@/components/brand/brand-poster";
 import { ValueRotator } from "@/components/home/value-rotator";
 import {
   getAttorneysForPage,
@@ -10,10 +10,29 @@ import {
   getTestimonialsForPage,
 } from "@/lib/server-data";
 
+function splitRotatorPrefix(prefix: string) {
+  const trimmed = prefix.trim();
+
+  if (!trimmed) {
+    return { primaryText: "Strategic counsel", staticText: "with" };
+  }
+
+  const parts = trimmed.split(/\s+/);
+
+  if (parts.length === 1) {
+    return { primaryText: parts[0], staticText: "with" };
+  }
+
+  return {
+    primaryText: parts.slice(0, -1).join(" "),
+    staticText: parts[parts.length - 1],
+  };
+}
+
 export const metadata: Metadata = {
-  title: "Better Call Kinsley Advocates",
+  title: "Strategic Counsel for High-Stakes Matters",
   description:
-    "Bring dignity and honor to your legal battles with strategic counsel from Kinsley Advocates in Nairobi.",
+    "Kinsley Advocates delivers strategic, senior-led legal counsel for private clients, businesses, property matters, disputes, and mineral-sector work in Nairobi.",
 };
 
 export const dynamic = "force-dynamic";
@@ -29,16 +48,25 @@ export default async function HomePage() {
   const featuredAttorneys = attorneys.slice(0, 3);
   const featuredPractices = practiceAreas.slice(0, 6);
   const mineralsPractice =
-    practiceAreas.find((area) => area.name.toLowerCase().includes("gold and mineral")) ?? null;
+    practiceAreas.find((area) => {
+      const normalizedName = area.name.toLowerCase();
+      return normalizedName.includes("gold") || normalizedName.includes("mineral");
+    }) ?? null;
+  const { primaryText, staticText } = splitRotatorPrefix(homePageContent.valueRotatorPrefix);
 
   return (
     <>
       <section className="hero-shell">
         <div className="site-container hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow">Better Call Kinsley Advocates</p>
-            <ValueRotator values={homePageContent.valueRotatorWords} />
-            <p className="hero-kicker">Bring dignity &amp; honor to your legal battles.</p>
+            <p className="eyebrow">{homePageContent.heroEyebrow}</p>
+            <ValueRotator
+              label={homePageContent.valueRotatorLabel}
+              primaryText={primaryText}
+              staticText={staticText}
+              values={homePageContent.valueRotatorWords}
+            />
+            <p className="hero-kicker">Strategic legal counsel for matters that need calm control.</p>
             <p className="hero-description">{homePageContent.heroDescription}</p>
             <div className="hero-actions">
               <Link href="/contact" className="button-primary">
@@ -61,10 +89,10 @@ export default async function HomePage() {
           <div className="hero-panel">
             <div className="hero-visual-stage">
               <div className="hero-visual-card">
-                <LogoMark size="lg" priority className="hero-logo" />
+                <BrandPoster priority className="hero-poster" />
                 <div className="hero-visual-copy">
-                  <span className="eyebrow light">Kinsley Advocates</span>
-                  <h2>Senior-led legal strategy with clarity, restraint, and force.</h2>
+                  <span className="eyebrow light">{homePageContent.portraitEyebrow}</span>
+                  <h2>Senior-led legal strategy with precision, restraint, and follow-through.</h2>
                   <p>{homePageContent.portraitText}</p>
                 </div>
               </div>
@@ -73,17 +101,22 @@ export default async function HomePage() {
                 <strong>Global Trading Center (GTC), Westlands, 9th Floor, Suite D36</strong>
                 <p>P.O. Box 18627-00100, Nairobi.</p>
               </article>
-              <article className="hero-floating-card hero-floating-card-compact secondary">
-                <span className="hero-floating-label">Direct line</span>
-                <strong>+254 704 561 831</strong>
-              </article>
-              <article className="hero-floating-card hero-floating-card-compact secondary">
-                <span className="hero-floating-label">Email</span>
-                <strong>kinsleyadvocates@gmail.com</strong>
-              </article>
-              <article className="hero-floating-card hero-floating-card-compact secondary">
-                <span className="hero-floating-label">Client experience</span>
-                <strong>Structured updates, discreet handling, and clear next steps</strong>
+              <article className="hero-floating-card hero-contact-card secondary">
+                <span className="hero-floating-label">Direct contact</span>
+                <div className="hero-contact-list">
+                  <div>
+                    <span>Direct line</span>
+                    <strong>+254 704 561 831</strong>
+                  </div>
+                  <div>
+                    <span>Email</span>
+                    <strong>kinsleyadvocates@gmail.com</strong>
+                  </div>
+                  <div>
+                    <span>Client experience</span>
+                    <strong>Structured updates, discreet handling, and clear next steps</strong>
+                  </div>
+                </div>
               </article>
             </div>
           </div>
@@ -105,7 +138,7 @@ export default async function HomePage() {
         <div className="site-container split-section">
           <div className="section-copy">
             <p className="eyebrow">{homePageContent.legacySectionEyebrow}</p>
-            <h2 className="section-title">A modern Nairobi law firm with a steadier way to fight.</h2>
+            <h2 className="section-title">{homePageContent.legacySectionTitle}</h2>
             {homePageContent.legacyParagraphs.map((paragraph) => (
               <p key={paragraph} className="section-text">
                 {paragraph}
@@ -122,7 +155,7 @@ export default async function HomePage() {
           </div>
 
           <div className="legacy-card card-surface">
-            <LogoMark size="md" className="legacy-logo" />
+            <BrandPoster className="legacy-poster" />
             <div className="legacy-grid">
               {homePageContent.legacyMetrics.map((metric) => (
                 <div key={`${metric.value}-${metric.text}`}>
@@ -140,9 +173,7 @@ export default async function HomePage() {
           <div className="section-heading-row">
             <div>
               <p className="eyebrow">{homePageContent.servicesEyebrow}</p>
-              <h2 className="section-title">
-                Legal services built around how clients actually search for help.
-              </h2>
+              <h2 className="section-title">{homePageContent.servicesTitle}</h2>
             </div>
             <Link href="/services" className="text-link">
               View all services
@@ -209,7 +240,7 @@ export default async function HomePage() {
           <div className="section-heading-row">
             <div>
               <p className="eyebrow">{homePageContent.teamEyebrow}</p>
-              <h2 className="section-title">Experienced lawyers with clearly defined strengths.</h2>
+              <h2 className="section-title">{homePageContent.teamTitle}</h2>
             </div>
             <Link href="/about" className="text-link">
               Meet the firm
@@ -245,9 +276,7 @@ export default async function HomePage() {
           <div className="section-heading-row light">
             <div>
               <p className="eyebrow light">{homePageContent.testimonialsEyebrow}</p>
-              <h2 className="section-title light">
-                Clients remember the calm, clarity, and preparation.
-              </h2>
+              <h2 className="section-title light">{homePageContent.testimonialsTitle}</h2>
             </div>
           </div>
 
@@ -270,9 +299,7 @@ export default async function HomePage() {
         <div className="site-container cta-panel">
           <div>
             <p className="eyebrow">{homePageContent.ctaEyebrow}</p>
-            <h2 className="section-title">
-              Tell us what you are facing, and we will route it to the right advocate.
-            </h2>
+            <h2 className="section-title">{homePageContent.ctaTitle}</h2>
           </div>
           <div className="cta-actions">
             <Link href="/contact" className="button-primary">

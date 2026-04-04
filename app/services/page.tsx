@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LogoMark } from "@/components/brand/logo-mark";
+import { BrandCard } from "@/components/brand/brand-card";
 import { getPracticeAreasForPage } from "@/lib/server-data";
 
 export const metadata: Metadata = {
@@ -14,7 +14,10 @@ export const dynamic = "force-dynamic";
 export default async function ServicesPage() {
   const practiceAreas = await getPracticeAreasForPage();
   const mineralsPractice =
-    practiceAreas.find((area) => area.name.toLowerCase().includes("gold and mineral")) ?? null;
+    practiceAreas.find((area) => {
+      const normalizedName = area.name.toLowerCase();
+      return normalizedName.includes("gold") || normalizedName.includes("mineral");
+    }) ?? null;
   const processSteps = [
     "Structured intake and conflict review",
     "A defined lead advocate and clear workstream",
@@ -74,7 +77,7 @@ export default async function ServicesPage() {
             </p>
           </div>
           <div className="services-side-panel services-hero-panel">
-            <LogoMark size="lg" className="page-logo" />
+            <BrandCard priority className="services-brand-card" />
             <div className="services-hero-copy">
               <h2>What working with us feels like</h2>
               <ul>
@@ -213,19 +216,21 @@ export default async function ServicesPage() {
         </section>
       ) : null}
 
-      <section className="site-section section-dark">
-        <div className="site-container consultation-banner">
-          <div>
-            <p className="eyebrow light">Schedule a consultation</p>
-            <h2 className="section-title light">
-              Tell us what you are facing and we will route you to the right practice area.
-            </h2>
+      {!mineralsPractice ? (
+        <section className="site-section section-dark">
+          <div className="site-container consultation-banner">
+            <div>
+              <p className="eyebrow light">Schedule a consultation</p>
+              <h2 className="section-title light">
+                Tell us what you are facing and we will route you to the right practice area.
+              </h2>
+            </div>
+            <Link href="/contact" className="button-primary">
+              Contact the Team
+            </Link>
           </div>
-          <Link href="/contact" className="button-primary">
-            Contact the Team
-          </Link>
-        </div>
-      </section>
+        </section>
+      ) : null}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LogoMark } from "@/components/brand/logo-mark";
+import { BrandPoster } from "@/components/brand/brand-poster";
 import { AppointmentForm } from "@/components/contact/appointment-form";
 import { ContactForm } from "@/components/contact/contact-form";
 import { getOfficeDetails, getPracticeAreasForPage } from "@/lib/server-data";
@@ -29,13 +29,13 @@ export default async function ContactPage() {
             <h1 className="page-title">Start the conversation with a team that handles sensitive matters with dignity.</h1>
             <p className="page-intro">
               Whether you need immediate legal guidance, a second opinion, or a structured
-              consultation, send us your details and we will direct your matter to the right
-              advocate.
+              consultation, send us your details and we will route the matter to the right
+              advocate with a clear next step.
             </p>
           </div>
 
           <div className="contact-hero-card card-surface">
-            <LogoMark size="md" className="contact-logo" />
+            <BrandPoster className="contact-poster" />
             <div className="contact-hero-status">
               <div>
                 <span className="office-label">Response standard</span>
@@ -56,15 +56,21 @@ export default async function ContactPage() {
               </div>
               <div>
                 <span className="office-label">Phone</span>
-                <strong>{officeDetails.phone}</strong>
+                <a href={`tel:${officeDetails.phone.replace(/\s+/g, "")}`} className="office-link">
+                  {officeDetails.phone}
+                </a>
               </div>
               <div>
                 <span className="office-label">Email</span>
-                <strong>{officeDetails.email}</strong>
+                <a href={`mailto:${officeDetails.email}`} className="office-link">
+                  {officeDetails.email}
+                </a>
               </div>
               <div>
                 <span className="office-label">Website</span>
-                <strong>www.kinsleylaw.com</strong>
+                <a href="https://www.kinsleylaw.com" target="_blank" rel="noreferrer" className="office-link">
+                  www.kinsleylaw.com
+                </a>
               </div>
             </div>
           </div>

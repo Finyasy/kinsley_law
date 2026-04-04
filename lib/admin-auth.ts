@@ -17,6 +17,7 @@ const PASSWORD_KEY_LENGTH = 64;
 const SCRYPT_COST = 16384;
 const SCRYPT_BLOCK_SIZE = 8;
 const SCRYPT_PARALLELIZATION = 1;
+const MIN_ADMIN_PASSWORD_LENGTH = 10;
 
 type AdminSessionUser = {
   id: number;
@@ -105,8 +106,10 @@ export function getAdminSessionMaxAge() {
 export async function hashAdminPassword(password: string) {
   const normalizedPassword = normalizeText(password);
 
-  if (normalizedPassword.length < 12) {
-    throw new Error("Admin passwords must be at least 12 characters long.");
+  if (normalizedPassword.length < MIN_ADMIN_PASSWORD_LENGTH) {
+    throw new Error(
+      `Admin passwords must be at least ${MIN_ADMIN_PASSWORD_LENGTH} characters long.`,
+    );
   }
 
   const salt = randomBytes(16).toString("hex");

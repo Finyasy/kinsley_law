@@ -1,0 +1,10 @@
+<svg width="640" height="760" viewBox="0 0 640 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="760" rx="36" fill="#0C1614"/>
+  <circle cx="320" cy="226" r="100" fill="#A07058"/>
+  <path d="M206 206C212 110 270 64 338 64C404 64 450 114 448 206C422 178 382 154 320 154C260 154 228 174 206 206Z" fill="#191718"/>
+  <path d="M254 300C282 322 356 320 386 294V372C386 408 356 438 320 438C284 438 254 408 254 372V300Z" fill="#B78267"/>
+  <path d="M162 760V626C162 546 228 480 308 480H332C412 480 478 546 478 626V760H162Z" fill="#192C29"/>
+  <path d="M220 760L276 522H364L420 760H220Z" fill="#F4ECDD"/>
+  <text x="56" y="650" fill="#D5A55A" font-family="Manrope, sans-serif" font-size="22" font-weight="700" letter-spacing="3">PARTNER</text>
+  <text x="56" y="688" fill="#F6F1E8" font-family="Cormorant Garamond, serif" font-size="44" font-weight="600">Nomsa Naidoo</text>
+</svg>

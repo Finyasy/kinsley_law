@@ -4,10 +4,17 @@ import { useEffect, useState } from "react";
 
 type ValueRotatorProps = {
   label?: string;
+  primaryText?: string;
+  staticText?: string;
   values: string[];
 };
 
-export function ValueRotator({ label, values }: ValueRotatorProps) {
+export function ValueRotator({
+  label,
+  primaryText = "Excellence",
+  staticText = "In Law",
+  values,
+}: ValueRotatorProps) {
   const activeValues = values.length > 0 ? values : ["Mastery"];
   const [index, setIndex] = useState(0);
 
@@ -24,10 +31,11 @@ export function ValueRotator({ label, values }: ValueRotatorProps) {
       {label ? <span className="eyebrow">{label}</span> : null}
       <div className="rotator-title-block" aria-live="polite">
         <h1 className="rotator-title-primary">
-          Excellence<span className="rotator-accent">.</span>
+          {primaryText}
+          <span className="rotator-accent">.</span>
         </h1>
         <div className="rotator-title-secondary">
-          <span className="rotator-static">In Law</span>
+          <span className="rotator-static">{staticText}</span>
           <span key={activeValues[index]} className="rotator-word">
             {activeValues[index]}
           </span>

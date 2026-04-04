@@ -1,0 +1,10 @@
+<svg width="640" height="760" viewBox="0 0 640 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="760" rx="36" fill="#091310"/>
+  <circle cx="320" cy="220" r="102" fill="#5F412F"/>
+  <path d="M212 188C218 114 270 72 334 72C400 72 444 122 442 202C412 174 374 156 320 156C274 156 242 166 212 188Z" fill="#151E1B"/>
+  <path d="M254 298C284 320 356 322 386 296V372C386 408 356 438 320 438C284 438 254 408 254 372V298Z" fill="#7A533D"/>
+  <path d="M160 760V628C160 546 226 480 308 480H332C414 480 480 546 480 628V760H160Z" fill="#1F2624"/>
+  <path d="M222 760L274 524H366L418 760H222Z" fill="#EFE5D4"/>
+  <text x="56" y="650" fill="#D5A55A" font-family="Manrope, sans-serif" font-size="22" font-weight="700" letter-spacing="3">MANAGING PARTNER</text>
+  <text x="56" y="688" fill="#F6F1E8" font-family="Cormorant Garamond, serif" font-size="44" font-weight="600">Deng Majak</text>
+</svg>

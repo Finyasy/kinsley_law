@@ -98,6 +98,7 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
 
   return (
     <form className="contact-form-card" onSubmit={handleSubmit}>
+      <div className="form-card-topline" />
       <p className="contact-note">
         Share your preferred consultation window and a short description of your
         matter. We will confirm availability with the relevant attorney.

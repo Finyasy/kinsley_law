@@ -4,7 +4,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = process.env.UI_AUDIT_BASE_URL ?? "http://127.0.0.1:3000";
-const adminPassword = process.env.ADMIN_DASHBOARD_PASSWORD ?? "";
+const adminEmail = process.env.UI_AUDIT_ADMIN_EMAIL ?? "";
+const adminPassword = process.env.UI_AUDIT_ADMIN_PASSWORD ?? "";
 const chromeExecutable =
   process.env.CHROME_EXECUTABLE_PATH ??
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -66,8 +67,9 @@ async function captureDesktop(browser) {
   await page.goto(`${baseUrl}/admin`, { waitUntil: "networkidle" });
   await capturePage(page, "desktop-admin-login");
 
-  if (adminPassword) {
-    await page.getByLabel("Admin password").fill(adminPassword);
+  if (adminEmail && adminPassword) {
+    await page.getByLabel("Admin email").fill(adminEmail);
+    await page.getByLabel("Password").fill(adminPassword);
     await page.getByRole("button", { name: "Open Dashboard" }).click();
     await page.getByRole("button", { name: "Sign out" }).waitFor();
     await page.waitForLoadState("networkidle");

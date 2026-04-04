@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState, useTransition } from "react";
+import { BrandCard } from "@/components/brand/brand-card";
 import { readJsonResponse } from "@/lib/read-json-response";
 
 export function AdminLoginForm() {
@@ -75,6 +76,7 @@ export function AdminLoginForm() {
       </div>
 
       <div className="admin-auth-form">
+        <BrandCard priority className="admin-auth-brand-card" />
         {error ? <div className="form-error">{error}</div> : null}
 
         <div className="field">

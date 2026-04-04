@@ -22,7 +22,7 @@ export function LogoMark({
   return (
     <div className={`logo-mark-shell logo-mark-${size} ${className}`.trim()}>
       <Image
-        src="/images/kinsley-logo-new.png"
+        src="/images/kinsley-logo-transparent.png"
         alt="Kinsley Advocates logo"
         width={width}
         height={height}

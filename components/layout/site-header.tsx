@@ -23,7 +23,7 @@ export function SiteHeader() {
           <LogoMark size="sm" priority />
           <div className="brand-text">
             <strong>Kinsley Advocates</strong>
-            <span>Excellence in law</span>
+            <span>Strategic counsel with calm authority</span>
           </div>
         </Link>
 
@@ -57,7 +57,7 @@ export function SiteHeader() {
 
         <div className="header-actions">
           <Link href="/contact" className="header-button" onClick={() => setMobileOpen(false)}>
-            Better Call Kinsley
+            Request Consultation
           </Link>
         </div>
       </div>
