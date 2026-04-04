@@ -150,14 +150,14 @@ export function AdminWorkspace({
       <section className="page-hero">
         <div className="site-container admin-hero">
           <div>
-            <p className="eyebrow">Internal dashboard</p>
+            <p className="eyebrow">Kinsley admin desk</p>
             <h1 className="page-title admin-title">
-              Manage intake, content, and migration work with less noise.
+              Manage intake, content, and firm operations with calm clarity.
             </h1>
             <p className="page-intro">
-              The dashboard is now split into focused work areas so intake
-              operations and site editing are easier to manage without scrolling
-              through one long mixed surface.
+              The portal is organized into focused work areas so Kinsley
+              Advocates can review inbox workflow, update public content, and
+              manage internal access without visual noise.
             </p>
             <div className="admin-status-row">
               {systemHealth.map((item) => (
@@ -166,6 +166,13 @@ export function AdminWorkspace({
                   <strong>{item.value}</strong>
                 </div>
               ))}
+            </div>
+            <div className="admin-hero-note">
+              <strong>Security note</strong>
+              <span>
+                The firm mailbox admin should remain active, and at least one
+                private backup admin account should stay available for recovery.
+              </span>
             </div>
           </div>
           <div className="admin-hero-actions">

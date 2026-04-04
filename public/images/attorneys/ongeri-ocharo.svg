@@ -1,0 +1,11 @@
+<svg width="640" height="760" viewBox="0 0 640 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="760" rx="36" fill="#0B1614"/>
+  <circle cx="320" cy="220" r="104" fill="#704C34"/>
+  <path d="M188 640C188 522.9 282.9 428 400 428H240C357.1 428 452 522.9 452 640V760H188V640Z" fill="#E8E1D5"/>
+  <path d="M212 162C232 106 278 72 326 72C394 72 436 120 444 186C430 160 400 138 362 138C302 138 260 164 212 162Z" fill="#121F1C"/>
+  <path d="M256 294C282 314 356 316 386 292V368C386 405 356 436 320 436C284 436 256 405 256 368V294Z" fill="#8A5E41"/>
+  <path d="M166 760V626C166 548 230 484 308 484H332C410 484 474 548 474 626V760H166Z" fill="#182B27"/>
+  <path d="M224 760L274 530H366L416 760H224Z" fill="#F6F1E8"/>
+  <text x="56" y="650" fill="#D5A55A" font-family="Manrope, sans-serif" font-size="22" font-weight="700" letter-spacing="3">HEAD OF LITIGATION</text>
+  <text x="56" y="688" fill="#F6F1E8" font-family="Cormorant Garamond, serif" font-size="44" font-weight="600">Ongeri Ocharo</text>
+</svg>

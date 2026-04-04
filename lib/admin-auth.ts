@@ -1,9 +1,4 @@
-import {
-  createHash,
-  randomBytes,
-  scrypt as scryptCallback,
-  timingSafeEqual,
-} from "node:crypto";
+import { createHash, randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { isDatabaseConfigured } from "@/lib/persistence";
@@ -17,6 +12,7 @@ const PASSWORD_KEY_LENGTH = 64;
 const SCRYPT_COST = 16384;
 const SCRYPT_BLOCK_SIZE = 8;
 const SCRYPT_PARALLELIZATION = 1;
+const MIN_ADMIN_PASSWORD_LENGTH = 10;
 
 type AdminSessionUser = {
   id: number;
@@ -27,6 +23,34 @@ type AdminSessionUser = {
 
 function normalizeText(value: string | undefined) {
   return value?.trim() || "";
+}
+
+function maybeDecodeBase64(value: string) {
+  const normalizedValue = normalizeText(value);
+
+  if (!normalizedValue || normalizedValue.length % 4 !== 0) {
+    return normalizedValue;
+  }
+
+  if (!/^[A-Za-z0-9+/=_-]+$/.test(normalizedValue)) {
+    return normalizedValue;
+  }
+
+  try {
+    const decodedValue = Buffer.from(
+      normalizedValue.replaceAll("-", "+").replaceAll("_", "/"),
+      "base64",
+    ).toString("utf8");
+
+    // Only accept decoded output when it looks like readable credential text.
+    if (!decodedValue || /[\u0000-\u0008\u000E-\u001F]/.test(decodedValue)) {
+      return normalizedValue;
+    }
+
+    return decodedValue.trim() || normalizedValue;
+  } catch {
+    return normalizedValue;
+  }
 }
 
 function hashSessionToken(token: string) {
@@ -45,7 +69,11 @@ function safeStringEquals(left: string, right: string) {
 }
 
 export function normalizeAdminEmail(email: string) {
-  return normalizeText(email).toLowerCase();
+  return maybeDecodeBase64(email).toLowerCase();
+}
+
+function normalizeAdminPasswordInput(password: string) {
+  return maybeDecodeBase64(password);
 }
 
 async function deriveScryptKey(password: string, salt: string) {
@@ -105,8 +133,10 @@ export function getAdminSessionMaxAge() {
 export async function hashAdminPassword(password: string) {
   const normalizedPassword = normalizeText(password);
 
-  if (normalizedPassword.length < 12) {
-    throw new Error("Admin passwords must be at least 12 characters long.");
+  if (normalizedPassword.length < MIN_ADMIN_PASSWORD_LENGTH) {
+    throw new Error(
+      `Admin passwords must be at least ${MIN_ADMIN_PASSWORD_LENGTH} characters long.`,
+    );
   }
 
   const salt = randomBytes(16).toString("hex");
@@ -186,7 +216,9 @@ export async function authenticateAdminUser(
 
   const normalizedEmail = normalizeAdminEmail(email);
 
-  if (!normalizedEmail || !password) {
+  const normalizedPassword = normalizeAdminPasswordInput(password);
+
+  if (!normalizedEmail || !normalizedPassword) {
     return null;
   }
 
@@ -207,7 +239,7 @@ export async function authenticateAdminUser(
   }
 
   const isPasswordValid = await verifyAdminPassword(
-    password,
+    normalizedPassword,
     adminUser.passwordHash,
   );
 

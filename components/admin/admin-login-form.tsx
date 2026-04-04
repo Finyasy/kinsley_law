@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState, useTransition } from "react";
+import { BrandPoster } from "@/components/brand/brand-poster";
 import { readJsonResponse } from "@/lib/read-json-response";
 
 export function AdminLoginForm() {
@@ -45,16 +46,16 @@ export function AdminLoginForm() {
   return (
     <form className="admin-auth-card" onSubmit={handleSubmit}>
       <div className="admin-auth-copy">
-        <p className="eyebrow">Admin access</p>
-        <h1 className="page-title admin-title">Sign in to the internal dashboard.</h1>
+        <p className="eyebrow">Kinsley internal access</p>
+        <h1 className="page-title admin-title">Sign in to the Kinsley command desk.</h1>
         <p className="page-intro">
-          Use your admin email and password to manage intake, update site
-          content, and review operational activity from one place.
+          Use your named admin account to manage intake, update public content,
+          and oversee firm operations from one branded workspace.
         </p>
         <div className="admin-auth-bullets">
           <div>
-            <strong>Named user accounts</strong>
-            <span>Each admin uses a real account instead of a shared environment password.</span>
+            <strong>Kinsley-owned access</strong>
+            <span>Each admin signs in through a real named account tied to the firm database.</span>
           </div>
           <div>
             <strong>Editors sign in here too</strong>
@@ -68,13 +69,16 @@ export function AdminLoginForm() {
             <span>Session state is stored in PostgreSQL and expires automatically.</span>
           </div>
           <div>
-            <strong>Operational workflow</strong>
-            <span>Inbox, content controls, and settings stay behind authenticated access.</span>
+            <strong>Backup admin ready</strong>
+            <span>Keep at least one private backup admin active in addition to the firm mailbox account.</span>
           </div>
         </div>
-      </div>
+        </div>
 
       <div className="admin-auth-form">
+        <div className="admin-auth-brand-lockup">
+          <BrandPoster priority className="admin-auth-brand-poster" />
+        </div>
         {error ? <div className="form-error">{error}</div> : null}
 
         <div className="field">

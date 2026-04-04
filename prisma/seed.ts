@@ -16,15 +16,34 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 const practiceAreaOwnerByName: Record<string, string | null> = {
-  "Corporate Law": "jane.kinsley@kinsleylaw.com",
-  "Family Law": "robert.johnson@kinsleylaw.com",
-  "Real Estate": "amanda.lewis@kinsleylaw.com",
-  "Criminal Defense": "michael.chen@kinsleylaw.com",
-  "Estate Planning": null,
-  "Gold and Mineral Sector Advisory": "jane.kinsley@kinsleylaw.com",
+  "Arbitration and Commercial Disputes": "rohan.shah@kinsleylaw.com",
+  "Civil and Criminal Litigation": "ongeri.ocharo@kinsleylaw.com",
+  "Gold, Minerals, and Extractives": "aline.uwase@kinsleylaw.com",
+  "Crypto, Tax, Banking, and Finance": "nomsa.naidoo@kinsleylaw.com",
+  "Oil, Gas, Aviation, and Regional Advisory": "deng.majak@kinsleylaw.com",
+  "Cross-Border Consultancy and Investment Structuring": "jean.ilunga@kinsleylaw.com",
 };
 
 async function main() {
+  const attorneyEmails = fallbackAttorneys.map((attorney) => attorney.email);
+  const practiceAreaNames = fallbackPracticeAreas.map((practiceArea) => practiceArea.name);
+
+  await prisma.practiceArea.deleteMany({
+    where: {
+      name: {
+        notIn: practiceAreaNames,
+      },
+    },
+  });
+
+  await prisma.attorney.deleteMany({
+    where: {
+      email: {
+        notIn: attorneyEmails,
+      },
+    },
+  });
+
   for (const [index, attorney] of fallbackAttorneys.entries()) {
     await prisma.attorney.upsert({
       where: { email: attorney.email },

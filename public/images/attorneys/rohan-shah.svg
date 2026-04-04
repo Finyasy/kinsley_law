@@ -1,0 +1,10 @@
+<svg width="640" height="760" viewBox="0 0 640 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="760" rx="36" fill="#0B1513"/>
+  <circle cx="320" cy="220" r="100" fill="#B88159"/>
+  <path d="M216 188C224 120 274 82 332 82C394 82 438 120 440 194C406 170 366 154 320 154C274 154 244 164 216 188Z" fill="#1B1B1A"/>
+  <path d="M256 298C286 320 356 320 384 294V372C384 408 356 438 320 438C284 438 256 408 256 372V298Z" fill="#C6916A"/>
+  <path d="M164 760V630C164 548 230 482 312 482H328C410 482 476 548 476 630V760H164Z" fill="#603E2A"/>
+  <path d="M220 760L274 522H366L420 760H220Z" fill="#F5EBDD"/>
+  <text x="56" y="650" fill="#D5A55A" font-family="Manrope, sans-serif" font-size="22" font-weight="700" letter-spacing="3">SENIOR ASSOCIATE</text>
+  <text x="56" y="688" fill="#F6F1E8" font-family="Cormorant Garamond, serif" font-size="44" font-weight="600">Rohan Shah</text>
+</svg>

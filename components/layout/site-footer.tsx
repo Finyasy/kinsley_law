@@ -24,9 +24,8 @@ export async function SiteFooter() {
               <LogoMark size="md" className="footer-logo" />
             </Link>
             <p>
-              Better call Kinsley Advocates for dignified, strategic, and
-              meticulously prepared representation across private, commercial,
-              property, and dispute matters.
+              Strategic, carefully managed representation across private,
+              commercial, property, dispute, and mineral-sector matters.
             </p>
           </div>
 

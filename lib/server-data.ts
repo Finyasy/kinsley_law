@@ -15,6 +15,16 @@ type PracticeSummary = {
   name: string;
 };
 
+function findFallbackAttorneyRecord(identifier: { email: string; name: string }) {
+  const normalizedEmail = identifier.email.trim().toLowerCase();
+  const normalizedName = identifier.name.trim().toLowerCase();
+
+  return fallbackAttorneys.find((attorney) => (
+    attorney.email.trim().toLowerCase() === normalizedEmail ||
+    attorney.name.trim().toLowerCase() === normalizedName
+  ));
+}
+
 export type PageAttorney = (typeof fallbackAttorneys)[number] & {
   id?: number;
   sortOrder?: number;
@@ -47,6 +57,10 @@ export type ContactSubmission = {
   service: string;
   message: string;
   status: string;
+  notificationStatus: string | null;
+  notificationDetail: string | null;
+  clientReplyStatus: string | null;
+  clientReplyDetail: string | null;
   assignedTo: string | null;
   internalNotes: string | null;
   createdAt: Date;
@@ -63,6 +77,10 @@ export type AppointmentSubmission = {
   practiceArea: string;
   description: string;
   status: string;
+  notificationStatus: string | null;
+  notificationDetail: string | null;
+  clientReplyStatus: string | null;
+  clientReplyDetail: string | null;
   assignedTo: string | null;
   internalNotes: string | null;
   attorneyName: string | null;
@@ -195,21 +213,30 @@ export async function getAttorneysForPage(): Promise<PageAttorney[]> {
       },
     });
 
-    return attorneys.map((attorney) => ({
-      id: attorney.id,
-      sortOrder: attorney.sortOrder,
-      name: attorney.name,
-      email: attorney.email,
-      phone: attorney.phone,
-      bio: attorney.bio,
-      position: attorney.position ?? "",
-      specialization: attorney.specialization ?? "",
-      photoUrl: attorney.photoUrl ?? null,
-      practiceAreas: attorney.practiceAreas.map((practiceArea) => ({
-        id: practiceArea.id,
-        name: practiceArea.name,
-      })),
-    }));
+    return attorneys.map((attorney) => {
+      const fallbackAttorney = findFallbackAttorneyRecord({
+        email: attorney.email,
+        name: attorney.name,
+      });
+
+      return {
+        ...fallbackAttorney,
+        id: attorney.id,
+        sortOrder: attorney.sortOrder,
+        name: attorney.name,
+        email: attorney.email,
+        phone: attorney.phone,
+        bio: attorney.bio,
+        position: attorney.position ?? fallbackAttorney?.position ?? "",
+        specialization:
+          attorney.specialization ?? fallbackAttorney?.specialization ?? "",
+        photoUrl: attorney.photoUrl ?? fallbackAttorney?.photoUrl ?? null,
+        practiceAreas: attorney.practiceAreas.map((practiceArea) => ({
+          id: practiceArea.id,
+          name: practiceArea.name,
+        })),
+      };
+    });
   } catch {
     return fallbackAttorneys.map((attorney) => ({
       ...attorney,
@@ -398,6 +425,10 @@ export async function getAdminDashboardData(options?: {
         service: contact.service,
         message: contact.message,
         status: contact.status,
+        notificationStatus: contact.notificationStatus,
+        notificationDetail: contact.notificationDetail,
+        clientReplyStatus: contact.clientReplyStatus,
+        clientReplyDetail: contact.clientReplyDetail,
         assignedTo: contact.assignedTo,
         internalNotes: contact.internalNotes,
         createdAt: contact.createdAt,
@@ -413,6 +444,10 @@ export async function getAdminDashboardData(options?: {
         practiceArea: appointment.practiceArea,
         description: appointment.description,
         status: appointment.status,
+        notificationStatus: appointment.notificationStatus,
+        notificationDetail: appointment.notificationDetail,
+        clientReplyStatus: appointment.clientReplyStatus,
+        clientReplyDetail: appointment.clientReplyDetail,
         assignedTo: appointment.assignedTo,
         internalNotes: appointment.internalNotes,
         attorneyName: appointment.attorney?.name ?? null,

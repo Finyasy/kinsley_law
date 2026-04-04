@@ -32,6 +32,7 @@ next-app/.next/
 /artifacts/admin-content-editing/*
 /artifacts/admin-redesign/*
 /.email-previews/
+/.npm-local-cache/
 /public/uploads/attorneys/
 legacy/**/node_modules/
 legacy/**/.next/

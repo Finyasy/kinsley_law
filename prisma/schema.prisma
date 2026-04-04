@@ -94,6 +94,10 @@ model Contact {
   service       String
   message       String
   status        String   @default("new")
+  notificationStatus String?
+  notificationDetail String?
+  clientReplyStatus  String?
+  clientReplyDetail  String?
   assignedTo    String?
   internalNotes String?
   createdAt     DateTime @default(now())
@@ -112,6 +116,10 @@ model Appointment {
   practiceArea  String
   description   String
   status        String    @default("new")
+  notificationStatus String?
+  notificationDetail String?
+  clientReplyStatus  String?
+  clientReplyDetail  String?
   assignedTo    String?
   internalNotes String?
   attorneyId    Int?

@@ -46,6 +46,10 @@ export type AppointmentMinAggregateOutputType = {
   practiceArea: string | null
   description: string | null
   status: string | null
+  notificationStatus: string | null
+  notificationDetail: string | null
+  clientReplyStatus: string | null
+  clientReplyDetail: string | null
   assignedTo: string | null
   internalNotes: string | null
   attorneyId: number | null
@@ -63,6 +67,10 @@ export type AppointmentMaxAggregateOutputType = {
   practiceArea: string | null
   description: string | null
   status: string | null
+  notificationStatus: string | null
+  notificationDetail: string | null
+  clientReplyStatus: string | null
+  clientReplyDetail: string | null
   assignedTo: string | null
   internalNotes: string | null
   attorneyId: number | null
@@ -80,6 +88,10 @@ export type AppointmentCountAggregateOutputType = {
   practiceArea: number
   description: number
   status: number
+  notificationStatus: number
+  notificationDetail: number
+  clientReplyStatus: number
+  clientReplyDetail: number
   assignedTo: number
   internalNotes: number
   attorneyId: number
@@ -109,6 +121,10 @@ export type AppointmentMinAggregateInputType = {
   practiceArea?: true
   description?: true
   status?: true
+  notificationStatus?: true
+  notificationDetail?: true
+  clientReplyStatus?: true
+  clientReplyDetail?: true
   assignedTo?: true
   internalNotes?: true
   attorneyId?: true
@@ -126,6 +142,10 @@ export type AppointmentMaxAggregateInputType = {
   practiceArea?: true
   description?: true
   status?: true
+  notificationStatus?: true
+  notificationDetail?: true
+  clientReplyStatus?: true
+  clientReplyDetail?: true
   assignedTo?: true
   internalNotes?: true
   attorneyId?: true
@@ -143,6 +163,10 @@ export type AppointmentCountAggregateInputType = {
   practiceArea?: true
   description?: true
   status?: true
+  notificationStatus?: true
+  notificationDetail?: true
+  clientReplyStatus?: true
+  clientReplyDetail?: true
   assignedTo?: true
   internalNotes?: true
   attorneyId?: true
@@ -247,6 +271,10 @@ export type AppointmentGroupByOutputType = {
   practiceArea: string
   description: string
   status: string
+  notificationStatus: string | null
+  notificationDetail: string | null
+  clientReplyStatus: string | null
+  clientReplyDetail: string | null
   assignedTo: string | null
   internalNotes: string | null
   attorneyId: number | null
@@ -287,6 +315,10 @@ export type AppointmentWhereInput = {
   practiceArea?: Prisma.StringFilter<"Appointment"> | string
   description?: Prisma.StringFilter<"Appointment"> | string
   status?: Prisma.StringFilter<"Appointment"> | string
+  notificationStatus?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  notificationDetail?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  clientReplyStatus?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  clientReplyDetail?: Prisma.StringNullableFilter<"Appointment"> | string | null
   assignedTo?: Prisma.StringNullableFilter<"Appointment"> | string | null
   internalNotes?: Prisma.StringNullableFilter<"Appointment"> | string | null
   attorneyId?: Prisma.IntNullableFilter<"Appointment"> | number | null
@@ -305,6 +337,10 @@ export type AppointmentOrderByWithRelationInput = {
   practiceArea?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   internalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   attorneyId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -326,6 +362,10 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
   practiceArea?: Prisma.StringFilter<"Appointment"> | string
   description?: Prisma.StringFilter<"Appointment"> | string
   status?: Prisma.StringFilter<"Appointment"> | string
+  notificationStatus?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  notificationDetail?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  clientReplyStatus?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  clientReplyDetail?: Prisma.StringNullableFilter<"Appointment"> | string | null
   assignedTo?: Prisma.StringNullableFilter<"Appointment"> | string | null
   internalNotes?: Prisma.StringNullableFilter<"Appointment"> | string | null
   attorneyId?: Prisma.IntNullableFilter<"Appointment"> | number | null
@@ -344,6 +384,10 @@ export type AppointmentOrderByWithAggregationInput = {
   practiceArea?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   internalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   attorneyId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -369,6 +413,10 @@ export type AppointmentScalarWhereWithAggregatesInput = {
   practiceArea?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   description?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   status?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
+  notificationStatus?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
+  notificationDetail?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
+  clientReplyStatus?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
+  clientReplyDetail?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
   assignedTo?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
   internalNotes?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
   attorneyId?: Prisma.IntNullableWithAggregatesFilter<"Appointment"> | number | null
@@ -385,6 +433,10 @@ export type AppointmentCreateInput = {
   practiceArea: string
   description: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   createdAt?: Date | string
@@ -402,6 +454,10 @@ export type AppointmentUncheckedCreateInput = {
   practiceArea: string
   description: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   attorneyId?: number | null
@@ -418,6 +474,10 @@ export type AppointmentUpdateInput = {
   practiceArea?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,6 +495,10 @@ export type AppointmentUncheckedUpdateInput = {
   practiceArea?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attorneyId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -452,6 +516,10 @@ export type AppointmentCreateManyInput = {
   practiceArea: string
   description: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   attorneyId?: number | null
@@ -468,6 +536,10 @@ export type AppointmentUpdateManyMutationInput = {
   practiceArea?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -484,6 +556,10 @@ export type AppointmentUncheckedUpdateManyInput = {
   practiceArea?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attorneyId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -511,6 +587,10 @@ export type AppointmentCountOrderByAggregateInput = {
   practiceArea?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrder
   assignedTo?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
   attorneyId?: Prisma.SortOrder
@@ -533,6 +613,10 @@ export type AppointmentMaxOrderByAggregateInput = {
   practiceArea?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrder
   assignedTo?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
   attorneyId?: Prisma.SortOrder
@@ -550,6 +634,10 @@ export type AppointmentMinOrderByAggregateInput = {
   practiceArea?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  notificationStatus?: Prisma.SortOrder
+  notificationDetail?: Prisma.SortOrder
+  clientReplyStatus?: Prisma.SortOrder
+  clientReplyDetail?: Prisma.SortOrder
   assignedTo?: Prisma.SortOrder
   internalNotes?: Prisma.SortOrder
   attorneyId?: Prisma.SortOrder
@@ -613,6 +701,10 @@ export type AppointmentCreateWithoutAttorneyInput = {
   practiceArea: string
   description: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   createdAt?: Date | string
@@ -629,6 +721,10 @@ export type AppointmentUncheckedCreateWithoutAttorneyInput = {
   practiceArea: string
   description: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   createdAt?: Date | string
@@ -674,6 +770,10 @@ export type AppointmentScalarWhereInput = {
   practiceArea?: Prisma.StringFilter<"Appointment"> | string
   description?: Prisma.StringFilter<"Appointment"> | string
   status?: Prisma.StringFilter<"Appointment"> | string
+  notificationStatus?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  notificationDetail?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  clientReplyStatus?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  clientReplyDetail?: Prisma.StringNullableFilter<"Appointment"> | string | null
   assignedTo?: Prisma.StringNullableFilter<"Appointment"> | string | null
   internalNotes?: Prisma.StringNullableFilter<"Appointment"> | string | null
   attorneyId?: Prisma.IntNullableFilter<"Appointment"> | number | null
@@ -691,6 +791,10 @@ export type AppointmentCreateManyAttorneyInput = {
   practiceArea: string
   description: string
   status?: string
+  notificationStatus?: string | null
+  notificationDetail?: string | null
+  clientReplyStatus?: string | null
+  clientReplyDetail?: string | null
   assignedTo?: string | null
   internalNotes?: string | null
   createdAt?: Date | string
@@ -706,6 +810,10 @@ export type AppointmentUpdateWithoutAttorneyInput = {
   practiceArea?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -722,6 +830,10 @@ export type AppointmentUncheckedUpdateWithoutAttorneyInput = {
   practiceArea?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -738,6 +850,10 @@ export type AppointmentUncheckedUpdateManyWithoutAttorneyInput = {
   practiceArea?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  notificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notificationDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReplyDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   internalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -756,6 +872,10 @@ export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   practiceArea?: boolean
   description?: boolean
   status?: boolean
+  notificationStatus?: boolean
+  notificationDetail?: boolean
+  clientReplyStatus?: boolean
+  clientReplyDetail?: boolean
   assignedTo?: boolean
   internalNotes?: boolean
   attorneyId?: boolean
@@ -774,6 +894,10 @@ export type AppointmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   practiceArea?: boolean
   description?: boolean
   status?: boolean
+  notificationStatus?: boolean
+  notificationDetail?: boolean
+  clientReplyStatus?: boolean
+  clientReplyDetail?: boolean
   assignedTo?: boolean
   internalNotes?: boolean
   attorneyId?: boolean
@@ -792,6 +916,10 @@ export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   practiceArea?: boolean
   description?: boolean
   status?: boolean
+  notificationStatus?: boolean
+  notificationDetail?: boolean
+  clientReplyStatus?: boolean
+  clientReplyDetail?: boolean
   assignedTo?: boolean
   internalNotes?: boolean
   attorneyId?: boolean
@@ -810,6 +938,10 @@ export type AppointmentSelectScalar = {
   practiceArea?: boolean
   description?: boolean
   status?: boolean
+  notificationStatus?: boolean
+  notificationDetail?: boolean
+  clientReplyStatus?: boolean
+  clientReplyDetail?: boolean
   assignedTo?: boolean
   internalNotes?: boolean
   attorneyId?: boolean
@@ -817,7 +949,7 @@ export type AppointmentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AppointmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "date" | "time" | "practiceArea" | "description" | "status" | "assignedTo" | "internalNotes" | "attorneyId" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
+export type AppointmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "date" | "time" | "practiceArea" | "description" | "status" | "notificationStatus" | "notificationDetail" | "clientReplyStatus" | "clientReplyDetail" | "assignedTo" | "internalNotes" | "attorneyId" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
 export type AppointmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   attorney?: boolean | Prisma.Appointment$attorneyArgs<ExtArgs>
 }
@@ -843,6 +975,10 @@ export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     practiceArea: string
     description: string
     status: string
+    notificationStatus: string | null
+    notificationDetail: string | null
+    clientReplyStatus: string | null
+    clientReplyDetail: string | null
     assignedTo: string | null
     internalNotes: string | null
     attorneyId: number | null
@@ -1281,6 +1417,10 @@ export interface AppointmentFieldRefs {
   readonly practiceArea: Prisma.FieldRef<"Appointment", 'String'>
   readonly description: Prisma.FieldRef<"Appointment", 'String'>
   readonly status: Prisma.FieldRef<"Appointment", 'String'>
+  readonly notificationStatus: Prisma.FieldRef<"Appointment", 'String'>
+  readonly notificationDetail: Prisma.FieldRef<"Appointment", 'String'>
+  readonly clientReplyStatus: Prisma.FieldRef<"Appointment", 'String'>
+  readonly clientReplyDetail: Prisma.FieldRef<"Appointment", 'String'>
   readonly assignedTo: Prisma.FieldRef<"Appointment", 'String'>
   readonly internalNotes: Prisma.FieldRef<"Appointment", 'String'>
   readonly attorneyId: Prisma.FieldRef<"Appointment", 'Int'>

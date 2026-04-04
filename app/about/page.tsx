@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
-import { LogoMark } from "@/components/brand/logo-mark";
+import { BrandCard } from "@/components/brand/brand-card";
 import { getAttorneysForPage } from "@/lib/server-data";
 
 export const metadata: Metadata = {
@@ -24,6 +24,10 @@ const principles = [
     title: "Prepared advocacy",
     text: "Every brief, negotiation, filing, and conversation is built on disciplined preparation.",
   },
+  {
+    title: "Advanced training",
+    text: "Several members hold master's degrees and regularly contribute to legal education through talks and law-school sessions.",
+  },
 ];
 
 export default async function AboutPage() {
@@ -35,15 +39,16 @@ export default async function AboutPage() {
         <div className="site-container page-hero-grid">
           <div>
             <p className="eyebrow">About the firm</p>
-            <h1 className="page-title">A legal practice shaped by dignity, honor, and disciplined counsel.</h1>
+            <h1 className="page-title">A legal practice shaped by disciplined judgment, regional fluency, and calm execution.</h1>
             <p className="page-intro">
               Kinsley Advocates was built to deliver legal representation that feels refined,
-              responsive, and steady under pressure. We represent private clients and businesses
-              that value strong preparation, clear communication, and thoughtful legal strategy.
+              responsive, and steady under pressure. We represent private clients, businesses,
+              investors, and operators that value sharp preparation, clear communication, and
+              commercially grounded legal strategy.
             </p>
           </div>
           <div className="page-brand-card page-brand-card-premium">
-            <LogoMark size="lg" priority className="page-logo" />
+            <BrandCard priority className="services-brand-card" />
             <div className="page-brand-copy">
               <span className="eyebrow light">Since 2010</span>
               <p>
@@ -69,20 +74,21 @@ export default async function AboutPage() {
         <div className="site-container story-grid">
           <article className="card-surface story-card">
             <p className="eyebrow">Our story</p>
-            <h2>Built to be the legal partner clients trust when the stakes feel personal.</h2>
+            <h2>Built to be the legal partner clients trust when matters feel sensitive, urgent, or high-value.</h2>
             <p>
               We have grown into a dependable legal partner for families, founders, investors,
               and operating businesses that need calm advice, strong representation, and a team
-              that knows how to move matters forward.
+              that can move fluidly across disputes, transactions, and cross-border instructions.
             </p>
           </article>
 
           <article className="card-surface story-card">
             <p className="eyebrow">Our mission</p>
-            <h2>Protect our clients with counsel that is both exacting and deeply human.</h2>
+            <h2>Protect our clients with attorneys who are exacting, commercially alert, and deeply human.</h2>
             <p>
-              We aim to bring dignity and honor to every legal battle by combining technical
-              excellence with candor, respect, and a premium client experience.
+              We aim to bring discipline and clarity to every matter by combining technical
+              excellence with candor, respect, and a premium client experience that remains steady
+              even when the underlying issue is not.
             </p>
           </article>
         </div>
@@ -113,7 +119,7 @@ export default async function AboutPage() {
           <div className="section-heading-row">
             <div>
               <p className="eyebrow">Our legal team</p>
-              <h2 className="section-title">Experienced advocates with focused domain expertise.</h2>
+              <h2 className="section-title">Experienced advocates with focused domain expertise, advanced study, and teaching presence.</h2>
             </div>
           </div>
 

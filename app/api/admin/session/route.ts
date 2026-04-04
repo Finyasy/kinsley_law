@@ -8,6 +8,7 @@ import {
   hasAdminUsersConfigured,
 } from "@/lib/admin-auth";
 import { isDatabaseConfigured } from "@/lib/persistence";
+import { parseRequestJson } from "@/lib/request-json";
 
 type SessionPayload = {
   email?: string;
@@ -39,17 +40,16 @@ export async function POST(request: Request) {
     );
   }
 
-  let payload: SessionPayload;
+  const parsedBody = await parseRequestJson<SessionPayload>(request);
 
-  try {
-    payload = (await request.json()) as SessionPayload;
-  } catch {
+  if (!parsedBody.ok) {
     return NextResponse.json(
-      { error: "A valid JSON payload is required." },
+      { error: parsedBody.error },
       { status: 400 },
     );
   }
 
+  const payload = parsedBody.data;
   const email = payload.email?.trim() ?? "";
   const password = payload.password?.trim() ?? "";
   const user = await authenticateAdminUser(email, password);
@@ -86,6 +86,7 @@ export async function POST(request: Request) {
     expires: session.expiresAt,
     maxAge: getAdminSessionMaxAge(),
   });
+  response.headers.set("Cache-Control", "no-store, max-age=0");
 
   return response;
 }
@@ -110,6 +111,7 @@ export async function DELETE(request: Request) {
     path: "/",
     maxAge: 0,
   });
+  response.headers.set("Cache-Control", "no-store, max-age=0");
 
   return response;
 }

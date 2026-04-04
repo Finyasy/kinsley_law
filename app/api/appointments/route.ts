@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
-import { sendAppointmentNotification } from "@/lib/email-notifications";
+import {
+  sendAppointmentAutoReply,
+  sendAppointmentNotification,
+} from "@/lib/email-notifications";
 import { enforceIntakeProtection } from "@/lib/intake-protection";
 import { formatDatabaseErrorMessage, isDatabaseConfigured } from "@/lib/persistence";
 import { prisma } from "@/lib/prisma";
+import { parseRequestJson } from "@/lib/request-json";
 
 type AppointmentPayload = {
   name?: string;
@@ -40,7 +44,13 @@ export async function POST(request: Request) {
     );
   }
 
-  const payload = (await request.json()) as AppointmentPayload;
+  const parsedBody = await parseRequestJson<AppointmentPayload>(request);
+
+  if (!parsedBody.ok) {
+    return NextResponse.json({ errors: [parsedBody.error] }, { status: 400 });
+  }
+
+  const payload = parsedBody.data;
   const protectionResponse = enforceIntakeProtection({
     request,
     routeKey: "appointment",
@@ -81,23 +91,42 @@ export async function POST(request: Request) {
         attorneyId: attorney?.id ?? null,
       },
     });
-    const notification = await sendAppointmentNotification({
-      name: submission.name,
-      email: submission.email,
-      phone: submission.phone,
-      date: submission.date,
-      time: submission.time,
-      practiceArea: submission.practiceArea,
-      description: submission.description,
-      attorneyName: attorney?.name ?? null,
+    const [notification, clientReply] = await Promise.all([
+      sendAppointmentNotification({
+        name: submission.name,
+        email: submission.email,
+        phone: submission.phone,
+        date: submission.date,
+        time: submission.time,
+        practiceArea: submission.practiceArea,
+        description: submission.description,
+        attorneyName: attorney?.name ?? null,
+      }),
+      sendAppointmentAutoReply({
+        name: submission.name,
+        email: submission.email,
+        date: submission.date,
+        time: submission.time,
+        practiceArea: submission.practiceArea,
+      }),
+    ]);
+    const savedSubmission = await prisma.appointment.update({
+      where: { id: submission.id },
+      data: {
+        notificationStatus: notification.status,
+        notificationDetail: notification.detail,
+        clientReplyStatus: clientReply.status,
+        clientReplyDetail: clientReply.detail,
+      },
     });
 
     return NextResponse.json(
       {
         message: "Consultation request received. A member of the firm will confirm availability.",
-        submission,
+        submission: savedSubmission,
         persistence: "postgresql",
         notification,
+        clientReply,
       },
       { status: 201 },
     );

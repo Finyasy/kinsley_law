@@ -18,6 +18,22 @@ const initialState = {
   formStartedAt: Date.now(),
 };
 
+function getSuccessMessage(result: {
+  message?: string;
+  clientReply?: {
+    status?: string;
+  };
+}) {
+  if (result.clientReply?.status === "sent") {
+    return "Thank you for contacting Kinsley Advocates. We will be in touch shortly, and a confirmation email has been sent to your inbox.";
+  }
+
+  return (
+    result.message ??
+    "Thank you for contacting Kinsley Advocates. We will be in touch shortly."
+  );
+}
+
 export function ContactForm({ practiceAreas }: ContactFormProps) {
   const [formData, setFormData] = useState(initialState);
   const [message, setMessage] = useState("");
@@ -65,13 +81,16 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
       const result = await readJsonResponse<{
         message?: string;
         errors?: string[];
+        clientReply?: {
+          status?: string;
+        };
       }>(response);
 
       if (!response.ok) {
         throw new Error(result?.errors?.join(" ") ?? "Unable to send message.");
       }
 
-      setMessage(result?.message ?? "Message sent.");
+      setMessage(getSuccessMessage(result ?? {}));
       setFormData({
         ...initialState,
         formStartedAt: Date.now(),
@@ -96,6 +115,7 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
 
   return (
     <form className="contact-form-card" onSubmit={handleSubmit}>
+      <div className="form-card-topline" />
       <p className="contact-note">
         Use this form for general enquiries, new matters, or to request a call
         back from the firm.
