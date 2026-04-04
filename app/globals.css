@@ -992,6 +992,22 @@ button {
   margin-top: 1.2rem;
 }
 
+.not-found-shell {
+  display: grid;
+  gap: 1rem;
+  max-width: 44rem;
+  padding: 2rem 0 4rem;
+}
+
+.error-debug {
+  margin: 0;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(17, 33, 41, 0.08);
+  color: var(--ink-900);
+  overflow-x: auto;
+}
+
 .page-hero-card {
   padding: 0;
   overflow: hidden;
@@ -1143,6 +1159,8 @@ button {
 
 .services-brand-card {
   width: 100%;
+  max-width: none;
+  justify-self: stretch;
 }
 
 .minerals-service-feature {
@@ -1685,15 +1703,62 @@ button {
 .brand-card-shell {
   width: 100%;
   overflow: hidden;
-  border-radius: 1.35rem;
+  border-radius: 1.4rem;
   border: 1px solid rgba(214, 170, 99, 0.18);
+  background:
+    linear-gradient(180deg, rgba(214, 170, 99, 0.92), rgba(214, 170, 99, 0.92)) top/100% 0.45rem no-repeat,
+    linear-gradient(145deg, rgba(8, 19, 25, 0.98), rgba(16, 28, 34, 0.98));
   box-shadow: 0 24px 70px rgba(8, 19, 25, 0.22);
 }
 
-.brand-card-image {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
+.brand-card-inner {
+  display: grid;
+  grid-template-columns: minmax(9.5rem, 12rem) minmax(0, 1fr);
+  gap: 1.1rem;
+  align-items: center;
+  padding: 1.35rem 1.2rem 1.15rem;
+}
+
+.brand-card-lockup {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+}
+
+.brand-card-frame {
+  display: grid;
+  place-items: center;
+  width: 5rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(214, 170, 99, 0.36);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.brand-card-ka {
+  font-family: var(--font-display), serif;
+  font-size: 3rem;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: -0.08em;
+  line-height: 0.9;
+  color: #d6b06c;
+}
+
+.brand-card-wordmark {
+  color: rgba(214, 170, 99, 0.76);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.brand-card-details {
+  display: grid;
+  gap: 0.3rem;
+  color: rgba(214, 170, 99, 0.92);
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.45;
 }
 
 .hero-shell {
@@ -2153,10 +2218,11 @@ button {
 }
 
 .admin-status-row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.8rem;
   margin-top: 1.4rem;
+  max-width: 46rem;
 }
 
 .admin-hero-note {
@@ -2183,7 +2249,7 @@ button {
 }
 
 .admin-status-pill {
-  min-width: 12rem;
+  min-width: 0;
   padding: 0.85rem 1rem;
   border-radius: 1rem;
   background: rgba(255, 250, 243, 0.78);
@@ -2218,7 +2284,7 @@ button {
 }
 
 .admin-stat-grid {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .admin-stat-card span {
@@ -2260,7 +2326,7 @@ button {
 
 .admin-tab-bar {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.8rem;
 }
 

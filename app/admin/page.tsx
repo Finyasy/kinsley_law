@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   title: "Admin",
   description:
     "Internal dashboard for Kinsley Advocates intake, publishing, and firm operations.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export const dynamic = "force-dynamic";

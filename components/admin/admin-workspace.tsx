@@ -152,12 +152,12 @@ export function AdminWorkspace({
           <div>
             <p className="eyebrow">Kinsley admin desk</p>
             <h1 className="page-title admin-title">
-              Manage intake, content, and firm operations with clarity.
+              Manage intake, content, and firm operations with calm clarity.
             </h1>
             <p className="page-intro">
               The portal is organized into focused work areas so Kinsley
               Advocates can review inbox workflow, update public content, and
-              manage internal access without noise.
+              manage internal access without visual noise.
             </p>
             <div className="admin-status-row">
               {systemHealth.map((item) => (
