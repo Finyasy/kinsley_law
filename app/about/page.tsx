@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
-import { BrandSeal } from "@/components/brand/brand-seal";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { getAttorneysForPage } from "@/lib/server-data";
 
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Meet the legal team behind Kinsley Law Advocates and learn how the firm approaches high-trust representation.",
+    "Meet the team behind Kinsley Advocates and learn how the firm approaches disciplined, dignified representation.",
 };
 
 export const dynamic = "force-dynamic";
@@ -14,15 +14,15 @@ export const dynamic = "force-dynamic";
 const principles = [
   {
     title: "Strategic clarity",
-    text: "We simplify complex legal questions into actionable choices with clear tradeoffs.",
+    text: "We simplify legal pressure into choices clients can understand, evaluate, and act on.",
   },
   {
-    title: "Measured communication",
-    text: "Clients should never feel uninformed, rushed, or left to interpret legal risk alone.",
+    title: "Dignity under pressure",
+    text: "We handle each matter with restraint, discretion, and the composure serious representation demands.",
   },
   {
-    title: "Professional stamina",
-    text: "We prepare thoroughly, stay calm under pressure, and keep matters moving with discipline.",
+    title: "Prepared advocacy",
+    text: "Every brief, negotiation, filing, and conversation is built on disciplined preparation.",
   },
 ];
 
@@ -31,25 +31,24 @@ export default async function AboutPage() {
 
   return (
     <>
-      <section className="page-hero">
+      <section className="page-hero page-hero-premium">
         <div className="site-container page-hero-grid">
           <div>
             <p className="eyebrow">About the firm</p>
-            <h1 className="page-title">A legal practice shaped by integrity, mastery, and client experience.</h1>
+            <h1 className="page-title">A legal practice shaped by dignity, honor, and disciplined counsel.</h1>
             <p className="page-intro">
-              Kinsley Law Advocates was founded in 2010 to provide legal counsel
-              that balances technical excellence with a refined human touch. We
-              represent private clients and businesses with discretion, focus,
-              and accountability at every stage of a matter.
+              Kinsley Advocates was built to deliver legal representation that feels refined,
+              responsive, and steady under pressure. We represent private clients and businesses
+              that value strong preparation, clear communication, and thoughtful legal strategy.
             </p>
           </div>
-          <div className="page-hero-card page-brand-card">
-            <BrandSeal size="md" className="page-brand-seal" />
+          <div className="page-brand-card page-brand-card-premium">
+            <LogoMark size="lg" priority className="page-logo" />
             <div className="page-brand-copy">
               <span className="eyebrow light">Since 2010</span>
               <p>
-                The firm was built to feel current in service, disciplined in
-                preparation, and steady under pressure.
+                Our operating model is simple: senior-led intake, measured communication, and
+                advocacy that protects both legal position and client confidence.
               </p>
               <div className="page-brand-metrics">
                 <div>
@@ -57,8 +56,8 @@ export default async function AboutPage() {
                   <span>intake and strategy</span>
                 </div>
                 <div>
-                  <strong>Six groups</strong>
-                  <span>under one operating model</span>
+                  <strong>Nairobi based</strong>
+                  <span>serving private and commercial matters</span>
                 </div>
               </div>
             </div>
@@ -70,21 +69,20 @@ export default async function AboutPage() {
         <div className="site-container story-grid">
           <article className="card-surface story-card">
             <p className="eyebrow">Our story</p>
-            <h2>Built to be the legal partner clients return to.</h2>
+            <h2>Built to be the legal partner clients trust when the stakes feel personal.</h2>
             <p>
-              Over the years, the firm has grown into a dependable legal partner
-              for individuals, families, and organizations that need precise
-              advice, strong representation, and a responsive team.
+              We have grown into a dependable legal partner for families, founders, investors,
+              and operating businesses that need calm advice, strong representation, and a team
+              that knows how to move matters forward.
             </p>
           </article>
 
           <article className="card-surface story-card">
             <p className="eyebrow">Our mission</p>
-            <h2>Deliver high-quality representation without losing the human element.</h2>
+            <h2>Protect our clients with counsel that is both exacting and deeply human.</h2>
             <p>
-              We maintain high ethical standards, protect our clients&apos; time
-              and trust, and work to build long relationships grounded in
-              results, candor, and respect.
+              We aim to bring dignity and honor to every legal battle by combining technical
+              excellence with candor, respect, and a premium client experience.
             </p>
           </article>
         </div>
@@ -95,7 +93,7 @@ export default async function AboutPage() {
           <div className="section-heading-row">
             <div>
               <p className="eyebrow">How we work</p>
-              <h2 className="section-title">Principles that shape the client experience.</h2>
+              <h2 className="section-title">Principles that shape every client experience.</h2>
             </div>
           </div>
 
@@ -115,7 +113,7 @@ export default async function AboutPage() {
           <div className="section-heading-row">
             <div>
               <p className="eyebrow">Our legal team</p>
-              <h2 className="section-title">Experienced attorneys with focused domain expertise.</h2>
+              <h2 className="section-title">Experienced advocates with focused domain expertise.</h2>
             </div>
           </div>
 
@@ -128,7 +126,7 @@ export default async function AboutPage() {
                     role={attorney.position}
                     photoUrl={attorney.photoUrl}
                   />
-                  <span className="team-card-tag">Attorney {index + 1}</span>
+                  <span className="team-card-tag">Advocate {index + 1}</span>
                 </div>
                 <div className="team-card-body">
                   <h3>{attorney.name}</h3>

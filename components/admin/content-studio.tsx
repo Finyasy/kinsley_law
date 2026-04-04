@@ -481,7 +481,12 @@ function PracticeAreaEditorCard({
           <h3>{heading}</h3>
         </div>
       </div>
-      <p className="admin-editor-note">Lower display-order values appear first on the site.</p>
+      <p className="admin-editor-note">
+        Lower display-order values appear first on the site.
+        {area?.name === "Gold and Mineral Sector Advisory"
+          ? " This practice area also powers the homepage minerals spotlight, so changes here update that public feature too."
+          : ""}
+      </p>
       <FormMessage state={state} />
       <div className="admin-editor-fields">
         <div className="field">

@@ -1,6 +1,7 @@
 "use client";
 
-import { type FormEvent, useState, useTransition } from "react";
+import { type FormEvent, useEffect, useRef, useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import { readJsonResponse } from "@/lib/read-json-response";
 
 type AppointmentFormProps = {
@@ -24,6 +25,27 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
+  const hasAppliedPrefill = useRef(false);
+
+  useEffect(() => {
+    if (hasAppliedPrefill.current) {
+      return;
+    }
+
+    const requestedPracticeArea = searchParams.get("practiceArea");
+
+    if (!requestedPracticeArea || !practiceAreas.includes(requestedPracticeArea)) {
+      hasAppliedPrefill.current = true;
+      return;
+    }
+
+    hasAppliedPrefill.current = true;
+    setFormData((current) => ({
+      ...current,
+      practiceArea: current.practiceArea || requestedPracticeArea,
+    }));
+  }, [practiceAreas, searchParams]);
 
   function updateField(name: string, value: string) {
     setFormData((current) => ({

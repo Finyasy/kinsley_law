@@ -21,7 +21,7 @@ const practiceAreaOwnerByName: Record<string, string | null> = {
   "Real Estate": "amanda.lewis@kinsleylaw.com",
   "Criminal Defense": "michael.chen@kinsleylaw.com",
   "Estate Planning": null,
-  "Personal Injury": null,
+  "Gold and Mineral Sector Advisory": "jane.kinsley@kinsleylaw.com",
 };
 
 async function main() {

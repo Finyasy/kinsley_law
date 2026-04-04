@@ -24,8 +24,8 @@ export function BrandSeal({
       <div className="brand-seal-ring" />
       <div className="brand-seal-card">
         <Image
-          src="/images/logo.jpg"
-          alt="Kinsley Law Advocates seal"
+          src="/images/brand-card.jpg"
+          alt="Kinsley Advocates brand card"
           width={dimension}
           height={dimension}
           className="brand-seal-image"

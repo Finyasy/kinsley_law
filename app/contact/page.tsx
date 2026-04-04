@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { AppointmentForm } from "@/components/contact/appointment-form";
 import { ContactForm } from "@/components/contact/contact-form";
 import { getOfficeDetails, getPracticeAreasForPage } from "@/lib/server-data";
@@ -6,7 +7,7 @@ import { getOfficeDetails, getPracticeAreasForPage } from "@/lib/server-data";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact Kinsley Law Advocates to discuss your legal matter or request a consultation with the firm.",
+    "Contact Kinsley Advocates to discuss your legal matter or request a consultation with the firm.",
 };
 
 export const dynamic = "force-dynamic";
@@ -21,19 +22,20 @@ export default async function ContactPage() {
 
   return (
     <>
-      <section className="page-hero">
+      <section className="page-hero page-hero-premium">
         <div className="site-container page-hero-grid compact">
           <div>
             <p className="eyebrow">Contact us</p>
-            <h1 className="page-title">Start the conversation with a team that knows how to handle sensitive matters.</h1>
+            <h1 className="page-title">Start the conversation with a team that handles sensitive matters with dignity.</h1>
             <p className="page-intro">
-              Whether you need immediate legal guidance, a second opinion, or a
-              structured consultation, send us your details and we will direct
-              your matter to the right lawyer.
+              Whether you need immediate legal guidance, a second opinion, or a structured
+              consultation, send us your details and we will direct your matter to the right
+              advocate.
             </p>
           </div>
 
           <div className="contact-hero-card card-surface">
+            <LogoMark size="md" className="contact-logo" />
             <div className="contact-hero-status">
               <div>
                 <span className="office-label">Response standard</span>
@@ -61,9 +63,8 @@ export default async function ContactPage() {
                 <strong>{officeDetails.email}</strong>
               </div>
               <div>
-                <span className="office-label">Hours</span>
-                <strong>{officeDetails.hoursWeekday}</strong>
-                <strong>{officeDetails.hoursWeekend}</strong>
+                <span className="office-label">Website</span>
+                <strong>www.kinsleylaw.com</strong>
               </div>
             </div>
           </div>
@@ -82,7 +83,7 @@ export default async function ContactPage() {
             <ContactForm practiceAreas={practiceAreaNames} />
           </div>
 
-          <div className="contact-column">
+          <div className="contact-column" id="consultation">
             <div className="section-heading-row">
               <div>
                 <p className="eyebrow">Request a consultation</p>

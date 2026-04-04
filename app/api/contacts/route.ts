@@ -73,7 +73,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        message: "Thank you for contacting Kinsley Law Advocates. We will be in touch shortly.",
+        message: "Thank you for contacting Kinsley Advocates. We will be in touch shortly.",
         submission,
         persistence: "postgresql",
         notification,
