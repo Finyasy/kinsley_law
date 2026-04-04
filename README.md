@@ -97,6 +97,32 @@ EMAIL_PREVIEW_DIR=".email-previews"
 When preview mode is enabled, each notification is written as a JSON payload
 under `.email-previews/` instead of being sent over SMTP.
 
+## Production deployment
+
+Set these values in production:
+
+```bash
+DATABASE_URL="postgresql://..."
+NEXT_PUBLIC_SITE_URL="https://www.kinsleylaw.com"
+NOTIFICATION_TO_EMAILS="intake@kinsleylaw.com"
+SMTP_FROM_EMAIL="notifications@kinsleylaw.com"
+SMTP_FROM_NAME="Kinsley Law Intake"
+SMTP_HOST="smtp.example.com"
+SMTP_PORT="587"
+SMTP_SECURE="false"
+SMTP_USER="smtp-user"
+SMTP_PASS="smtp-password"
+```
+
+Production hardening now includes:
+
+- security response headers from `next.config.ts`
+- dynamic `robots.txt` and `sitemap.xml`
+- `GET /api/health` for deploy and uptime checks
+- no-index handling for `/admin`
+- app-level `not-found` and `error` boundaries
+- no-store cache headers on API routes that should never be cached
+
 ## Admin workflow
 
 The admin portal is organized into focused work areas:

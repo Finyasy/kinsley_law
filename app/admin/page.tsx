@@ -13,7 +13,11 @@ import { getAdminDashboardData } from "@/lib/server-data";
 export const metadata: Metadata = {
   title: "Admin",
   description:
-    "Internal dashboard for Kinsley Law Advocates submissions and migrated Next.js content.",
+    "Internal dashboard for Kinsley Advocates intake, publishing, and firm operations.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export const dynamic = "force-dynamic";

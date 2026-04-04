@@ -66,110 +66,132 @@ export type TestimonialSeed = {
 
 export const fallbackAttorneys: AttorneySeed[] = [
   {
-    name: "Jane Kinsley",
-    email: "jane.kinsley@kinsleylaw.com",
-    phone: "(123) 456-7890",
-    bio: "Jane Kinsley is the founding partner of Kinsley Advocates with over 20 years of experience in corporate law. She has helped businesses navigate complex legal challenges with precision, structure, and commercial judgment.",
-    position: "Founding Partner",
-    specialization: "Corporate Law",
+    name: "Deng Majak",
+    email: "deng.majak@kinsleylaw.com",
+    phone: "+254 704 561 831",
+    bio: "Deng Majak serves as Managing Partner and leads the firm's South Sudan desk. He advises on oil and gas, aviation, cross-border consultancy mandates, and regional commercial engagements, bringing structured leadership to matters that span East African regulatory and investment environments.",
+    position: "Managing Partner",
+    specialization: "Oil, Gas, Aviation, and Regional Consultancy",
+    photoUrl: "/images/attorneys/deng-majak.svg",
   },
   {
-    name: "Robert Johnson",
-    email: "robert.johnson@kinsleylaw.com",
-    phone: "(123) 456-7891",
-    bio: "Robert Johnson is a senior partner specializing in family law and civil litigation. He is known for measured courtroom advocacy and calm handling of emotionally complex matters.",
-    position: "Senior Partner",
-    specialization: "Family Law",
+    name: "Ongeri Ocharo",
+    email: "ongeri.ocharo@kinsleylaw.com",
+    phone: "+254 704 561 832",
+    bio: "Ongeri Ocharo is Head of Litigation, focusing on Kenyan arbitration, criminal and civil disputes, gold-sector conflicts, and emerging crypto-related controversies. He works fluently across Kenyan, Swahili, and French-speaking client environments and is known for disciplined courtroom preparation.",
+    position: "Head of Litigation",
+    specialization: "Arbitration, Civil and Criminal Litigation, Gold, and Crypto",
+    photoUrl: "/images/attorneys/ongeri-ocharo.svg",
   },
   {
-    name: "Amanda Lewis",
-    email: "amanda.lewis@kinsleylaw.com",
-    phone: "(123) 456-7892",
-    bio: "Amanda Lewis focuses on real estate and property law, advising on residential and commercial transactions, landlord-tenant disputes, and property development matters.",
-    position: "Associate",
-    specialization: "Real Estate Law",
+    name: "Rohan Shah",
+    email: "rohan.shah@kinsleylaw.com",
+    phone: "+254 704 561 833",
+    bio: "Rohan Shah is a Senior Associate handling commercial disputes and arbitration for Kenyan and cross-border clients. He supports complex private-sector conflicts with strong drafting discipline, analytical clarity, and a commercially grounded approach to negotiations and hearings.",
+    position: "Senior Associate",
+    specialization: "Commercial Disputes and Arbitration",
+    photoUrl: "/images/attorneys/rohan-shah.svg",
   },
   {
-    name: "Michael Chen",
-    email: "michael.chen@kinsleylaw.com",
-    phone: "(123) 456-7893",
-    bio: "Michael Chen is dedicated to criminal defense and civil rights advocacy. He protects clients through investigations, charges, and contested proceedings with disciplined preparation.",
-    position: "Associate",
-    specialization: "Criminal Defense",
+    name: "Aline Uwase",
+    email: "aline.uwase@kinsleylaw.com",
+    phone: "+254 704 561 834",
+    bio: "Aline Uwase is a Rwandan legal consultant advising on gold and mineral transactions, strategic minerals consulting, and investor-facing project support. Her MSc-level training strengthens the firm's technical perspective on extractives, compliance, and advisory structuring.",
+    position: "Partner",
+    specialization: "Gold, Minerals, and Strategic Advisory",
+    photoUrl: "/images/attorneys/aline-uwase.svg",
+  },
+  {
+    name: "Jean Ilunga",
+    email: "jean.ilunga@kinsleylaw.com",
+    phone: "+254 704 561 835",
+    bio: "Jean Ilunga supports clients operating in the Democratic Republic of Congo across mineral-rights, project advisory, French-language commercial coordination, and extractives-related engagements. He brings strong regional insight to DRC-facing mineral matters and counterpart negotiations.",
+    position: "Partner",
+    specialization: "DRC Minerals, Francophone Advisory, and Cross-Border Transactions",
+    photoUrl: "/images/attorneys/jean-ilunga.svg",
+  },
+  {
+    name: "Nomsa Naidoo",
+    email: "nomsa.naidoo@kinsleylaw.com",
+    phone: "+254 704 561 836",
+    bio: "Nomsa Naidoo advises from the South African market on crypto regulation, tax exposure, banking relationships, and finance mandates. She supports clients that need a practical view of digital-asset risk, financial structuring, and compliance-sensitive transactions.",
+    position: "Partner",
+    specialization: "Crypto, Tax, Banking, and Finance",
+    photoUrl: "/images/attorneys/nomsa-naidoo.svg",
   },
 ];
 
 export const fallbackPracticeAreas: PracticeAreaSeed[] = [
   {
-    name: "Family Law",
+    name: "Arbitration and Commercial Disputes",
     description:
-      "Compassionate guidance through divorce, custody, support, adoption, and other private family matters that require both discretion and clear legal direction.",
+      "Strategic representation in shareholder disputes, contract breakdowns, arbitral proceedings, and sensitive commercial conflicts that require strong drafting and disciplined case management.",
     highlights: [
-      "Divorce and separation",
-      "Child custody and support",
-      "Adoption and guardianship",
-      "Domestic violence protection",
-      "Prenuptial agreements",
+      "Domestic and cross-border arbitration",
+      "Commercial contract disputes",
+      "Shareholder and partnership conflicts",
+      "Negotiated settlements and hearing strategy",
+      "Urgent relief and interim protection",
     ],
   },
   {
-    name: "Corporate Law",
+    name: "Civil and Criminal Litigation",
     description:
-      "Legal support for founders, executives, and established businesses navigating formation, growth, governance, and strategic transactions.",
+      "Courtroom-focused representation for clients facing criminal exposure, civil claims, and contentious proceedings where rights, reputation, and commercial leverage are on the line.",
     highlights: [
-      "Business formation",
-      "Contract drafting and review",
-      "Mergers and acquisitions",
-      "Corporate governance",
-      "Regulatory compliance",
+      "Criminal defense and investigations",
+      "Civil claims and contested hearings",
+      "Litigation strategy and evidence preparation",
+      "Regulatory and enforcement response",
+      "French- and Swahili-facing matter coordination",
     ],
   },
   {
-    name: "Real Estate",
+    name: "Gold, Minerals, and Extractives",
     description:
-      "Practical legal counsel for residential and commercial property matters, from transaction structuring to disputes and title issues.",
+      "Advisory support for gold, mineral, and extractives work across Kenya, Rwanda, South Sudan, and the DRC, including structuring, permits, counterpart risk, and disputes.",
     highlights: [
-      "Residential and commercial transactions",
-      "Landlord-tenant disputes",
-      "Property development",
-      "Land use and zoning",
-      "Title issues",
-    ],
-  },
-  {
-    name: "Criminal Defense",
-    description:
-      "Assertive defense strategy for investigations, charges, and court proceedings where rights, reputation, and freedom are at stake.",
-    highlights: [
-      "Felony defense",
-      "Misdemeanor defense",
-      "DUI and DWI matters",
-      "White collar crime",
-      "Juvenile cases",
-    ],
-  },
-  {
-    name: "Estate Planning",
-    description:
-      "Forward-looking planning to preserve wealth, protect loved ones, and ensure decisions are carried out according to your intentions.",
-    highlights: [
-      "Wills and trusts",
-      "Probate",
-      "Power of attorney",
-      "Healthcare directives",
-      "Estate administration",
-    ],
-  },
-  {
-    name: "Gold and Mineral Sector Advisory",
-    description:
-      "Legal counsel for investors, operators, landowners, and businesses navigating gold, mining, and mineral-sector matters, including licensing, land access, joint ventures, commercial contracts, compliance, and disputes.",
-    highlights: [
+      "Gold trade and mineral transaction structuring",
       "Mining and mineral-rights agreements",
-      "Licensing, permits, and regulatory compliance",
-      "Land access, surface rights, and land-use issues",
-      "Joint ventures, investment structuring, and local partnerships",
-      "Disputes involving mineral rights, operations, and supply arrangements",
+      "Licensing, permits, and compliance",
+      "DRC-facing mineral advisory",
+      "Investor and operator dispute support",
+    ],
+  },
+  {
+    name: "Crypto, Tax, Banking, and Finance",
+    description:
+      "Practical counsel for digital-asset businesses, finance-sensitive transactions, tax exposure, and banking relationships that demand commercially grounded legal advice.",
+    highlights: [
+      "Crypto-related compliance strategy",
+      "Tax structuring and risk review",
+      "Banking and lender-facing matters",
+      "Finance transactions and documentation",
+      "Cross-border financial regulation support",
+    ],
+  },
+  {
+    name: "Oil, Gas, Aviation, and Regional Advisory",
+    description:
+      "Regional advisory services for oil and gas, aviation-facing mandates, and strategic consultancy work across South Sudan and neighboring markets.",
+    highlights: [
+      "Oil and gas project support",
+      "Aviation and transport-facing advisory",
+      "Regional consultancy mandates",
+      "Cross-border structuring and counterpart review",
+      "Operational and regulatory coordination",
+    ],
+  },
+  {
+    name: "Cross-Border Consultancy and Investment Structuring",
+    description:
+      "Integrated support for investors, consultants, and operators structuring mandates across East and Southern Africa, with multilingual coordination and commercially focused execution.",
+    highlights: [
+      "Cross-border mandate structuring",
+      "Investment entry and local partnerships",
+      "French-speaking counterparty coordination",
+      "Consultancy agreements and risk allocation",
+      "Boardroom and stakeholder advisory",
     ],
   },
 ];
@@ -200,15 +222,16 @@ export const fallbackOfficeDetails: OfficeDetails = {
 };
 
 export const defaultHomePageContent: HomePageContent = {
-  heroEyebrow: "Trusted counsel. Clear strategy. Decisive follow-through.",
+  heroEyebrow:
+    "Private clients, disputes, transactions, and mineral-sector matters handled with senior-led discipline.",
   heroDescription:
-    "Kinsley Advocates helps individuals, families, founders, investors, and established businesses move through legal pressure with confidence. We pair rigorous legal analysis with a calm, premium client experience across private client, commercial, property, defense, and gold, mining, and mineral-sector matters.",
+    "Kinsley Advocates supports individuals, families, founders, investors, and established businesses through legal pressure that needs disciplined judgment, careful communication, and visible control from the first conversation onward.",
   portraitEyebrow: "Built for high-trust representation",
   portraitText:
-    "A refined legal partner for complex family, commercial, property, defense, and gold, mining, and mineral-sector matters.",
-  valueRotatorLabel: "Excellence in law",
+    "A refined legal partner for complex disputes, commercial mandates, private client work, and gold, mining, and mineral-sector matters.",
+  valueRotatorLabel: "How clients describe the standard",
   valueRotatorPrefix: "Strategic counsel with",
-  valueRotatorWords: ["Mastery", "Client Experience", "Integrity", "Teamwork"],
+  valueRotatorWords: ["Restraint", "Clarity", "Preparation", "Follow-through"],
   highlights: [
     {
       value: "15+",
@@ -242,7 +265,7 @@ export const defaultHomePageContent: HomePageContent = {
     },
   ],
   legacySectionEyebrow: "Our legacy",
-  legacySectionTitle: "A modern legal practice built on steadiness and trust.",
+  legacySectionTitle: "A modern Nairobi practice built for steadier legal control.",
   legacyParagraphs: [
     "Founded in 2010, Kinsley Advocates was established to deliver legal representation that feels both exacting and deeply personal. Our team works across private client and business matters with a disciplined process, measured communication, and uncompromising attention to detail.",
     "The result is a practice that feels contemporary in service, strong in advocacy, and grounded in the long-term interests of the people and organizations we represent.",
@@ -251,6 +274,7 @@ export const defaultHomePageContent: HomePageContent = {
     "Client-first case strategy with senior oversight from intake to resolution.",
     "Cross-disciplinary counsel for personal, commercial, and regulatory matters.",
     "Responsive communication built for high-stakes, time-sensitive decisions.",
+    "Team members with advanced degrees and guest lectures delivered in law-school and professional training settings.",
   ],
   legacyMetrics: [
     {
@@ -269,13 +293,17 @@ export const defaultHomePageContent: HomePageContent = {
       value: "1",
       text: "Integrated client journey from first call to final resolution.",
     },
+    {
+      value: "Masters",
+      text: "Advanced postgraduate training represented across litigation, commercial, and minerals advisory work.",
+    },
   ],
   servicesEyebrow: "Practice areas",
-  servicesTitle: "Legal services organized the way clients actually search for help.",
+  servicesTitle: "Legal services organized around the pressure clients actually need solved.",
   teamEyebrow: "The team that supports you",
-  teamTitle: "Experienced lawyers with clearly defined strengths.",
+  teamTitle: "A regional legal team with clearly defined strengths and cross-border range.",
   testimonialsEyebrow: "Client confidence",
-  testimonialsTitle: "What clients value about the experience.",
+  testimonialsTitle: "Clients remember the clarity, discipline, and preparation.",
   ctaEyebrow: "Ready when you are",
-  ctaTitle: "Bring your matter to a team built for thoughtful, modern representation.",
+  ctaTitle: "Tell us what you are facing, and we will route it to the right advocate.",
 };

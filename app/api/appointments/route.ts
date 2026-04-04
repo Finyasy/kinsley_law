@@ -3,6 +3,7 @@ import { sendAppointmentNotification } from "@/lib/email-notifications";
 import { enforceIntakeProtection } from "@/lib/intake-protection";
 import { formatDatabaseErrorMessage, isDatabaseConfigured } from "@/lib/persistence";
 import { prisma } from "@/lib/prisma";
+import { parseRequestJson } from "@/lib/request-json";
 
 type AppointmentPayload = {
   name?: string;
@@ -40,7 +41,13 @@ export async function POST(request: Request) {
     );
   }
 
-  const payload = (await request.json()) as AppointmentPayload;
+  const parsedBody = await parseRequestJson<AppointmentPayload>(request);
+
+  if (!parsedBody.ok) {
+    return NextResponse.json({ errors: [parsedBody.error] }, { status: 400 });
+  }
+
+  const payload = parsedBody.data;
   const protectionResponse = enforceIntakeProtection({
     request,
     routeKey: "appointment",

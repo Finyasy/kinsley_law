@@ -1,0 +1,10 @@
+<svg width="640" height="760" viewBox="0 0 640 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="760" rx="36" fill="#0A1513"/>
+  <circle cx="320" cy="222" r="102" fill="#6C4630"/>
+  <path d="M216 188C228 116 278 78 332 78C388 78 432 116 436 198C404 172 370 160 320 160C274 160 242 168 216 188Z" fill="#111A18"/>
+  <path d="M256 300C282 320 356 320 384 296V370C384 408 356 438 320 438C284 438 256 408 256 370V300Z" fill="#87553B"/>
+  <path d="M166 760V628C166 548 230 484 310 484H330C410 484 474 548 474 628V760H166Z" fill="#1A322D"/>
+  <path d="M220 760L274 526H366L420 760H220Z" fill="#F0E8D9"/>
+  <text x="56" y="650" fill="#D5A55A" font-family="Manrope, sans-serif" font-size="22" font-weight="700" letter-spacing="3">PARTNER</text>
+  <text x="56" y="688" fill="#F6F1E8" font-family="Cormorant Garamond, serif" font-size="44" font-weight="600">Jean Ilunga</text>
+</svg>

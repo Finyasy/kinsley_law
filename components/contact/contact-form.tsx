@@ -96,6 +96,7 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
 
   return (
     <form className="contact-form-card" onSubmit={handleSubmit}>
+      <div className="form-card-topline" />
       <p className="contact-note">
         Use this form for general enquiries, new matters, or to request a call
         back from the firm.
