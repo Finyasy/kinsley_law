@@ -1,5 +1,6 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import { normalizeDatabaseUrl } from "@/lib/database-url";
 import { PrismaClient } from "@/generated/prisma/client";
 
 declare global {
@@ -7,7 +8,7 @@ declare global {
   var prismaPool: Pool | undefined;
 }
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = normalizeDatabaseUrl(process.env.DATABASE_URL);
 const pool =
   globalThis.prismaPool ??
   new Pool({

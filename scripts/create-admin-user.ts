@@ -5,6 +5,7 @@ import {
   hashAdminPassword,
   normalizeAdminEmail,
 } from "../lib/admin-auth";
+import { normalizeDatabaseUrl } from "../lib/database-url";
 
 function readArgument(flag: string) {
   const index = process.argv.indexOf(flag);
@@ -23,7 +24,7 @@ function printUsageAndExit() {
   process.exit(1);
 }
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = normalizeDatabaseUrl(process.env.DATABASE_URL);
 
 if (!connectionString) {
   console.error("DATABASE_URL is required before creating an admin user.");
