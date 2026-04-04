@@ -231,7 +231,7 @@ export const defaultHomePageContent: HomePageContent = {
     "A refined legal partner for complex disputes, commercial mandates, private client work, and gold, mining, and mineral-sector matters.",
   valueRotatorLabel: "How clients describe the standard",
   valueRotatorPrefix: "Strategic attorneys with",
-  valueRotatorWords: ["Restraint", "Clarity", "Preparation", "Follow-through"],
+  valueRotatorWords: ["Clarity", "Restraint", "Preparation", "Follow-through"],
   highlights: [
     {
       value: "15+",
