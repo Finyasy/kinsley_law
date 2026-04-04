@@ -27,12 +27,12 @@ function getSuccessMessage(result: {
   };
 }) {
   if (result.clientReply?.status === "sent") {
-    return "Consultation request received. We have also sent a confirmation email to your inbox while the firm reviews your preferred appointment window.";
+    return "Consultation request received. The firm is reviewing your preferred appointment window, and a confirmation email has been sent to your inbox.";
   }
 
   return (
     result.message ??
-    "Consultation request received. A member of the firm will confirm availability."
+    "Consultation request received. The firm will review your preferred appointment window and respond with the next step."
   );
 }
 
@@ -120,7 +120,7 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
       <div className="form-card-topline" />
       <p className="contact-note">
         Share your preferred consultation window and a short description of your
-        matter. We will confirm availability with one of our attorneys.
+        matter. The firm will review it and route it to the right team before confirming the next step.
       </p>
 
       {message ? <div className="form-status">{message}</div> : null}

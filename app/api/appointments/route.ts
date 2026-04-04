@@ -122,7 +122,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        message: "Consultation request received. A member of the firm will confirm availability.",
+        message: "Consultation request received. The firm will review your preferred appointment window and respond with the next step.",
         submission: savedSubmission,
         persistence: "postgresql",
         notification,

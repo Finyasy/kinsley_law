@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { BrandPoster } from "@/components/brand/brand-poster";
 import { AppointmentForm } from "@/components/contact/appointment-form";
 import { ContactForm } from "@/components/contact/contact-form";
+import {
+  FIRM_WEBSITE_LABEL,
+  FIRM_WEBSITE_URL,
+} from "@/lib/firm-contact";
 import { getOfficeDetails, getPracticeAreasForPage } from "@/lib/server-data";
 
 export const metadata: Metadata = {
@@ -29,8 +33,8 @@ export default async function ContactPage() {
             <h1 className="page-title">Start the conversation with a team that handles sensitive matters with dignity.</h1>
             <p className="page-intro">
               Whether you need immediate legal guidance, a second opinion, or a structured
-              consultation, send us your details and we will route the matter to the right
-              advocate with a clear next step.
+              consultation, send us your details and the firm will review and route the matter
+              with a clear next step.
             </p>
           </div>
 
@@ -43,7 +47,7 @@ export default async function ContactPage() {
               </div>
               <div>
                 <span className="office-label">Matter routing</span>
-                <strong>Directed to the relevant practice lead</strong>
+                <strong>Reviewed and routed through the firm</strong>
               </div>
             </div>
             <h2>Office details</h2>
@@ -68,8 +72,8 @@ export default async function ContactPage() {
               </div>
               <div>
                 <span className="office-label">Website</span>
-                <a href="https://www.kinsleylaw.com" target="_blank" rel="noreferrer" className="office-link">
-                  www.kinsleylaw.com
+                <a href={FIRM_WEBSITE_URL} target="_blank" rel="noreferrer" className="office-link">
+                  {FIRM_WEBSITE_LABEL}
                 </a>
               </div>
             </div>
@@ -93,7 +97,7 @@ export default async function ContactPage() {
             <div className="section-heading-row">
               <div>
                 <p className="eyebrow">Request a consultation</p>
-                <h2 className="section-title">Book a preferred date and practice area.</h2>
+                <h2 className="section-title">Book a preferred date and let the firm route it correctly.</h2>
               </div>
             </div>
             <AppointmentForm practiceAreas={practiceAreaNames} />

@@ -63,7 +63,7 @@ export default async function AdminPage() {
                   <strong>Local bootstrap command</strong>
                   <span>
                     <code>
-                      npm run admin:create -- --email admin@kinsleylaw.com --name
+                      npm run admin:create -- --email kinsleyadvocates@gmail.com --name
                       &quot;Kinsley Admin&quot; --password &quot;replace-with-a-long-password&quot;
                     </code>
                   </span>

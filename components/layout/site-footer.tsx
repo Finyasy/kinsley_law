@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { LogoMark } from "@/components/brand/logo-mark";
+import {
+  FIRM_WEBSITE_LABEL,
+  FIRM_WEBSITE_URL,
+} from "@/lib/firm-contact";
 import { getOfficeDetails, getPracticeAreasForPage } from "@/lib/server-data";
 
 const quickLinks = [
@@ -37,8 +41,8 @@ export async function SiteFooter() {
               <span>{officeDetails.city}</span>
               <a href={`tel:${officeDetails.phone.replace(/\s+/g, "")}`}>{officeDetails.phone}</a>
               <a href={`mailto:${officeDetails.email}`}>{officeDetails.email}</a>
-              <a href="https://www.kinsleylaw.com" target="_blank" rel="noreferrer">
-                www.kinsleylaw.com
+              <a href={FIRM_WEBSITE_URL} target="_blank" rel="noreferrer">
+                {FIRM_WEBSITE_LABEL}
               </a>
             </div>
           </div>

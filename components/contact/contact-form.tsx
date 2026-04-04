@@ -25,12 +25,12 @@ function getSuccessMessage(result: {
   };
 }) {
   if (result.clientReply?.status === "sent") {
-    return "Thank you for contacting Kinsley Advocates. We will be in touch shortly, and a confirmation email has been sent to your inbox.";
+    return "Thank you for contacting Kinsley Advocates. The firm will review your enquiry shortly, and a confirmation email has been sent to your inbox.";
   }
 
   return (
     result.message ??
-    "Thank you for contacting Kinsley Advocates. We will be in touch shortly."
+    "Thank you for contacting Kinsley Advocates. The firm will review your enquiry shortly."
   );
 }
 
@@ -118,7 +118,7 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
       <div className="form-card-topline" />
       <p className="contact-note">
         Use this form for general enquiries, new matters, or to request a call
-        back from the firm.
+        back from the firm. All enquiries are reviewed centrally and routed to the right team.
       </p>
 
       {message ? <div className="form-status">{message}</div> : null}

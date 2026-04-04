@@ -1,3 +1,8 @@
+import {
+  FIRM_CONTACT_EMAIL,
+  FIRM_CONTACT_PHONE,
+} from "@/lib/firm-contact";
+
 export type AttorneySeed = {
   name: string;
   email: string;
@@ -68,7 +73,7 @@ export const fallbackAttorneys: AttorneySeed[] = [
   {
     name: "Deng Majak",
     email: "deng.majak@kinsleylaw.com",
-    phone: "+254 704 561 831",
+    phone: FIRM_CONTACT_PHONE,
     bio: "Deng Majak serves as Managing Partner and leads the firm's South Sudan desk. He advises on oil and gas, aviation, cross-border consultancy mandates, and regional commercial engagements, bringing structured leadership to matters that span East African regulatory and investment environments.",
     position: "Managing Partner",
     specialization: "Oil, Gas, Aviation, and Regional Consultancy",
@@ -77,7 +82,7 @@ export const fallbackAttorneys: AttorneySeed[] = [
   {
     name: "Ongeri Ocharo",
     email: "ongeri.ocharo@kinsleylaw.com",
-    phone: "+254 704 561 832",
+    phone: FIRM_CONTACT_PHONE,
     bio: "Ongeri Ocharo is Head of Litigation, focusing on Kenyan arbitration, criminal and civil disputes, gold-sector conflicts, and emerging crypto-related controversies. He works fluently across Kenyan, Swahili, and French-speaking client environments and is known for disciplined courtroom preparation.",
     position: "Head of Litigation",
     specialization: "Arbitration, Civil and Criminal Litigation, Gold, and Crypto",
@@ -86,7 +91,7 @@ export const fallbackAttorneys: AttorneySeed[] = [
   {
     name: "Rohan Shah",
     email: "rohan.shah@kinsleylaw.com",
-    phone: "+254 704 561 833",
+    phone: FIRM_CONTACT_PHONE,
     bio: "Rohan Shah is a Senior Associate handling commercial disputes and arbitration for Kenyan and cross-border clients. He supports complex private-sector conflicts with strong drafting discipline, analytical clarity, and a commercially grounded approach to negotiations and hearings.",
     position: "Senior Associate",
     specialization: "Commercial Disputes and Arbitration",
@@ -95,7 +100,7 @@ export const fallbackAttorneys: AttorneySeed[] = [
   {
     name: "Aline Uwase",
     email: "aline.uwase@kinsleylaw.com",
-    phone: "+254 704 561 834",
+    phone: FIRM_CONTACT_PHONE,
     bio: "Aline Uwase is a Rwandan legal consultant advising on gold and mineral transactions, strategic minerals consulting, and investor-facing project support. Her MSc-level training strengthens the firm's technical perspective on extractives, compliance, and advisory structuring.",
     position: "Partner",
     specialization: "Gold, Minerals, and Strategic Advisory",
@@ -104,7 +109,7 @@ export const fallbackAttorneys: AttorneySeed[] = [
   {
     name: "Jean Ilunga",
     email: "jean.ilunga@kinsleylaw.com",
-    phone: "+254 704 561 835",
+    phone: FIRM_CONTACT_PHONE,
     bio: "Jean Ilunga supports clients operating in the Democratic Republic of Congo across mineral-rights, project advisory, French-language commercial coordination, and extractives-related engagements. He brings strong regional insight to DRC-facing mineral matters and counterpart negotiations.",
     position: "Partner",
     specialization: "DRC Minerals, Francophone Advisory, and Cross-Border Transactions",
@@ -113,7 +118,7 @@ export const fallbackAttorneys: AttorneySeed[] = [
   {
     name: "Nomsa Naidoo",
     email: "nomsa.naidoo@kinsleylaw.com",
-    phone: "+254 704 561 836",
+    phone: FIRM_CONTACT_PHONE,
     bio: "Nomsa Naidoo advises from the South African market on crypto regulation, tax exposure, banking relationships, and finance mandates. She supports clients that need a practical view of digital-asset risk, financial structuring, and compliance-sensitive transactions.",
     position: "Partner",
     specialization: "Crypto, Tax, Banking, and Finance",
@@ -215,8 +220,8 @@ export const fallbackOfficeDetails: OfficeDetails = {
   addressLine1: "P.O. Box 18627-00100",
   addressLine2: "Global Trading Center (GTC), Westlands, 9th Floor, Suite D36",
   city: "Nairobi, Kenya",
-  phone: "+254 704 561 831",
-  email: "kinsleyadvocates@gmail.com",
+  phone: FIRM_CONTACT_PHONE,
+  email: FIRM_CONTACT_EMAIL,
   hoursWeekday: "Consultations arranged by appointment.",
   hoursWeekend: "Digital enquiries accepted through the website.",
 };
