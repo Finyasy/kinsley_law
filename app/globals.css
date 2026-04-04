@@ -33,6 +33,11 @@ html {
   scroll-behavior: smooth;
 }
 
+#consultation,
+.consultation-target {
+  scroll-margin-top: 7.5rem;
+}
+
 body {
   margin: 0;
   background:

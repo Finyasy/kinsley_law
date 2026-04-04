@@ -89,7 +89,7 @@ export default async function ContactPage() {
             <ContactForm practiceAreas={practiceAreaNames} />
           </div>
 
-          <div className="contact-column" id="consultation">
+          <div className="contact-column consultation-target" id="consultation">
             <div className="section-heading-row">
               <div>
                 <p className="eyebrow">Request a consultation</p>

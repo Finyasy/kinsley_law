@@ -225,7 +225,7 @@ export default async function ServicesPage() {
                 Tell us what you are facing and we will route you to the right practice area.
               </h2>
             </div>
-            <Link href="/contact" className="button-primary">
+            <Link href="/contact#consultation" className="button-primary">
               Contact the Team
             </Link>
           </div>
