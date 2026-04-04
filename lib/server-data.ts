@@ -160,8 +160,33 @@ async function readSiteSetting<T>(key: string, fallback: T): Promise<T> {
   }
 }
 
+function normalizeAttorneyCopy(value: string) {
+  return value
+    .replace(/Strategic counsel with/gi, "Strategic attorneys with")
+    .replace(/Strategic counsel/gi, "Strategic attorneys")
+    .replace(/Trusted counsel/gi, "Trusted attorneys")
+    .replace(/Cross-disciplinary counsel/gi, "Cross-disciplinary support from attorneys")
+    .replace(/Practical counsel/gi, "Practical guidance from attorneys")
+    .replace(/legal counsel/gi, "legal services led by attorneys")
+    .replace(/\bcounsel\b/gi, "attorneys");
+}
+
+function normalizeHomePageContent(content: HomePageContent): HomePageContent {
+  return {
+    ...content,
+    heroEyebrow: normalizeAttorneyCopy(content.heroEyebrow),
+    heroDescription: normalizeAttorneyCopy(content.heroDescription),
+    valueRotatorLabel: normalizeAttorneyCopy(content.valueRotatorLabel),
+    valueRotatorPrefix: normalizeAttorneyCopy(content.valueRotatorPrefix),
+    legacyParagraphs: content.legacyParagraphs.map(normalizeAttorneyCopy),
+    achievements: content.achievements.map(normalizeAttorneyCopy),
+    valueRotatorWords: content.valueRotatorWords.map(normalizeAttorneyCopy),
+  };
+}
+
 export async function getHomePageContent(): Promise<HomePageContent> {
-  return readSiteSetting("homePageContent", defaultHomePageContent);
+  const content = await readSiteSetting("homePageContent", defaultHomePageContent);
+  return normalizeHomePageContent(content);
 }
 
 export async function getOfficeDetails(): Promise<OfficeDetails> {
