@@ -56,7 +56,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="header-actions">
-          <Link href="/contact" className="header-button" onClick={() => setMobileOpen(false)}>
+          <Link href="/contact#consultation" className="header-button" onClick={() => setMobileOpen(false)}>
             Request Consultation
           </Link>
         </div>

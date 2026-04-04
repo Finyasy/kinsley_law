@@ -70,7 +70,7 @@ export default async function HomePage() {
             <p className="hero-kicker">Strategic legal services led by attorneys for matters that need calm control.</p>
             <p className="hero-description">{homePageContent.heroDescription}</p>
             <div className="hero-actions">
-              <Link href="/contact" className="button-primary">
+              <Link href="/contact#consultation" className="button-primary">
                 Start a Consultation
               </Link>
               <Link href="/services" className="button-secondary">
@@ -306,7 +306,7 @@ export default async function HomePage() {
             <h2 className="section-title">{homePageContent.ctaTitle}</h2>
           </div>
           <div className="cta-actions">
-            <Link href="/contact" className="button-primary">
+            <Link href="/contact#consultation" className="button-primary">
               Contact the Firm
             </Link>
             <Link href="/about" className="button-secondary">
