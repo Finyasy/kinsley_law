@@ -1,13 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { getOfficeDetails, getPracticeAreasForPage } from "@/lib/server-data";
 
 const quickLinks = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
+  { href: "/about", label: "About" },
   { href: "/services", label: "Practice Areas" },
   { href: "/contact", label: "Contact" },
-  { href: "/admin", label: "Admin" },
 ];
 
 export async function SiteFooter() {
@@ -21,22 +20,13 @@ export async function SiteFooter() {
       <div className="site-container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href="/" className="brand-mark">
-              <Image
-                src="/images/logo.jpg"
-                alt="Kinsley Law Advocates logo"
-                width={60}
-                height={60}
-              />
-              <div className="brand-text">
-                <strong>Kinsley Law Advocates</strong>
-                <span>Excellence in legal representation</span>
-              </div>
+            <Link href="/" className="footer-brand-link">
+              <LogoMark size="md" className="footer-logo" />
             </Link>
             <p>
-              A modern legal practice offering thoughtful counsel, strong
-              preparation, and a premium client experience across personal and
-              commercial matters.
+              Better call Kinsley Advocates for dignified, strategic, and
+              meticulously prepared representation across private, commercial,
+              property, and dispute matters.
             </p>
           </div>
 
@@ -46,8 +36,11 @@ export async function SiteFooter() {
               <span>{officeDetails.addressLine1}</span>
               <span>{officeDetails.addressLine2}</span>
               <span>{officeDetails.city}</span>
-              <span>{officeDetails.phone}</span>
-              <span>{officeDetails.email}</span>
+              <a href={`tel:${officeDetails.phone.replace(/\s+/g, "")}`}>{officeDetails.phone}</a>
+              <a href={`mailto:${officeDetails.email}`}>{officeDetails.email}</a>
+              <a href="https://www.kinsleylaw.com" target="_blank" rel="noreferrer">
+                www.kinsleylaw.com
+              </a>
             </div>
           </div>
 
@@ -65,7 +58,7 @@ export async function SiteFooter() {
           <div>
             <h2 className="footer-heading">Practice areas</h2>
             <div className="footer-links">
-              {practiceAreas.slice(0, 4).map((practiceArea) => (
+              {practiceAreas.map((practiceArea) => (
                 <Link key={practiceArea.name} href="/services">
                   {practiceArea.name}
                 </Link>
@@ -75,8 +68,8 @@ export async function SiteFooter() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Kinsley Law Advocates. All rights reserved.</span>
-          <span>Crafted for a cleaner, faster full-stack migration to Next.js.</span>
+          <span>© {new Date().getFullYear()} Kinsley Advocates. All rights reserved.</span>
+          <span>Global Trading Center (GTC), Westlands, Nairobi.</span>
         </div>
       </div>
     </footer>

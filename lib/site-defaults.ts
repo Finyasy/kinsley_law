@@ -69,7 +69,7 @@ export const fallbackAttorneys: AttorneySeed[] = [
     name: "Jane Kinsley",
     email: "jane.kinsley@kinsleylaw.com",
     phone: "(123) 456-7890",
-    bio: "Jane Kinsley is the founding partner of Kinsley Law Advocates with over 20 years of experience in corporate law. She has helped businesses navigate complex legal challenges with precision, structure, and commercial judgment.",
+    bio: "Jane Kinsley is the founding partner of Kinsley Advocates with over 20 years of experience in corporate law. She has helped businesses navigate complex legal challenges with precision, structure, and commercial judgment.",
     position: "Founding Partner",
     specialization: "Corporate Law",
   },
@@ -161,15 +161,15 @@ export const fallbackPracticeAreas: PracticeAreaSeed[] = [
     ],
   },
   {
-    name: "Personal Injury",
+    name: "Gold and Mineral Sector Advisory",
     description:
-      "Representation for clients seeking accountability and fair compensation after accidents, negligence, and life-disrupting harm.",
+      "Legal counsel for investors, operators, landowners, and businesses navigating gold, mining, and mineral-sector matters, including licensing, land access, joint ventures, commercial contracts, compliance, and disputes.",
     highlights: [
-      "Auto accidents",
-      "Slip and fall incidents",
-      "Medical malpractice",
-      "Workplace injuries",
-      "Wrongful death",
+      "Mining and mineral-rights agreements",
+      "Licensing, permits, and regulatory compliance",
+      "Land access, surface rights, and land-use issues",
+      "Joint ventures, investment structuring, and local partnerships",
+      "Disputes involving mineral rights, operations, and supply arrangements",
     ],
   },
 ];
@@ -185,27 +185,27 @@ export const fallbackTestimonials: TestimonialSeed[] = [
     name: "Sarah Johnson",
     title: "Corporate client",
     quote:
-      "Kinsley Law Advocates gave our business practical legal advice that was both commercially sharp and easy to act on.",
+      "Kinsley Advocates gave our business practical legal advice that was both commercially sharp and easy to act on.",
   },
 ];
 
 export const fallbackOfficeDetails: OfficeDetails = {
-  addressLine1: "123 Legal Street",
-  addressLine2: "Suite 500",
+  addressLine1: "P.O. Box 18627-00100",
+  addressLine2: "Global Trading Center (GTC), Westlands, 9th Floor, Suite D36",
   city: "Nairobi, Kenya",
-  phone: "(123) 456-7890",
-  email: "info@kinsleylaw.com",
-  hoursWeekday: "Monday - Friday: 9:00 AM - 5:00 PM",
-  hoursWeekend: "Saturday - Sunday: Closed",
+  phone: "+254 704 561 831",
+  email: "kinsleyadvocates@gmail.com",
+  hoursWeekday: "Consultations arranged by appointment.",
+  hoursWeekend: "Digital enquiries accepted through the website.",
 };
 
 export const defaultHomePageContent: HomePageContent = {
   heroEyebrow: "Trusted counsel. Clear strategy. Decisive follow-through.",
   heroDescription:
-    "Kinsley Law Advocates helps individuals, families, founders, and established businesses move through legal pressure with confidence. We pair rigorous legal analysis with a calm, premium client experience.",
+    "Kinsley Advocates helps individuals, families, founders, investors, and established businesses move through legal pressure with confidence. We pair rigorous legal analysis with a calm, premium client experience across private client, commercial, property, defense, and gold, mining, and mineral-sector matters.",
   portraitEyebrow: "Built for high-trust representation",
   portraitText:
-    "A refined legal partner for complex family, commercial, property, and defense matters.",
+    "A refined legal partner for complex family, commercial, property, defense, and gold, mining, and mineral-sector matters.",
   valueRotatorLabel: "Excellence in law",
   valueRotatorPrefix: "Strategic counsel with",
   valueRotatorWords: ["Mastery", "Client Experience", "Integrity", "Teamwork"],
@@ -244,7 +244,7 @@ export const defaultHomePageContent: HomePageContent = {
   legacySectionEyebrow: "Our legacy",
   legacySectionTitle: "A modern legal practice built on steadiness and trust.",
   legacyParagraphs: [
-    "Founded in 2010, Kinsley Law Advocates was established to deliver legal representation that feels both exacting and deeply personal. Our team works across private client and business matters with a disciplined process, measured communication, and uncompromising attention to detail.",
+    "Founded in 2010, Kinsley Advocates was established to deliver legal representation that feels both exacting and deeply personal. Our team works across private client and business matters with a disciplined process, measured communication, and uncompromising attention to detail.",
     "The result is a practice that feels contemporary in service, strong in advocacy, and grounded in the long-term interests of the people and organizations we represent.",
   ],
   achievements: [

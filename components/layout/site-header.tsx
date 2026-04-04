@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { LogoMark } from "@/components/brand/logo-mark";
 
 const links = [
   { href: "/", label: "Home" },
@@ -20,16 +20,10 @@ export function SiteHeader() {
     <header className="site-header">
       <div className={`site-container site-header-inner${mobileOpen ? " mobile-open" : ""}`}>
         <Link href="/" className="brand-mark" onClick={() => setMobileOpen(false)}>
-          <Image
-            src="/images/logo.jpg"
-            alt="Kinsley Law Advocates logo"
-            width={56}
-            height={56}
-            priority
-          />
+          <LogoMark size="sm" priority />
           <div className="brand-text">
-            <strong>Kinsley Law Advocates</strong>
-            <span>Legal counsel with confidence</span>
+            <strong>Kinsley Advocates</strong>
+            <span>Excellence in law</span>
           </div>
         </Link>
 
@@ -63,7 +57,7 @@ export function SiteHeader() {
 
         <div className="header-actions">
           <Link href="/contact" className="header-button" onClick={() => setMobileOpen(false)}>
-            Book Consultation
+            Better Call Kinsley
           </Link>
         </div>
       </div>

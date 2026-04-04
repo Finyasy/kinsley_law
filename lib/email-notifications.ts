@@ -46,7 +46,7 @@ const recipients = (process.env.NOTIFICATION_TO_EMAILS ?? "")
   .map((value) => value.trim())
   .filter(Boolean);
 const fromEmail = process.env.SMTP_FROM_EMAIL?.trim() ?? "";
-const fromName = process.env.SMTP_FROM_NAME?.trim() || "Kinsley Law Advocates";
+const fromName = process.env.SMTP_FROM_NAME?.trim() || "Kinsley Advocates";
 const smtpHost = process.env.SMTP_HOST?.trim() ?? "";
 const smtpPort = Number.parseInt(process.env.SMTP_PORT?.trim() ?? "587", 10);
 const smtpSecure = (process.env.SMTP_SECURE?.trim() ?? "false").toLowerCase() === "true";
