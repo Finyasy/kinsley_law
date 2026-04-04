@@ -338,7 +338,7 @@ export async function sendAppointmentAutoReply(input: {
     previewSlug: `appointment-autoreply-${input.practiceArea}-${input.name}`,
     intro: [
       `Dear ${input.name},`,
-      "Thank you for requesting a consultation with Kinsley Advocates. We have received your preferred appointment window and will confirm availability with the appropriate attorney.",
+      "Thank you for requesting a consultation with Kinsley Advocates. We have received your preferred appointment window and will confirm availability with one of our attorneys.",
     ],
     sections: [
       { label: "Practice area", value: input.practiceArea },

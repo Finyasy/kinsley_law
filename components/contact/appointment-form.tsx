@@ -120,7 +120,7 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
       <div className="form-card-topline" />
       <p className="contact-note">
         Share your preferred consultation window and a short description of your
-        matter. We will confirm availability with the relevant attorney.
+        matter. We will confirm availability with one of our attorneys.
       </p>
 
       {message ? <div className="form-status">{message}</div> : null}

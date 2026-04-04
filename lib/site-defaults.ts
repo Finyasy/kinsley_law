@@ -161,7 +161,7 @@ export const fallbackPracticeAreas: PracticeAreaSeed[] = [
   {
     name: "Crypto, Tax, Banking, and Finance",
     description:
-      "Practical attorney guidance for digital-asset businesses, finance-sensitive transactions, tax exposure, and banking relationships that demand commercially grounded legal advice.",
+      "Practical guidance from attorneys for digital-asset businesses, finance-sensitive transactions, tax exposure, and banking relationships that demand commercially grounded legal advice.",
     highlights: [
       "Crypto-related compliance strategy",
       "Tax structuring and risk review",
@@ -230,7 +230,7 @@ export const defaultHomePageContent: HomePageContent = {
   portraitText:
     "A refined legal partner for complex disputes, commercial mandates, private client work, and gold, mining, and mineral-sector matters.",
   valueRotatorLabel: "How clients describe the standard",
-  valueRotatorPrefix: "Strategic attorney with",
+  valueRotatorPrefix: "Strategic attorneys with",
   valueRotatorWords: ["Restraint", "Clarity", "Preparation", "Follow-through"],
   highlights: [
     {
@@ -272,7 +272,7 @@ export const defaultHomePageContent: HomePageContent = {
   ],
   achievements: [
     "Client-first case strategy with senior oversight from intake to resolution.",
-    "Cross-disciplinary attorney support for personal, commercial, and regulatory matters.",
+    "Cross-disciplinary support from attorneys for personal, commercial, and regulatory matters.",
     "Responsive communication built for high-stakes, time-sensitive decisions.",
     "Team members with advanced degrees and guest lectures delivered in law-school and professional training settings.",
   ],

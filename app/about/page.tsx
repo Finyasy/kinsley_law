@@ -84,7 +84,7 @@ export default async function AboutPage() {
 
           <article className="card-surface story-card">
             <p className="eyebrow">Our mission</p>
-            <h2>Protect our clients with attorney support that is exacting, commercially alert, and deeply human.</h2>
+            <h2>Protect our clients with attorneys who are exacting, commercially alert, and deeply human.</h2>
             <p>
               We aim to bring discipline and clarity to every matter by combining technical
               excellence with candor, respect, and a premium client experience that remains steady
