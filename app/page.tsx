@@ -189,11 +189,8 @@ export default async function HomePage() {
 
       <section className="stats-strip">
         <div className="site-container stats-grid">
-          {homePageContent.highlights.map((item, index) => (
-            <article
-              key={item.label}
-              className={`stat-card${index === 0 ? " stat-card-featured" : ""}`}
-            >
+          {homePageContent.highlights.map((item) => (
+            <article key={item.label} className="stat-card">
               <strong>{item.value}</strong>
               <span>{item.label}</span>
             </article>

@@ -211,7 +211,7 @@ button {
 
 .hero-shell {
   position: relative;
-  padding: 6.25rem 0 2.5rem;
+  padding: 4.9rem 0 2.5rem;
   overflow: hidden;
 }
 
@@ -687,23 +687,6 @@ button {
   margin-top: 0.35rem;
   line-height: 1.6;
   color: rgba(11, 23, 39, 0.74);
-}
-
-.stat-card-featured {
-  grid-column: span 2;
-  padding: 1.45rem 1.5rem;
-  background:
-    radial-gradient(circle at top right, rgba(214, 170, 99, 0.22), transparent 28%),
-    linear-gradient(135deg, rgba(255, 252, 247, 0.98), rgba(242, 235, 225, 0.95));
-}
-
-.stat-card-featured strong {
-  font-size: clamp(3rem, 4vw, 4rem);
-}
-
-.stat-card-featured span {
-  max-width: 28ch;
-  font-size: 0.98rem;
 }
 
 .site-section {
@@ -2529,6 +2512,7 @@ button {
   display: grid;
   gap: 0.85rem;
   width: min(100%, 31rem);
+  margin-top: -0.35rem;
 }
 
 .hero-visual-card,
@@ -4214,7 +4198,6 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .stat-card-featured,
   .testimonial-card-featured {
     grid-column: span 1;
   }
@@ -4328,8 +4311,7 @@ button {
     gap: 0.75rem;
   }
 
-  .stat-card,
-  .stat-card-featured {
+  .stat-card {
     padding: 1.15rem 1.2rem;
   }
 
