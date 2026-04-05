@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
+import { FIRM_WEBSITE_URL } from "@/lib/firm-contact";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.kinsleylaw.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || FIRM_WEBSITE_URL;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

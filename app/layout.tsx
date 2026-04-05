@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { FIRM_WEBSITE_URL } from "@/lib/firm-contact";
 import "./globals.css";
 
 const displayFont = Cormorant_Garamond({
@@ -17,7 +18,7 @@ const bodyFont = Manrope({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.kinsleylaw.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || FIRM_WEBSITE_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

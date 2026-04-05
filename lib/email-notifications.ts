@@ -1,6 +1,10 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import nodemailer from "nodemailer";
+import {
+  FIRM_CONTACT_EMAIL,
+  FIRM_CONTACT_PHONE,
+} from "@/lib/firm-contact";
 
 type NotificationSection = {
   label: string;
@@ -60,12 +64,49 @@ let transporterPromise:
   | ReturnType<typeof nodemailer.createTransport>
   | null = null;
 
+function isGmailHost(host: string) {
+  const normalizedHost = host.trim().toLowerCase();
+
+  return normalizedHost === "smtp.gmail.com" || normalizedHost === "smtp.googlemail.com";
+}
+
+function normalizeSmtpUser(host: string, value: string) {
+  return isGmailHost(host) ? value.trim().toLowerCase() : value.trim();
+}
+
+function normalizeSmtpPassword(host: string, value: string) {
+  const trimmedValue = value.trim();
+
+  // Gmail app passwords are often displayed in grouped blocks; accept pasted spaces.
+  return isGmailHost(host) ? trimmedValue.replace(/\s+/g, "") : trimmedValue;
+}
+
+function formatDeliveryFailureDetail(error: unknown, config: NotificationConfig) {
+  const rawDetail =
+    error instanceof Error ? error.message : "Unknown email delivery failure.";
+
+  if (
+    isGmailHost(config.smtpHost) &&
+    /(535|5\.7\.8|BadCredentials|Username and Password not accepted)/i.test(rawDetail)
+  ) {
+    return [
+      "Gmail rejected the SMTP login.",
+      `Create a fresh Google App Password for ${config.smtpUser || FIRM_CONTACT_EMAIL}, update \`SMTP_PASS\` in Vercel, and redeploy.`,
+      "If the password was copied with spaces, this app now strips them automatically.",
+    ].join(" ");
+  }
+
+  return rawDetail;
+}
+
 function getNotificationConfig(): NotificationConfig {
+  const normalizedSmtpUser = normalizeSmtpUser(smtpHost, smtpUser);
+  const normalizedSmtpPass = normalizeSmtpPassword(smtpHost, smtpPass);
   const hasSmtpCredentials =
     Boolean(smtpHost) &&
     Number.isFinite(smtpPort) &&
-    Boolean(smtpUser) &&
-    Boolean(smtpPass) &&
+    Boolean(normalizedSmtpUser) &&
+    Boolean(normalizedSmtpPass) &&
     Boolean(fromEmail);
 
   const hasPreviewMode = Boolean(previewDirectory) && Boolean(fromEmail);
@@ -78,8 +119,8 @@ function getNotificationConfig(): NotificationConfig {
     smtpHost,
     smtpPort,
     smtpSecure,
-    smtpUser,
-    smtpPass,
+    smtpUser: normalizedSmtpUser,
+    smtpPass: normalizedSmtpPass,
     previewDir: previewDirectory,
   };
 }
@@ -226,8 +267,7 @@ async function deliverNotification(
       detail: `Delivered to ${input.to.join(", ")}.`,
     };
   } catch (error) {
-    const detail =
-      error instanceof Error ? error.message : "Unknown email delivery failure.";
+    const detail = formatDeliveryFailureDetail(error, config);
 
     console.error("Email notification delivery failed:", detail);
 
@@ -272,19 +312,19 @@ export async function sendContactAutoReply(input: {
     previewSlug: `contact-autoreply-${input.service}-${input.name}`,
     intro: [
       `Dear ${input.name},`,
-      "Thank you for contacting Kinsley Advocates. Your enquiry has been received and a member of the firm will review it shortly.",
+      "Thank you for contacting Kinsley Advocates. Your enquiry has been received and the firm will review and route it shortly.",
     ],
     sections: [
       { label: "Matter category", value: input.service },
       {
         label: "What happens next",
         value:
-          "We will review the details you shared and contact you using the email address or phone number you provided.",
+          "The firm will review the details you shared, route the matter internally, and contact you using the email address or phone number you provided.",
       },
       {
         label: "Urgent matters",
         value:
-          "If your issue is time-sensitive, please reply to this email or call the firm directly so we can prioritize the matter.",
+          `If your issue is time-sensitive, please reply to this email, write to ${FIRM_CONTACT_EMAIL}, or call ${FIRM_CONTACT_PHONE} so we can prioritize the matter.`,
       },
     ],
     closing: [
@@ -338,7 +378,7 @@ export async function sendAppointmentAutoReply(input: {
     previewSlug: `appointment-autoreply-${input.practiceArea}-${input.name}`,
     intro: [
       `Dear ${input.name},`,
-      "Thank you for requesting a consultation with Kinsley Advocates. We have received your preferred appointment window and will confirm availability with one of our attorneys.",
+      "Thank you for requesting a consultation with Kinsley Advocates. We have received your preferred appointment window and the firm will review and route the request before confirming the next step.",
     ],
     sections: [
       { label: "Practice area", value: input.practiceArea },
@@ -349,7 +389,11 @@ export async function sendAppointmentAutoReply(input: {
       {
         label: "What happens next",
         value:
-          "Our team will review the request and respond with confirmation or an alternative time if your preferred slot is unavailable.",
+          "The firm will review the request, route it internally, and respond with confirmation or an alternative time if your preferred slot is unavailable.",
+      },
+      {
+        label: "Firm contact",
+        value: `${FIRM_CONTACT_EMAIL} | ${FIRM_CONTACT_PHONE}`,
       },
     ],
     closing: [

@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
 import { BrandCard } from "@/components/brand/brand-card";
+import {
+  FIRM_CONTACT_EMAIL,
+  FIRM_CONTACT_PHONE,
+} from "@/lib/firm-contact";
 import { getAttorneysForPage } from "@/lib/server-data";
 
 export const metadata: Metadata = {
@@ -146,9 +150,12 @@ export default async function AboutPage() {
                       ))}
                     </div>
                   ) : null}
-                  <div className="team-card-meta">
-                    <span>{attorney.email}</span>
-                    <span>{attorney.phone}</span>
+                  <div className="team-card-routing">
+                    <span>All client enquiries are routed through the firm.</span>
+                    <div className="team-card-meta">
+                      <a href={`mailto:${FIRM_CONTACT_EMAIL}`}>{FIRM_CONTACT_EMAIL}</a>
+                      <a href={`tel:${FIRM_CONTACT_PHONE.replace(/\s+/g, "")}`}>{FIRM_CONTACT_PHONE}</a>
+                    </div>
                   </div>
                 </div>
               </article>
