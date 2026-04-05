@@ -44,15 +44,17 @@ export default async function ContactPage() {
           </div>
 
           <div className="contact-hero-card card-surface">
-            <BrandPoster treatment="embossed" className="contact-poster" />
-            <div className="contact-hero-status">
-              <div>
-                <span className="office-label">Response standard</span>
-                <strong>Within one business day</strong>
-              </div>
-              <div>
-                <span className="office-label">Matter routing</span>
-                <strong>Reviewed and routed through the firm</strong>
+            <div className="contact-hero-top">
+              <BrandPoster treatment="embossed" className="contact-poster" />
+              <div className="contact-hero-status">
+                <div>
+                  <span className="office-label">Response standard</span>
+                  <strong>Within one business day</strong>
+                </div>
+                <div>
+                  <span className="office-label">Matter routing</span>
+                  <strong>Reviewed and routed through the firm</strong>
+                </div>
               </div>
             </div>
             <h2>Office details</h2>
