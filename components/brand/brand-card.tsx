@@ -3,19 +3,21 @@ import {
   FIRM_CONTACT_PHONE,
   FIRM_WEBSITE_LABEL,
 } from "@/lib/firm-contact";
+import { KAMonogram } from "@/components/brand/ka-monogram";
 
 type BrandCardProps = {
   priority?: boolean;
   className?: string;
+  treatment?: "clean" | "embossed" | "glow";
 };
 
-export function BrandCard({ className = "" }: BrandCardProps) {
+export function BrandCard({ className = "", treatment = "glow" }: BrandCardProps) {
   return (
-    <div className={`brand-card-shell ${className}`.trim()}>
+    <div className={`brand-card-shell brand-treatment-${treatment} ${className}`.trim()}>
       <div className="brand-card-inner">
         <div className="brand-card-lockup">
           <div className="brand-card-frame">
-            <span className="brand-card-ka">KA</span>
+            <KAMonogram className="brand-card-ka" treatment={treatment} />
           </div>
           <span className="brand-card-wordmark">Kinsley Advocates</span>
         </div>

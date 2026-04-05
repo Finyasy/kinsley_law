@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
-import { BrandCard } from "@/components/brand/brand-card";
+import { LogoMark } from "@/components/brand/logo-mark";
 import {
   FIRM_CONTACT_EMAIL,
   FIRM_CONTACT_PHONE,
@@ -52,9 +52,18 @@ export default async function AboutPage() {
             </p>
           </div>
           <div className="page-brand-card page-brand-card-premium">
-            <BrandCard priority className="services-brand-card" />
+            <div className="about-brand-lockup">
+              <LogoMark
+                size="sm"
+                priority
+                variant="monogram"
+                treatment="embossed"
+                className="about-brand-logo"
+              />
+              <span className="about-brand-name">Kinsley Advocates</span>
+            </div>
             <div className="page-brand-copy">
-              <span className="eyebrow light">Since 2010</span>
+              <span className="eyebrow">Since 2010</span>
               <p>
                 Our operating model is simple: senior-led intake, measured communication, and
                 advocacy that protects both legal position and client confidence.
@@ -76,7 +85,7 @@ export default async function AboutPage() {
 
       <section className="site-section">
         <div className="site-container story-grid">
-          <article className="card-surface story-card">
+          <article className="card-surface story-card story-card-featured">
             <p className="eyebrow">Our story</p>
             <h2>Built to be the legal partner clients trust when matters feel sensitive, urgent, or high-value.</h2>
             <p>
@@ -84,17 +93,29 @@ export default async function AboutPage() {
               and operating businesses that need calm advice, strong representation, and a team
               that can move fluidly across disputes, transactions, and cross-border instructions.
             </p>
+            <div className="story-pill-row">
+              <span>Private clients</span>
+              <span>Commercial operators</span>
+              <span>Cross-border instructions</span>
+            </div>
           </article>
 
-          <article className="card-surface story-card">
-            <p className="eyebrow">Our mission</p>
-            <h2>Protect our clients with attorneys who are exacting, commercially alert, and deeply human.</h2>
-            <p>
-              We aim to bring discipline and clarity to every matter by combining technical
-              excellence with candor, respect, and a premium client experience that remains steady
-              even when the underlying issue is not.
-            </p>
-          </article>
+          <div className="story-aside-stack">
+            <article className="card-surface story-card story-card-compact">
+              <p className="eyebrow">Our mission</p>
+              <h2>Protect our clients with attorneys who are exacting, commercially alert, and deeply human.</h2>
+              <p>
+                We aim to bring discipline and clarity to every matter by combining technical
+                excellence with candor, respect, and a premium client experience that remains steady
+                even when the underlying issue is not.
+              </p>
+            </article>
+
+            <article className="story-note-panel">
+              <p className="eyebrow">What clients feel</p>
+              <h2>Steady communication, disciplined preparation, and strategy that respects both legal position and client confidence.</h2>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -104,12 +125,17 @@ export default async function AboutPage() {
             <div>
               <p className="eyebrow">How we work</p>
               <h2 className="section-title">Principles that shape every client experience.</h2>
+              <p className="section-lead section-lead-compact">
+                The firm’s internal standard is simple: communicate clearly, prepare thoroughly,
+                and stay composed when the matter becomes demanding.
+              </p>
             </div>
           </div>
 
           <div className="principles-grid">
-            {principles.map((principle) => (
+            {principles.map((principle, index) => (
               <article key={principle.title} className="principle-card">
+                <span className="principle-index">0{index + 1}</span>
                 <h3>{principle.title}</h3>
                 <p>{principle.text}</p>
               </article>
@@ -136,22 +162,25 @@ export default async function AboutPage() {
                     role={attorney.position}
                     photoUrl={attorney.photoUrl}
                   />
-                  <span className="team-card-tag">Advocate {index + 1}</span>
+                  <span className="team-card-tag">
+                    {index === 0 ? "Lead advocate" : `Advocate 0${index + 1}`}
+                  </span>
                 </div>
                 <div className="team-card-body">
+                  <span className="team-card-label">Team profile</span>
                   <h3>{attorney.name}</h3>
                   <p className="team-card-role">{attorney.position}</p>
                   <p className="team-card-specialization">{attorney.specialization}</p>
                   <p>{attorney.bio}</p>
                   {attorney.practiceAreas.length > 0 ? (
                     <div className="team-card-practices">
-                      {attorney.practiceAreas.map((practiceArea) => (
+                      {attorney.practiceAreas.slice(0, 3).map((practiceArea) => (
                         <span key={practiceArea.id}>{practiceArea.name}</span>
                       ))}
                     </div>
                   ) : null}
                   <div className="team-card-routing">
-                    <span>All client enquiries are routed through the firm.</span>
+                    <span>Client enquiries are reviewed and routed through the firm.</span>
                     <div className="team-card-meta">
                       <a href={`mailto:${FIRM_CONTACT_EMAIL}`}>{FIRM_CONTACT_EMAIL}</a>
                       <a href={`tel:${FIRM_CONTACT_PHONE.replace(/\s+/g, "")}`}>{FIRM_CONTACT_PHONE}</a>

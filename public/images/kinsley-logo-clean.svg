@@ -1,27 +1,30 @@
 <svg width="720" height="420" viewBox="0 0 720 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="200" y="34" width="220" height="220" stroke="#C99A45" stroke-width="4"/>
+  <rect x="202" y="50" width="216" height="216" stroke="#D1A74F" stroke-width="2.2"/>
+  <path
+    d="M30 14H141V698H30V712H344V698H241V380H251L553 698H449V712H656V698H573L319 429L682 14H748V0H459V14H549L249 366H241V14H344V0H30Z"
+    fill="#D2B070"
+    stroke="#D1A74F"
+    stroke-width="0.95"
+    paint-order="stroke fill"
+    transform="translate(222 212) scale(0.158 -0.158)"
+  />
+  <path
+    d="M324 597 214 306H434ZM-1 14H87L357 730H381L653 14H742V0H434V14H545L440 292H208L103 14H214V0H-1Z"
+    fill="#D2B070"
+    stroke="#D1A74F"
+    stroke-width="0.95"
+    paint-order="stroke fill"
+    transform="translate(276 214) scale(0.145 -0.145)"
+  />
   <text
     x="310"
-    y="192"
+    y="321"
     text-anchor="middle"
-    fill="#D6B06C"
-    font-family="'Cormorant Garamond','Times New Roman',serif"
-    font-size="128"
-    font-style="italic"
-    font-weight="700"
-    letter-spacing="-8"
-  >
-    KA
-  </text>
-  <text
-    x="310"
-    y="340"
-    text-anchor="middle"
-    fill="#C99A45"
-    font-family="'Manrope','Avenir Next','Segoe UI',sans-serif"
-    font-size="42"
-    font-weight="500"
-    letter-spacing="4"
+    fill="#D2B070"
+    font-family="'Cormorant Garamond','Baskerville','Times New Roman',serif"
+    font-size="38"
+    font-weight="400"
+    letter-spacing="3.4"
   >
     KINSLEY ADVOCATES
   </text>

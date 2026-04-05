@@ -203,16 +203,28 @@ export const fallbackPracticeAreas: PracticeAreaSeed[] = [
 
 export const fallbackTestimonials: TestimonialSeed[] = [
   {
-    name: "John Smith",
-    title: "Family law client",
+    name: "John Mwangi",
+    title: "Nairobi, Kenya arbitration and commercial disputes client",
     quote:
-      "The team handled a complex divorce with care and precision. Every step felt organized, transparent, and strategically sound.",
+      "Kinsley Advocates handled a sensitive arbitration and commercial dispute with clarity, precision, and steady follow-through from first strategy call to final resolution.",
   },
   {
-    name: "Sarah Johnson",
-    title: "Corporate client",
+    name: "Sarah Whitmore",
+    title: "UK commercial client",
     quote:
       "Kinsley Advocates gave our business practical legal advice that was both commercially sharp and easy to act on.",
+  },
+  {
+    name: "John Smith",
+    title: "Dubai gold and minerals client",
+    quote:
+      "Kinsley Advocates brought calm legal control to a sensitive gold and minerals matter, with commercially grounded guidance and disciplined follow-through throughout.",
+  },
+  {
+    name: "Daniel Arop",
+    title: "South Sudan oil and regional advisory client",
+    quote:
+      "The firm brought structure and calm judgment to an oil-sector matter that required regional coordination, practical advice, and communication we could trust under pressure.",
   },
 ];
 

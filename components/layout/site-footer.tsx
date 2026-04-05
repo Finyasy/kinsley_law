@@ -24,18 +24,33 @@ export async function SiteFooter() {
       <div className="site-container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href="/" className="footer-brand-link">
-              <LogoMark size="md" className="footer-logo" />
+            <Link href="/" className="footer-brand-link footer-brand-lockup">
+              <LogoMark
+                size="md"
+                variant="monogram"
+                treatment="glow"
+                className="footer-logo"
+              />
+              <div className="footer-brand-copy">
+                <span className="footer-brand-name">Kinsley Advocates</span>
+                <span className="footer-brand-tagline">
+                  Dignity, clarity, and disciplined legal strategy.
+                </span>
+              </div>
             </Link>
             <p>
               Strategic, carefully managed representation across private,
               commercial, property, dispute, and mineral-sector matters.
             </p>
+            <Link href="/contact#consultation" className="footer-consult-link">
+              Request a consultation
+            </Link>
           </div>
 
           <div>
             <h2 className="footer-heading">Contact</h2>
             <div className="footer-contact-stack">
+              <span className="footer-contact-label">Nairobi office</span>
               <span>{officeDetails.addressLine1}</span>
               <span>{officeDetails.addressLine2}</span>
               <span>{officeDetails.city}</span>
@@ -61,11 +76,12 @@ export async function SiteFooter() {
           <div>
             <h2 className="footer-heading">Practice areas</h2>
             <div className="footer-links">
-              {practiceAreas.map((practiceArea) => (
+              {practiceAreas.slice(0, 3).map((practiceArea) => (
                 <Link key={practiceArea.name} href="/services">
                   {practiceArea.name}
                 </Link>
               ))}
+              <Link href="/services">View all practice areas</Link>
             </div>
           </div>
         </div>
