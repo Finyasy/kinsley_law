@@ -41,9 +41,7 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 8% 0%, rgba(214, 170, 99, 0.2), transparent 24%),
-    radial-gradient(circle at 100% 0%, rgba(17, 33, 41, 0.12), transparent 22%),
-    linear-gradient(180deg, #fffaf2 0%, #f5eee2 44%, #ffffff 100%);
+    linear-gradient(180deg, #fffbf5 0%, #f5ede1 42%, #fffdf8 100%);
   color: var(--ink-950);
   font-family: var(--font-body), sans-serif;
   text-rendering: optimizeLegibility;
@@ -90,7 +88,7 @@ button {
     linear-gradient(180deg, rgba(255, 252, 247, 0.92), rgba(249, 243, 233, 0.88));
   border: 1px solid rgba(17, 33, 41, 0.06);
   border-radius: 999px;
-  box-shadow: 0 14px 40px rgba(6, 18, 17, 0.07);
+  box-shadow: 0 14px 36px rgba(6, 18, 17, 0.06);
 }
 
 .site-header-inner {
@@ -129,9 +127,9 @@ button {
 .brand-text strong {
   order: 2;
   font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   text-transform: none;
-  color: rgba(13, 31, 29, 0.6);
+  color: rgba(13, 31, 29, 0.62);
   font-weight: 600;
 }
 
@@ -139,9 +137,9 @@ button {
   order: 1;
   margin-top: 0;
   font-family: var(--font-body), sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(13, 31, 29, 0.68);
 }
@@ -289,7 +287,7 @@ button {
   display: grid;
   gap: 0.1rem;
   margin: 0;
-  max-width: 11ch;
+  max-width: 10.2ch;
   font-family: var(--font-display), serif;
   font-size: clamp(3.6rem, 6.2vw, 6.4rem);
   font-weight: 600;
@@ -1154,7 +1152,7 @@ button {
 }
 
 .page-hero-grid {
-  grid-template-columns: 1fr 0.78fr;
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.74fr);
   align-items: center;
 }
 
@@ -1526,7 +1524,7 @@ button {
 }
 
 .services-brand-card .brand-card-lockup {
-  gap: 0.75rem;
+  gap: 0.62rem;
 }
 
 .services-brand-card .brand-card-frame {
@@ -2130,7 +2128,7 @@ button {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.8rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0;
 }
 
 .contact-hero-status div {
@@ -2138,6 +2136,10 @@ button {
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.62);
   border: 1px solid rgba(21, 52, 91, 0.06);
+}
+
+.contact-hero-card h2 {
+  margin-top: 0.15rem;
 }
 
 .contact-intro-pills {
@@ -2358,7 +2360,7 @@ button {
 
 .brand-card-inner {
   display: grid;
-  grid-template-columns: minmax(9.5rem, 12rem) minmax(0, 1fr);
+  grid-template-columns: minmax(8.4rem, 10.5rem) minmax(0, 1fr);
   gap: 1.1rem;
   align-items: center;
   padding: 1.35rem 1.2rem 1.15rem;
@@ -2373,7 +2375,7 @@ button {
 .brand-card-frame {
   display: grid;
   place-items: center;
-  width: 5.35rem;
+  width: 4.85rem;
   aspect-ratio: 1;
   border: 1.4px solid rgba(209, 167, 79, 0.54);
   background:
@@ -2382,7 +2384,7 @@ button {
 }
 
 .brand-card-ka {
-  font-size: 3.25rem;
+  font-size: 2.95rem;
 }
 
 .ka-monogram {
@@ -2481,26 +2483,19 @@ button {
 }
 
 .hero-shell {
-  padding: 6.6rem 0 3rem;
+  padding: 5.1rem 0 2.75rem;
 }
 
 .hero-shell::before {
-  width: 28rem;
-  height: 28rem;
-  top: -11rem;
-  right: -7rem;
-  background: radial-gradient(circle, rgba(216, 162, 73, 0.28), transparent 62%);
+  width: 20rem;
+  height: 20rem;
+  top: -8rem;
+  right: -5rem;
+  background: radial-gradient(circle, rgba(216, 162, 73, 0.09), transparent 62%);
 }
 
 .hero-shell::after {
-  inset: 0;
-  width: auto;
-  height: auto;
-  left: 0;
-  bottom: 0;
-  border-radius: 0;
-  background: linear-gradient(135deg, rgba(255, 250, 242, 0.92), rgba(255, 250, 242, 0.82));
-  opacity: 0.22;
+  display: none;
 }
 
 .hero-description {
@@ -2511,7 +2506,7 @@ button {
   position: relative;
   display: grid;
   gap: 0.85rem;
-  width: min(100%, 31rem);
+  width: min(100%, 30rem);
   margin-top: -0.35rem;
 }
 
@@ -2547,6 +2542,8 @@ button {
     linear-gradient(145deg, rgba(255, 252, 247, 0.95), rgba(243, 236, 227, 0.9));
   border-color: rgba(21, 52, 91, 0.08);
   box-shadow: 0 18px 46px rgba(8, 19, 25, 0.12);
+  width: min(100%, 33rem);
+  justify-self: end;
 }
 
 .hero-visual-copy,
@@ -2594,7 +2591,7 @@ button {
   display: grid;
   justify-items: start;
   gap: 0.8rem;
-  padding: 1.1rem 1.15rem;
+  padding: 0.95rem 1rem;
   border-radius: 1.2rem;
   background:
     radial-gradient(circle at top left, rgba(209, 167, 79, 0.12), transparent 42%),
@@ -2606,7 +2603,7 @@ button {
 }
 
 .hero-brand-tile .logo-mark-sm {
-  width: 6.4rem;
+  width: 5.8rem;
 }
 
 .hero-logo-monogram .logo-mark-monogram-frame {
@@ -2626,7 +2623,7 @@ button {
 .hero-brand-caption {
   color: rgba(160, 116, 36, 0.92);
   font-family: var(--font-display), serif;
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 0.16em;
   line-height: 0.95;
@@ -2675,13 +2672,20 @@ button {
 }
 
 .contact-poster {
-  max-width: 9.7rem;
+  max-width: 8.1rem;
+}
+
+.contact-hero-top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 1rem;
 }
 
 .hero-details-panel {
   display: grid;
-  gap: 1rem;
-  width: min(100%, 24rem);
+  gap: 0.9rem;
+  width: min(100%, 23.5rem);
   justify-self: end;
   padding: 1.15rem 1.15rem 1.2rem;
   border-radius: 1.35rem;
