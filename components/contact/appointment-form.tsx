@@ -118,10 +118,18 @@ export function AppointmentForm({ practiceAreas }: AppointmentFormProps) {
   return (
     <form className="contact-form-card" onSubmit={handleSubmit}>
       <div className="form-card-topline" />
+      <div className="form-card-intro">
+        <span className="form-card-kicker">Consultation route</span>
+        <h3>Propose a time and let the firm confirm the right next step.</h3>
+      </div>
       <p className="contact-note">
         Share your preferred consultation window and a short description of your
         matter. The firm will review it and route it to the right team before confirming the next step.
       </p>
+      <div className="form-assurance-row">
+        <span>Consultation windows reviewed by the firm</span>
+        <span>Confirmation follows routing review</span>
+      </div>
 
       {message ? <div className="form-status">{message}</div> : null}
       {error ? <div className="form-error">{error}</div> : null}

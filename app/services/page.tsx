@@ -20,7 +20,7 @@ export default async function ServicesPage() {
     }) ?? null;
   const processSteps = [
     "Structured intake and conflict review",
-    "A defined lead advocate and clear workstream",
+    "A defined lead attorney and clear workstream",
     "Practical next steps with managed communication",
   ];
   const mineralsClientTypes = [
@@ -62,6 +62,16 @@ export default async function ServicesPage() {
       text: "Sensitive mining and mineral matters benefit from disciplined communication and a single clear legal workstream.",
     },
   ];
+  const servicePositioning = [
+    "Senior-led intake with a clearly defined lead advocate.",
+    "Private-client, commercial, and sector matters managed with the same premium standard.",
+    "Advice designed to stay commercially useful, not just technically correct.",
+  ];
+  const mineralsQuickFocus = [
+    "Licensing, land-access, and rights analysis",
+    "Contracts, compliance, and commercial structuring",
+    "Disputes, negotiation strategy, and response planning",
+  ];
 
   return (
     <>
@@ -77,7 +87,7 @@ export default async function ServicesPage() {
             </p>
           </div>
           <div className="services-side-panel services-hero-panel">
-            <BrandCard priority className="services-brand-card" />
+            <BrandCard priority treatment="embossed" className="services-brand-card" />
             <div className="services-hero-copy">
               <h2>What working with us feels like</h2>
               <ul>
@@ -92,26 +102,48 @@ export default async function ServicesPage() {
 
       <section className="site-section">
         <div className="site-container services-grid-modern">
-          {practiceAreas.map((area, index) => (
-            <article key={area.name} className="service-panel">
-              <div className="service-panel-header">
-                <span className="service-index">0{index + 1}</span>
-                <div>
-                  <p className="eyebrow">Practice Group</p>
-                  <h2>{area.name}</h2>
+          <article className="services-overview-card card-surface">
+            <p className="eyebrow">Service standard</p>
+            <h2 className="section-title services-overview-title">
+              Legal services organised to feel clear, focused, and easy to navigate.
+            </h2>
+            <p className="section-text services-overview-text">
+              We keep the offering broad enough to cover the matters clients bring most often,
+              while still making it obvious how the firm will structure the engagement.
+            </p>
+            <ul className="services-overview-list">
+              {servicePositioning.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+
+          {practiceAreas.map((area, index) => {
+            const shortDescription = area.description.includes(".")
+              ? `${area.description.split(".")[0]}.`
+              : area.description;
+
+            return (
+              <article key={area.name} className="service-panel">
+                <div className="service-panel-header">
+                  <span className="service-index">0{index + 1}</span>
+                  <div>
+                    <p className="eyebrow">Practice Group</p>
+                    <h2>{area.name}</h2>
+                  </div>
                 </div>
-              </div>
-              <p className="service-description">{area.description}</p>
-              {"attorney" in area && area.attorney ? (
-                <p className="service-attorney">Lead advocate: {area.attorney.name}</p>
-              ) : null}
-              <ul className="service-list">
-                {area.highlights.map((highlight) => (
-                  <li key={highlight}>{highlight}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
+                <p className="service-description">{shortDescription}</p>
+                {"attorney" in area && area.attorney ? (
+                  <p className="service-attorney">Lead attorney: {area.attorney.name}</p>
+                ) : null}
+                <ul className="service-list">
+                  {area.highlights.slice(0, 3).map((highlight) => (
+                    <li key={highlight}>{highlight}</li>
+                  ))}
+                </ul>
+              </article>
+            );
+          })}
         </div>
       </section>
 
@@ -120,15 +152,25 @@ export default async function ServicesPage() {
           <div className="site-container">
             <div className="minerals-service-feature">
               <div className="minerals-service-hero">
-                <div>
-                  <p className="eyebrow">Sector advisory</p>
-                  <h2 className="section-title">{mineralsPractice.name}</h2>
+                <div className="minerals-service-hero-grid">
+                  <div>
+                    <p className="eyebrow">Sector advisory</p>
+                    <h2 className="section-title">{mineralsPractice.name}</h2>
+                    <p className="minerals-service-intro">{mineralsPractice.description}</p>
+                  </div>
+                  <aside className="minerals-service-summary">
+                    <span className="minerals-service-summary-label">Where we focus</span>
+                    <ul className="minerals-service-summary-list">
+                      {mineralsQuickFocus.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </aside>
                 </div>
-                <p className="minerals-service-intro">{mineralsPractice.description}</p>
                 <div className="minerals-service-meta">
                   <span>Licensing, land access, contracts, compliance, and disputes</span>
                   {mineralsPractice.attorney ? (
-                    <span>Lead advocate: {mineralsPractice.attorney.name}</span>
+                    <span>Lead attorney: {mineralsPractice.attorney.name}</span>
                   ) : null}
                 </div>
               </div>
@@ -177,38 +219,40 @@ export default async function ServicesPage() {
                 </article>
               </div>
 
-              <article className="minerals-proof-panel">
-                <div className="section-heading-row">
-                  <div>
-                    <p className="eyebrow light">Sector proof</p>
-                    <h3 className="section-title light">Built for minerals matters where timing, permissions, and commercial pressure intersect.</h3>
+              <div className="minerals-final-row">
+                <article className="minerals-proof-panel">
+                  <div className="section-heading-row">
+                    <div>
+                      <p className="eyebrow">Sector proof</p>
+                      <h3 className="section-title">Built for minerals matters where timing, permissions, and commercial pressure intersect.</h3>
+                    </div>
                   </div>
-                </div>
-                <div className="minerals-proof-grid">
-                  {mineralsProofPoints.map((item) => (
-                    <article key={item.title} className="minerals-proof-card">
-                      <strong>{item.title}</strong>
-                      <p>{item.text}</p>
-                    </article>
-                  ))}
-                </div>
-              </article>
+                  <div className="minerals-proof-grid">
+                    {mineralsProofPoints.map((item) => (
+                      <article key={item.title} className="minerals-proof-card">
+                        <strong>{item.title}</strong>
+                        <p>{item.text}</p>
+                      </article>
+                    ))}
+                  </div>
+                </article>
 
-              <div className="minerals-service-cta">
-                <div>
-                  <p className="eyebrow">Need minerals-sector guidance?</p>
-                  <h3>Bring the matter early so we can help structure it before risk compounds.</h3>
-                </div>
-                <div className="cta-actions">
-                  <Link
-                    href={`/contact?practiceArea=${encodeURIComponent(mineralsPractice.name)}#consultation`}
-                    className="button-primary"
-                  >
-                    Request a minerals consultation
-                  </Link>
-                  <Link href="/contact" className="button-secondary">
-                    Send an enquiry
-                  </Link>
+                <div className="minerals-service-cta">
+                  <div>
+                    <p className="eyebrow">Need minerals-sector guidance?</p>
+                    <h3>Bring the matter early so we can help structure it before risk compounds.</h3>
+                  </div>
+                  <div className="cta-actions">
+                    <Link
+                      href={`/contact?practiceArea=${encodeURIComponent(mineralsPractice.name)}#consultation`}
+                      className="button-primary"
+                    >
+                      Request a minerals consultation
+                    </Link>
+                    <Link href="/contact" className="button-secondary">
+                      Send an enquiry
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

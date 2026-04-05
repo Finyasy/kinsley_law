@@ -116,10 +116,18 @@ export function ContactForm({ practiceAreas }: ContactFormProps) {
   return (
     <form className="contact-form-card" onSubmit={handleSubmit}>
       <div className="form-card-topline" />
+      <div className="form-card-intro">
+        <span className="form-card-kicker">Intake route</span>
+        <h3>Tell the firm what you are facing.</h3>
+      </div>
       <p className="contact-note">
         Use this form for general enquiries, new matters, or to request a call
         back from the firm. All enquiries are reviewed centrally and routed to the right team.
       </p>
+      <div className="form-assurance-row">
+        <span>Reviewed centrally</span>
+        <span>Response target: 1 business day</span>
+      </div>
 
       {message ? <div className="form-status">{message}</div> : null}
       {error ? <div className="form-error">{error}</div> : null}

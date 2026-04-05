@@ -36,10 +36,15 @@ export default async function ContactPage() {
               consultation, send us your details and the firm will review and route the matter
               with a clear next step.
             </p>
+            <div className="contact-intro-pills">
+              <span>General enquiries handled centrally</span>
+              <span>Consultations reviewed before confirmation</span>
+              <span>Response standard within one business day</span>
+            </div>
           </div>
 
           <div className="contact-hero-card card-surface">
-            <BrandPoster className="contact-poster" />
+            <BrandPoster treatment="embossed" className="contact-poster" />
             <div className="contact-hero-status">
               <div>
                 <span className="office-label">Response standard</span>
@@ -51,26 +56,26 @@ export default async function ContactPage() {
               </div>
             </div>
             <h2>Office details</h2>
-            <div className="office-stack">
-              <div>
+            <div className="office-stack office-stack-grid">
+              <div className="office-card office-card-address">
                 <span className="office-label">Address</span>
                 <strong>{officeDetails.addressLine1}</strong>
                 <strong>{officeDetails.addressLine2}</strong>
                 <strong>{officeDetails.city}</strong>
               </div>
-              <div>
+              <div className="office-card">
                 <span className="office-label">Phone</span>
                 <a href={`tel:${officeDetails.phone.replace(/\s+/g, "")}`} className="office-link">
                   {officeDetails.phone}
                 </a>
               </div>
-              <div>
+              <div className="office-card">
                 <span className="office-label">Email</span>
                 <a href={`mailto:${officeDetails.email}`} className="office-link">
                   {officeDetails.email}
                 </a>
               </div>
-              <div>
+              <div className="office-card">
                 <span className="office-label">Website</span>
                 <a href={FIRM_WEBSITE_URL} target="_blank" rel="noreferrer" className="office-link">
                   {FIRM_WEBSITE_LABEL}
@@ -88,6 +93,10 @@ export default async function ContactPage() {
               <div>
                 <p className="eyebrow">Send a message</p>
                 <h2 className="section-title">General enquiries and legal intake</h2>
+                <p className="section-lead section-lead-compact">
+                  Best for new matters, quick questions, or when you want the firm to review the
+                  issue first and route it internally.
+                </p>
               </div>
             </div>
             <ContactForm practiceAreas={practiceAreaNames} />
@@ -98,6 +107,10 @@ export default async function ContactPage() {
               <div>
                 <p className="eyebrow">Request a consultation</p>
                 <h2 className="section-title">Book a preferred date and let the firm route it correctly.</h2>
+                <p className="section-lead section-lead-compact">
+                  Best for matters where you already know you need a timed consultation and want
+                  to propose a preferred appointment window.
+                </p>
               </div>
             </div>
             <AppointmentForm practiceAreas={practiceAreaNames} />

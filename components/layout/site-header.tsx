@@ -20,10 +20,16 @@ export function SiteHeader() {
     <header className="site-header">
       <div className={`site-container site-header-inner${mobileOpen ? " mobile-open" : ""}`}>
         <Link href="/" className="brand-mark" onClick={() => setMobileOpen(false)}>
-          <LogoMark size="sm" priority />
+          <LogoMark
+            size="sm"
+            priority
+            variant="monogram"
+            treatment="clean"
+            className="header-logo"
+          />
           <div className="brand-text">
-            <strong>Kinsley Advocates</strong>
-            <span>Strategic attorneys with calm authority</span>
+            <strong>Strategic attorneys with calm authority</strong>
+            <span>Kinsley Advocates</span>
           </div>
         </Link>
 

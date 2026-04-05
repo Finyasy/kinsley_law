@@ -1,34 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AttorneyAvatar } from "@/components/brand/attorney-avatar";
-import { BrandPoster } from "@/components/brand/brand-poster";
 import { LogoMark } from "@/components/brand/logo-mark";
-import { ValueRotator } from "@/components/home/value-rotator";
 import {
   getAttorneysForPage,
   getHomePageContent,
   getPracticeAreasForPage,
   getTestimonialsForPage,
 } from "@/lib/server-data";
-
-function splitRotatorPrefix(prefix: string) {
-  const trimmed = prefix.trim();
-
-  if (!trimmed) {
-    return { primaryText: "Strategic attorneys", staticText: "with" };
-  }
-
-  const parts = trimmed.split(/\s+/);
-
-  if (parts.length === 1) {
-    return { primaryText: parts[0], staticText: "with" };
-  }
-
-  return {
-    primaryText: parts.slice(0, -1).join(" "),
-    staticText: parts[parts.length - 1],
-  };
-}
 
 export const metadata: Metadata = {
   title: "Strategic Attorneys for High-Stakes Matters",
@@ -47,13 +26,83 @@ export default async function HomePage() {
   ]);
 
   const featuredAttorneys = attorneys.slice(0, 3);
-  const featuredPractices = practiceAreas.slice(0, 6);
+  const featuredPractices = practiceAreas.slice(0, 4);
   const mineralsPractice =
     practiceAreas.find((area) => {
       const normalizedName = area.name.toLowerCase();
       return normalizedName.includes("gold") || normalizedName.includes("mineral");
     }) ?? null;
-  const { primaryText, staticText } = splitRotatorPrefix(homePageContent.valueRotatorPrefix);
+  const legacyMetrics = homePageContent.legacyMetrics.map((metric) => ({
+    ...metric,
+    value: metric.value.trim().toLowerCase() === "masters" ? "Advanced study" : metric.value,
+  }));
+  const balancedLegacyMetrics =
+    legacyMetrics.length % 2 === 0
+      ? legacyMetrics
+      : [
+          ...legacyMetrics,
+          {
+            value: "5",
+            text: "Regional touchpoints across Kenya, Rwanda, DRC, South Sudan, and South Africa.",
+          },
+        ];
+  const normalizedLegacyMetrics = balancedLegacyMetrics.map((metric) => {
+    const normalizedValue = metric.value.trim().toLowerCase();
+
+    if (normalizedValue === "2010") {
+      return {
+        label: "Founded",
+        value: "2010",
+        text: metric.text,
+      };
+    }
+
+    if (normalizedValue === "4") {
+      return {
+        label: "Lead advocates",
+        value: "4",
+        text: metric.text,
+      };
+    }
+
+    if (normalizedValue === "6") {
+      return {
+        label: "Practice groups",
+        value: "6",
+        text: metric.text,
+      };
+    }
+
+    if (normalizedValue === "1") {
+      return {
+        label: "Client journey",
+        value: "One path",
+        text: metric.text,
+      };
+    }
+
+    if (normalizedValue === "advanced study") {
+      return {
+        label: "Advanced study",
+        value: "Postgraduate depth",
+        text: metric.text,
+      };
+    }
+
+    if (normalizedValue === "5") {
+      return {
+        label: "Regional reach",
+        value: "5 markets",
+        text: metric.text,
+      };
+    }
+
+    return {
+      label: "Firm profile",
+      value: metric.value,
+      text: metric.text,
+    };
+  });
 
   return (
     <>
@@ -61,14 +110,20 @@ export default async function HomePage() {
         <div className="site-container hero-grid">
           <div className="hero-copy">
             <p className="eyebrow">{homePageContent.heroEyebrow}</p>
-            <ValueRotator
-              label={homePageContent.valueRotatorLabel}
-              primaryText={primaryText}
-              staticText={staticText}
-              values={homePageContent.valueRotatorWords}
-            />
-            <p className="hero-kicker">Strategic legal services led by attorneys for matters that need calm control.</p>
-            <p className="hero-description">{homePageContent.heroDescription}</p>
+            <div className="hero-billboard">
+              <h1 className="hero-billboard-title">
+                <span>Better Call</span>
+                <span className="hero-billboard-accent">Kinsley Advocates</span>
+              </h1>
+              <p className="hero-billboard-tagline">
+                <span>Bring Dignity &amp; Honor</span>
+                <span>To Your Legal Battles</span>
+              </p>
+            </div>
+            <p className="hero-description hero-description-tight">
+              Senior-led legal representation for disputes, consultations, transactions, and
+              mineral-sector matters that require calm control and clear next steps.
+            </p>
             <div className="hero-actions">
               <Link href="/contact#consultation" className="button-primary">
                 Start a Consultation
@@ -91,7 +146,13 @@ export default async function HomePage() {
             <div className="hero-visual-stage">
               <div className="hero-visual-card">
                 <div className="hero-brand-tile">
-                  <LogoMark size="sm" priority className="hero-logo" />
+                  <LogoMark
+                    size="sm"
+                    priority
+                    variant="monogram"
+                    treatment="embossed"
+                    className="hero-logo hero-logo-monogram"
+                  />
                   <span className="hero-brand-caption">Kinsley Advocates</span>
                 </div>
                 <div className="hero-visual-copy">
@@ -100,14 +161,13 @@ export default async function HomePage() {
                   <p>{homePageContent.portraitText}</p>
                 </div>
               </div>
-              <article className="hero-floating-card hero-floating-card-primary">
-                <span className="hero-floating-label">Main office</span>
-                <strong>Global Trading Center (GTC), Westlands, 9th Floor, Suite D36</strong>
-                <p>P.O. Box 18627-00100, Nairobi.</p>
-              </article>
-              <article className="hero-floating-card hero-contact-card secondary">
-                <span className="hero-floating-label">Direct contact</span>
-                <div className="hero-contact-list">
+              <article className="hero-details-panel">
+                <div className="hero-details-copy">
+                  <span className="hero-floating-label">Nairobi office</span>
+                  <strong>Global Trading Center (GTC), Westlands, 9th Floor, Suite D36</strong>
+                  <p>P.O. Box 18627-00100, Nairobi.</p>
+                </div>
+                <div className="hero-details-grid">
                   <div>
                     <span>Direct line</span>
                     <strong>+254 704 561 831</strong>
@@ -129,8 +189,11 @@ export default async function HomePage() {
 
       <section className="stats-strip">
         <div className="site-container stats-grid">
-          {homePageContent.highlights.map((item) => (
-            <article key={item.label} className="stat-card">
+          {homePageContent.highlights.map((item, index) => (
+            <article
+              key={item.label}
+              className={`stat-card${index === 0 ? " stat-card-featured" : ""}`}
+            >
               <strong>{item.value}</strong>
               <span>{item.label}</span>
             </article>
@@ -159,13 +222,17 @@ export default async function HomePage() {
           </div>
 
           <div className="legacy-card card-surface">
-            <BrandPoster className="legacy-poster" />
+            <div className="legacy-card-intro">
+              <span className="legacy-card-kicker">Firm profile</span>
+              <h3>Clear proof points that support the way the firm operates.</h3>
+            </div>
             <div className="legacy-grid">
-              {homePageContent.legacyMetrics.map((metric) => (
-                <div key={`${metric.value}-${metric.text}`}>
+              {normalizedLegacyMetrics.map((metric) => (
+                <article key={`${metric.label}-${metric.value}-${metric.text}`} className="legacy-metric-card">
+                  <span className="legacy-metric-label">{metric.label}</span>
                   <span className="metric">{metric.value}</span>
                   <p>{metric.text}</p>
-                </div>
+                </article>
               ))}
             </div>
           </div>
@@ -178,6 +245,10 @@ export default async function HomePage() {
             <div>
               <p className="eyebrow">{homePageContent.servicesEyebrow}</p>
               <h2 className="section-title">{homePageContent.servicesTitle}</h2>
+              <p className="section-lead section-lead-compact">
+                A tighter overview of the matters we handle most often, with every instruction
+                reviewed and routed by the firm.
+              </p>
             </div>
             <Link href="/services" className="text-link">
               View all services
@@ -275,12 +346,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="site-section section-dark">
+      <section className="site-section section-tint testimonials-section-light">
         <div className="site-container">
-          <div className="section-heading-row light">
+          <div className="section-heading-row">
             <div>
-              <p className="eyebrow light">{homePageContent.testimonialsEyebrow}</p>
-              <h2 className="section-title light">{homePageContent.testimonialsTitle}</h2>
+              <p className="eyebrow">{homePageContent.testimonialsEyebrow}</p>
+              <h2 className="section-title">{homePageContent.testimonialsTitle}</h2>
+              <p className="section-lead section-lead-compact">
+                Client trust is earned through composure, clarity, and follow-through that holds
+                when matters become sensitive.
+              </p>
             </div>
           </div>
 
